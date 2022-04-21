@@ -1,0 +1,16 @@
+---
+apiVersion: metal.sidero.dev/v1alpha1
+kind: ServerClass
+metadata:
+  name: worker
+spec:
+  configPatches:
+    - op: add
+      path: /machine/network
+      value:
+        interfaces:
+          - interface: eth0
+            dhcp: true
+  selector:
+    matchLabels:
+      worker-node: 'true'

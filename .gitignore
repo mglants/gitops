@@ -1,0 +1,27 @@
+
+# Editors
+.vscode/
+# Trash
+.DS_Store
+Thumbs.db
+# Binaries
+bin
+/flux
+*.iso
+# Temp folders
+.temp*
+.private/
+.logs/
+.task/
+# Ansible
+xanmanning.k3s*
+# Sops
+.decrypted~*
+# Kubernetes
+kubeconfig
+# Other
+report.html
+.env
+auth
+*.snap
+*.agekey

@@ -1,0 +1,48 @@
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: TalosConfigTemplate
+metadata:
+  name: berries-workers
+  namespace: flux-system
+spec:
+  template:
+    spec:
+      generateType: join
+      talosVersion: v0.14.0
+---
+apiVersion: cluster.x-k8s.io/v1alpha4
+kind: MachineDeployment
+metadata:
+  name: berries-workers
+  namespace: flux-system
+spec:
+  clusterName: berries
+  replicas: 2
+  selector:
+    matchLabels:
+  template:
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: TalosConfigTemplate
+          name: berries-workers
+      clusterName: berries
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: MetalMachineTemplate
+        name: berries-workers
+      version: v1.23.1
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: MetalMachineTemplate
+metadata:
+  name: berries-workers
+  namespace: flux-system
+spec:
+  template:
+    spec:
+      serverClassRef:
+        apiVersion: metal.sidero.dev/v1alpha1
+        kind: ServerClass
+        name: worker

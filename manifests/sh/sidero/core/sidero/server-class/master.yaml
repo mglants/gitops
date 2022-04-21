@@ -1,0 +1,21 @@
+---
+apiVersion: metal.sidero.dev/v1alpha1
+kind: ServerClass
+metadata:
+  name: master
+spec:
+  configPatches:
+    - op: replace
+      path: /machine/install/disk
+      value: /dev/sda
+    - op: add
+      path: /machine/network
+      value:
+        interfaces:
+          - interface: eth0
+            dhcp: true
+            vip:
+              ip: 172.16.30.10
+  selector:
+    matchLabels:
+      master-node: 'true'
