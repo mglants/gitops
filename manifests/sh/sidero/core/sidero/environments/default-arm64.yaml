@@ -24,5 +24,6 @@ spec:
       - slab_nomerge=
       - talos.config=http://172.16.30.200:8081/configdata?uuid=
       - talos.platform=metal
+      - talos.board=rpi_4
   initrd:
     url: https://github.com/talos-systems/talos/releases/download/v1.0.3/initramfs-arm64.xz
