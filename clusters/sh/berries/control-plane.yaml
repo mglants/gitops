@@ -30,4 +30,4 @@ spec:
     kind: MetalMachineTemplate
     name: berries-cp
   replicas: 1
-  version: v1.23.1
+  version: v1.23.5
