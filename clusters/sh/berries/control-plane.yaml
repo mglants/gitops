@@ -28,3 +28,6 @@ spec:
     controlplane:
       generateType: controlplane
       talosVersion: ${TALOS_VERSION}
+    init:
+      generateType: init
+      talosVersion: ${TALOS_VERSION}
