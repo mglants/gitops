@@ -121,3 +121,7 @@ mv /tmp/kubeconfig ~/.kube/config
 kubectx sidero=admin@sh-sidero
 kubectx berries=berries-admin@berries
 ```
+
+## Updating
+Upgrade managment plane(sidero)
+clusterctl upgrade plan
