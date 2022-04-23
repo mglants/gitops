@@ -15,11 +15,11 @@ spec:
   validation: client
   postBuild:
     substitute: {}
-    # substituteFrom:
-    #   - kind: Secret
-    #     name: cluster-secrets-sidero
-    #   - kind: ConfigMap
-    #     name: cluster-settings-sidero
+    substituteFrom:
+      # - kind: Secret
+      #   name: cluster-secrets-sidero
+      - kind: ConfigMap
+        name: cluster-settings-sidero
   decryption:
     provider: sops
     secretRef:

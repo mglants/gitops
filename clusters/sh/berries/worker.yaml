@@ -8,7 +8,7 @@ spec:
   template:
     spec:
       generateType: join
-      talosVersion: v1.0
+      talosVersion: ${TALOS_VERSION}
 ---
 apiVersion: cluster.x-k8s.io/v1alpha4
 kind: MachineDeployment
@@ -17,11 +17,12 @@ metadata:
   namespace: flux-system
 spec:
   clusterName: berries
-  replicas: 2
+  replicas: 0
   selector:
-    matchLabels:
+    matchLabels: null
   template:
     spec:
+      version: ${K8s_VERSION}
       bootstrap:
         configRef:
           apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
@@ -32,7 +33,6 @@ spec:
         apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
         kind: MetalMachineTemplate
         name: berries-workers
-      version: v1.23.1
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: MetalMachineTemplate

@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - sync
   - capi-sync.yaml
+  - cluster-settings.yaml

@@ -28,5 +28,5 @@ metadata:
   namespace: flux-system
 spec:
   controlPlaneEndpoint:
-    host: 172.16.30.10
+    host: ${CP_IP}
     port: 6443
