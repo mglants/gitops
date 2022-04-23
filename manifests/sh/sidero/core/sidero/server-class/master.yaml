@@ -14,8 +14,8 @@ spec:
         interfaces:
           - interface: eth0
             dhcp: true
-            vip:
-              ip: ${CP_IP}
+            # vip:
+            #   ip: ${CP_IP}
   selector:
     matchLabels:
       master-node: 'true'
