@@ -27,3 +27,4 @@ auth
 *.agekey
 talosconfig
 custom/*/*/controlplane.yaml
+vmtoolsd-secret.yaml

@@ -88,14 +88,22 @@ set service dhcp-server shared-network-name VLAN10 subnet 192.168.1.0/24 subnet-
 ## Configure servers
 (follow guide to configure rpi4 as servers with PXE boot)[https://www.sidero.dev/docs/v0.5/guides/rpi4-as-servers/#build-the-image-with-the-boot-folder-contents]
 
-## Patch metal controller
+### SweetHome Patch metal controller
 __TODO: move this into a kustomization__
 (As per the documentation here)[https://www.sidero.dev/docs/v0.5/guides/rpi4-as-servers/#patch-metal-controller], we need to patch the sidero-controller-manager so the RPI4's can boot over network boot = UEFI.
 
 ```bash
 kubectl -n sidero-system patch deployments.apps sidero-controller-manager --patch "$(cat ./manifests/management/core/sidero/patches/controller.patch.yaml)"
 ```
+### UR30 Patch secret
+```bash
+talosctl -n ${SIDERO_ENDPOINT} config new vmtoolsd-secret.yaml --roles os:admin
 
+kubectl -n kube-system create secret generic talos-vmtoolsd-config \
+  --from-file=talosconfig=./vmtoolsd-secret.yaml
+
+rm vmtoolsd-secret.yaml
+```
 ## Bootstrap Flux
 Ensure we're using the correct context
 ### UR30
