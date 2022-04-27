@@ -1,0 +1,19 @@
+- op: add
+  path: /machine/network
+  value:
+    nameservers:
+      - 1.1.1.1
+    interfaces:
+    - interface: eth0
+      addresses:
+        - 192.168.48.200/24
+      routes:
+        - network: 0.0.0.0/0
+          gateway: 192.168.48.1
+- op: add
+  path: /cluster/allowSchedulingOnMasters
+  value: true
+- op: replace
+  path: /cluster/extraManifests
+  value:
+    - "https://raw.githubusercontent.com/mologie/talos-vmtoolsd/master/deploy/unstable.yaml"

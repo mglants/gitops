@@ -20,18 +20,35 @@ The following applies to sidero v0.5
     chmod +x /usr/local/bin/talosctl
      ```
 
-## Install Talos on RPI4
+## Install Talos
+
+### UR30
+vmware.sh from custom/vsphere/sidero
+### SweetHome RPI4
 
 Flash USB SSD with Talos image, (found here.)[https://github.com/talos-systems/talos/releases/latest/download/metal-rpi_4-arm64.img.xz]
 
+
 ## Creating management cluster
+### UR30
 ```bash
 #ip of single-node cluster running talos
-export SIDERO_ENDPOINT=192.168.1.215
+export SIDERO_ENDPOINT=192.168.48.200
+
+#generate config
+cd custom/vsphere/sidero
+talosctl gen config --config-patch-control-plane @cp.patch.yaml ur30-sidero "https://${SIDERO_ENDPOINT}:6443/"
+```
+
+### SweetHome
+```bash
+#ip of single-node cluster running talos
+export SIDERO_ENDPOINT=172.16.30.200
 
 #generate config
 talosctl gen config --config-patch='[{"op": "add", "path": "/cluster/allowSchedulingOnMasters", "value": true},{"op": "replace", "path": "/machine/install/disk", "value": "/dev/sda"}]' sh-sidero "https://${SIDERO_ENDPOINT}:6443/"
-
+```
+```bash
 #apply generated config
 talosctl apply-config --insecure -n ${SIDERO_ENDPOINT} -f controlplane.yaml
 
@@ -54,7 +71,7 @@ talosctl dmesg -f | grep "bootstrap sequence: done"
 # seems to take a couple minutes after that log before 6443 is open and it's ready for the clusterctl command
 
 #init management cluster
-SIDERO_CONTROLLER_MANAGER_HOST_NETWORK=true SIDERO_CONTROLLER_MANAGER_API_ENDPOINT=${SIDERO_ENDPOINT} clusterctl init -i "sidero" -b talos -c talos
+SIDERO_CONTROLLER_MANAGER_HOST_NETWORK=true SIDERO_CONTROLLER_MANAGER_API_ENDPOINT=${SIDERO_ENDPOINT} clusterctl init -i sidero -b talos -c talos
 
 #verify admin cluster
 curl -I "http://${SIDERO_ENDPOINT}:8081/tftp/ipxe.efi"
@@ -81,9 +98,15 @@ kubectl -n sidero-system patch deployments.apps sidero-controller-manager --patc
 
 ## Bootstrap Flux
 Ensure we're using the correct context
+### UR30
+```bash
+kubectx admin@ur30-sidero
+```
+### SweetHome
 ```bash
 kubectx admin@sh-sidero
 ```
+
 Run pre-installation checks
 ```bash
 flux check --pre
@@ -99,6 +122,12 @@ cat flux.agekey | kubectl create secret generic sops-age \
     --from-file=age.agekey=/dev/stdin
 ```
 Install Flux
+### UR30
+```bash
+# due to a race condition with the Flux CRDs, this command will need to be run twice
+kubectl apply --kustomize=./manifests/ur30/sidero/gitops/flux-system
+```
+### SweetHome
 ```bash
 # due to a race condition with the Flux CRDs, this command will need to be run twice
 kubectl apply --kustomize=./manifests/sh/sidero/gitops/flux-system
@@ -106,10 +135,20 @@ kubectl apply --kustomize=./manifests/sh/sidero/gitops/flux-system
 
 ## Get kubeconfig
 
+### UR30
+```bash
+# fetch kubeconfig
+kubectl get secret -n flux-system vmware-kubeconfig -o yaml -o jsonpath='{.data.value}' | base64 -d > kubeconfig
+```
+
+### SweetHome
+
 ```bash
 # fetch kubeconfig
 kubectl get secret -n flux-system berries-kubeconfig -o yaml -o jsonpath='{.data.value}' | base64 -d > kubeconfig
+```
 
+```bash
 # merge kubeconfig files
 cp ~/.kube/config ~/.kube/config.bak
 KUBECONFIG=~/.kube/config:$(pwd)/kubeconfig kubectl config view --flatten > /tmp/kubeconfig
@@ -117,11 +156,16 @@ mv /tmp/kubeconfig ~/.kube/config
 ```
 
 ## Tidy up context names
+
 ```bash
-kubectx sidero=admin@sh-sidero
-kubectx berries=berries-admin@berries
+kubectx sh-sidero=admin@sh-sidero
+kubectx sh-berries=berries-admin@berries
+kubectx ur30-sidero=admin@ur30-sidero
+kubectx ur30-vmware=vmware-admin@vmware
 ```
 
 ## Updating
 Upgrade managment plane(sidero)
+```bash
 clusterctl upgrade plan
+```

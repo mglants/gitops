@@ -1,0 +1,25 @@
+---
+apiVersion: metal.sidero.dev/v1alpha1
+kind: ServerClass
+metadata:
+  name: master
+spec:
+  configPatches:
+    - op: replace
+      path: /machine/install/disk
+      value: /dev/sda
+    - op: add
+      path: /machine/network
+      value:
+        interfaces:
+          - interface: eth0
+            dhcp: true
+            vip:
+              ip: ${CP_IP}
+    - op: replace
+      path: /cluster/extraManifests
+      value:
+        - "https://raw.githubusercontent.com/mologie/talos-vmtoolsd/master/deploy/unstable.yaml"
+  selector:
+    matchLabels:
+      master-node: 'true'

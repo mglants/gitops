@@ -25,3 +25,5 @@ report.html
 auth
 *.snap
 *.agekey
+talosconfig
+custom/*/*/controlplane.yaml
