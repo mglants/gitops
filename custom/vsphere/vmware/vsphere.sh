@@ -6,70 +6,86 @@ set -e
 ## before running this script
 
 # export GOVC_USERNAME='administrator@vsphere.local'
-# export GOVC_PASSWORD='xxx'
 # export GOVC_INSECURE=true
-# export GOVC_URL='https://172.16.199.151'
-# export GOVC_DATASTORE='xxx'
+# export GOVC_URL='https://vsphere.ur30.ru'
+# export GOVC_DATACENTER='UR30'
+# export GOVC_PASSWORD='xxx'
 
-CLUSTER_NAME=${CLUSTER_NAME:=sidero}
-TALOS_VERSION=${TALOS_VERSION:=v1.0.3}
-OVA_PATH=${OVA_PATH:="https://github.com/siderolabs/talos/releases/download/${TALOS_VERSION}/vmware-amd64.ova"}
+CLUSTER_NAME=${CLUSTER_NAME:=vmware}
 
-CONTROL_PLANE_COUNT=${CONTROL_PLANE_COUNT:=3}
+CONTROL_PLANE_POOL=${CONTROL_PLANE_POOL:=sidero}
+CONTROL_PLANE_COUNT=${CONTROL_PLANE_COUNT:=2}
 CONTROL_PLANE_CPU=${CONTROL_PLANE_CPU:=4}
 CONTROL_PLANE_MEM=${CONTROL_PLANE_MEM:=4096}
 CONTROL_PLANE_DISK=${CONTROL_PLANE_DISK:=30G}
+CONTROL_PLANE_NETWORK=${CONTROL_PLANE_NETWORK:=UR30_K8s48}
+CONTROL_PLANE_DATASTORE=${CONTROL_PLANE_DATASTORE:=Fasty}
 
+WORKER_POOL=${WORKER_PLANE_POOL:=sidero}
 WORKER_COUNT=${WORKER_COUNT:=2}
 WORKER_CPU=${WORKER_CPU:=8}
 WORKER_MEM=${WORKER_MEM:=12288}
 WORKER_DISK=${WORKER_DISK:=100G}
-WORKER_MACHINE_CONFIG_PATH=${WORKER_MACHINE_CONFIG_PATH:="./worker.yaml"}
-
+WORKER_NETWORK=${WORKER_NETWORK:=UR30_K8s48}
+WORKER_DATASTORE=${WORKER_PLANE_DATASTORE:=Fasty}
 
 create () {
-    ## Encode machine configs
-    CONTROL_PLANE_B64_MACHINE_CONFIG=$(cat ${CONTROL_PLANE_MACHINE_CONFIG_PATH}| base64 | tr -d '\n')
-    WORKER_B64_MACHINE_CONFIG=$(cat ${WORKER_MACHINE_CONFIG_PATH} | base64 | tr -d '\n')
 
     ## Create control plane nodes and edit their settings
+
     for i in $(seq 1 ${CONTROL_PLANE_COUNT}); do
         echo ""
         echo "launching control plane node: ${CLUSTER_NAME}-control-plane-${i}"
         echo ""
-
-        govc library.deploy ${CLUSTER_NAME}/talos-${TALOS_VERSION} ${CLUSTER_NAME}-control-plane-${i}
-
-        govc vm.change \
-        -c ${CONTROL_PLANE_CPU}\
-        -m ${CONTROL_PLANE_MEM} \
-        -e "guestinfo.talos.config=${CONTROL_PLANE_B64_MACHINE_CONFIG}" \
-        -e "disk.enableUUID=1" \
-        -vm ${CLUSTER_NAME}-control-plane-${i}
-
-        govc vm.disk.change -vm ${CLUSTER_NAME}-control-plane-${i} -disk.name disk-1000-0 -size ${CONTROL_PLANE_DISK}
+        existance=$(govc vm.info ${CLUSTER_NAME}-control-plane-${i}| wc -w )
+        if [ $existance -eq 0 ]; then
+            govc vm.create \
+            -c=${CONTROL_PLANE_CPU} \
+            -m=${CONTROL_PLANE_MEM} \
+            -g=other3xLinux64Guest \
+            -net=${CONTROL_PLANE_NETWORK} \
+            -disk=${CONTROL_PLANE_DISK} \
+            -disk-datastore=${CONTROL_PLANE_DATASTORE} \
+            -pool=${CONTROL_PLANE_POOL} \
+            -on=false \
+            ${CLUSTER_NAME}-control-plane-${i}
+    
+            govc vm.change \
+            -e "disk.enableUUID=1" \
+            -vm ${CLUSTER_NAME}-control-plane-${i}
         
-        govc vm.power -on ${CLUSTER_NAME}-control-plane-${i}
+            govc vm.power -on ${CLUSTER_NAME}-control-plane-${i}
+        else
+            echo "Node ${CLUSTER_NAME}-control-plane-${i} already exists" 
+        fi
     done
 
-    ## Create worker nodes and edit their settings
+    # Create worker nodes and edit their settings
     for i in $(seq 1 ${WORKER_COUNT}); do
         echo ""
         echo "launching worker node: ${CLUSTER_NAME}-worker-${i}"
         echo ""
+        existance=$(govc vm.info ${CLUSTER_NAME}-worker-${i}| wc -w )
+        if [ $existance -eq 0 ]; then
+            govc vm.create \
+            -c=${WORKER_CPU} \
+            -m=${WORKER_MEM} \
+            -g=other3xLinux64Guest \
+            -net=${WORKER_NETWORK} \
+            -disk=${WORKER_DISK} \
+            -disk-datastore=${WORKER_DATASTORE} \
+            -pool=${WORKER_POOL} \
+            -on=false \
+            ${CLUSTER_NAME}-worker-${i}
+    
+            govc vm.change \
+            -e "disk.enableUUID=1" \
+            -vm ${CLUSTER_NAME}-worker-${i}
         
-        govc library.deploy ${CLUSTER_NAME}/talos-${TALOS_VERSION} ${CLUSTER_NAME}-worker-${i}
-
-        govc vm.change \
-        -c ${WORKER_CPU}\
-        -m ${WORKER_MEM} \
-        -e "guestinfo.talos.config=${WORKER_B64_MACHINE_CONFIG}" \
-        -e "disk.enableUUID=1" \
-        -vm ${CLUSTER_NAME}-worker-${i}
-
-        govc vm.disk.change -vm ${CLUSTER_NAME}-worker-${i} -disk.name disk-1000-0 -size ${WORKER_DISK}
-
-        govc vm.power -on ${CLUSTER_NAME}-worker-${i}
+            govc vm.power -on ${CLUSTER_NAME}-worker-${i}
+        else
+            echo "Node ${CLUSTER_NAME}-worker-${i} already exists" 
+        fi
     done
 
 }
@@ -89,10 +105,6 @@ destroy() {
         echo ""
         govc vm.destroy ${CLUSTER_NAME}-worker-${i}
     done
-}
-
-delete_ova() {
-    govc library.rm ${CLUSTER_NAME}
 }
 
 "$@"
