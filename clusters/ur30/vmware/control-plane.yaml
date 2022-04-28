@@ -19,7 +19,7 @@ metadata:
   namespace: flux-system
 spec:
   version: ${K8s_VERSION}
-  replicas: 1
+  replicas: 3
   infrastructureTemplate:
     kind: MetalMachineTemplate
     apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
