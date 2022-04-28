@@ -16,10 +16,6 @@ spec:
             dhcp: true
             vip:
               ip: ${CP_IP}
-    - op: replace
-      path: /cluster/extraManifests
-      value:
-        - "https://raw.githubusercontent.com/mologie/talos-vmtoolsd/master/deploy/unstable.yaml"
   selector:
     matchLabels:
       master-node: 'true'
