@@ -2,8 +2,8 @@ apiVersion: metal.sidero.dev/v1alpha1
 kind: Server
 metadata:
   labels:
-    master-node: 'true'
-  name: 32551042-3c08-e2b4-0873-d519b6cb7e8c
+    worker-node: 'true'
+  name: c65e1042-e4dd-4abf-1db6-8a263bb419cb
 spec:
   pxeBootAlways: false
   accepted: true
@@ -18,6 +18,6 @@ spec:
     family: Unknown
     manufacturer: VMware, Inc.
     productName: VMware Virtual Platform
-    serialNumber: VMware-42 10 55 32 08 3c b4 e2-08 73 d5 19 b6 cb 7e 8c
+    serialNumber: VMware-42 10 5e c6 dd e4 bf 4a-1d b6 8a 26 3b b4 19 cb
     skuNumber: Unknown
     version: None
