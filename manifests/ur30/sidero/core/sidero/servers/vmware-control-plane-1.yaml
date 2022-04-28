@@ -3,7 +3,7 @@ kind: Server
 metadata:
   labels:
     master-node: 'true'
-  name: c65e1042-e4dd-4abf-1db6-8a263bb419cb
+  name: 096e1042-27b2-c6c6-effe-0f0358c3aa0e
 spec:
   pxeBootAlways: false
   accepted: true
@@ -18,6 +18,6 @@ spec:
     family: Unknown
     manufacturer: VMware, Inc.
     productName: VMware Virtual Platform
-    serialNumber: VMware-42 10 5e c6 dd e4 bf 4a-1d b6 8a 26 3b b4 19 cb
+    serialNumber: VMware-42 10 6e 09 b2 27 c6 c6-ef fe 0f 03 58 c3 aa 0e
     skuNumber: Unknown
     version: None
