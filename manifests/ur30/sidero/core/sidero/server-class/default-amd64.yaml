@@ -7,4 +7,3 @@ spec:
   qualifiers:
     cpu:
       - manufacturer: Intel(R) Corporation
-        version: NotSupport
