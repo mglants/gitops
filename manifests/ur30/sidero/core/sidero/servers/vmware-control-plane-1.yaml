@@ -5,6 +5,7 @@ metadata:
     master-node: 'true'
   name: 32551042-3c08-e2b4-0873-d519b6cb7e8c
 spec:
+  pxeBootAlways: true
   accepted: true
   environmentRef:
     namespace: default
