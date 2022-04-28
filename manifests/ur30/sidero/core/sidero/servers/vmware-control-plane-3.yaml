@@ -10,6 +10,8 @@ spec:
   environmentRef:
     namespace: default
     name: default-amd64
+  cpu:
+    manufacturer: GenuineIntel
   hostname: vmware-control-plane-3
   system:
     productName: BHYVE
