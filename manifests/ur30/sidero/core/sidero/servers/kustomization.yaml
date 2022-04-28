@@ -3,4 +3,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - vmware-control-plane-1.yaml
+  - vmware-control-plane-2.yaml
   - vmware-control-plane-3.yaml
