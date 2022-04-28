@@ -1,0 +1,22 @@
+apiVersion: metal.sidero.dev/v1alpha1
+kind: Server
+metadata:
+  labels:
+    master-node: 'true'
+  name: bf3a1042-963a-f417-0cf3-ac1e992e0208
+spec:
+  accepted: true
+  environmentRef:
+    namespace: default
+    name: default-amd64
+  cpu:
+    manufacturer: GenuineIntel
+    version: Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz
+  hostname: vmware-control-plane-1
+  system:
+    family: Unknown
+    manufacturer: VMware, Inc.
+    productName: VMware Virtual Platform
+    serialNumber: VMware-42 10 3a bf 3a 96 17 f4-0c f3 ac 1e 99 2e 02 08
+    skuNumber: Unknown
+    version: None
