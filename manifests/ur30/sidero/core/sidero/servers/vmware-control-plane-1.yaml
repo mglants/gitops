@@ -3,7 +3,7 @@ kind: Server
 metadata:
   labels:
     master-node: 'true'
-  name: bf3a1042-963a-f417-0cf3-ac1e992e0208
+  name: 32551042-3c08-e2b4-0873-d519b6cb7e8c
 spec:
   accepted: true
   environmentRef:
@@ -17,6 +17,6 @@ spec:
     family: Unknown
     manufacturer: VMware, Inc.
     productName: VMware Virtual Platform
-    serialNumber: VMware-42 10 3a bf 3a 96 17 f4-0c f3 ac 1e 99 2e 02 08
+    serialNumber: VMware-42 10 55 32 08 3c b4 e2-08 73 d5 19 b6 cb 7e 8c
     skuNumber: Unknown
     version: None
