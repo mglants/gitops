@@ -1,20 +1,20 @@
-# apiVersion: metal.sidero.dev/v1alpha1
-# kind: Server
-# metadata:
-#   labels:
-#     master-node: 'true'
-#   name: 1a1966a5-ea89-423a-b817-e40fc80d76c7
-# spec:
-#   pxeBootAlways: false
-#   accepted: true
-#   environmentRef:
-#     namespace: default
-#     name: default-amd64
-#   cpu:
-#     manufacturer: GenuineIntel
-#   hostname: vmware-control-plane-3
-#   system:
-#     productName: BHYVE
-#     serialNumber: None
-#     skuNumber: None
-#     version: "1.0"
+apiVersion: metal.sidero.dev/v1alpha1
+kind: Server
+metadata:
+  labels:
+    master-node: 'true'
+  name: c17805bc-51ca-2d38-9a34-d8c5ab92f942
+spec:
+  pxeBootAlways: false
+  accepted: true
+  environmentRef:
+    namespace: default
+    name: default-amd64
+  cpu:
+    manufacturer: GenuineIntel
+  hostname: vmware-control-plane-3
+  system:
+    productName: BHYVE
+    serialNumber: None
+    skuNumber: None
+    version: "1.0"
