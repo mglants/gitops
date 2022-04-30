@@ -22,7 +22,7 @@ CONTROL_PLANE_NETWORK=${CONTROL_PLANE_NETWORK:=UR30_K8s48}
 CONTROL_PLANE_DATASTORE=${CONTROL_PLANE_DATASTORE:=Fasty}
 
 WORKER_POOL=${WORKER_PLANE_POOL:=sidero}
-WORKER_COUNT=${WORKER_COUNT:=2}
+WORKER_COUNT=${WORKER_COUNT:=0}
 WORKER_CPU=${WORKER_CPU:=8}
 WORKER_MEM=${WORKER_MEM:=12288}
 WORKER_DISK=${WORKER_DISK:=100G}
@@ -44,6 +44,7 @@ create () {
             -m=${CONTROL_PLANE_MEM} \
             -g=other3xLinux64Guest \
             -net=${CONTROL_PLANE_NETWORK} \
+            -disk.controller=pvscsi \
             -disk=${CONTROL_PLANE_DISK} \
             -disk-datastore=${CONTROL_PLANE_DATASTORE} \
             -pool=${CONTROL_PLANE_POOL} \
@@ -54,7 +55,7 @@ create () {
             -e "disk.enableUUID=1" \
             -vm ${CLUSTER_NAME}-control-plane-${i}
         
-            govc vm.power -on ${CLUSTER_NAME}-control-plane-${i}
+            # govc vm.power -on ${CLUSTER_NAME}-control-plane-${i}
         else
             echo "Node ${CLUSTER_NAME}-control-plane-${i} already exists" 
         fi
@@ -73,6 +74,7 @@ create () {
             -g=other3xLinux64Guest \
             -net=${WORKER_NETWORK} \
             -disk=${WORKER_DISK} \
+            -disk.controller=pvscsi \
             -disk-datastore=${WORKER_DATASTORE} \
             -pool=${WORKER_POOL} \
             -on=false \
@@ -82,7 +84,7 @@ create () {
             -e "disk.enableUUID=1" \
             -vm ${CLUSTER_NAME}-worker-${i}
         
-            govc vm.power -on ${CLUSTER_NAME}-worker-${i}
+            # govc vm.power -on ${CLUSTER_NAME}-worker-${i}
         else
             echo "Node ${CLUSTER_NAME}-worker-${i} already exists" 
         fi
