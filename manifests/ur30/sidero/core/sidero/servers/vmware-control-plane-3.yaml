@@ -3,8 +3,12 @@ kind: Server
 metadata:
   labels:
     master-node: 'true'
-  name: c17805bc-51ca-2d38-9a34-d8c5ab92f942
+  name: cfd0cace-72ea-f33c-b735-d9d8aa4abeb5
 spec:
+  configPatches:
+    - op: replace
+      path: /machine/install/disk
+      value: /dev/vda
   pxeBootAlways: false
   accepted: true
   environmentRef:
