@@ -9,7 +9,7 @@ spec:
     - op: replace
       path: /machine/install/disk
       value: /dev/vda
-  pxeBootAlways: false
+  pxeBootAlways: true
   accepted: true
   environmentRef:
     namespace: default
