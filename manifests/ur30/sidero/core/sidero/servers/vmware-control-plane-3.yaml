@@ -10,7 +10,7 @@ spec:
       path: /machine/install/disk
       value: /dev/vda
   pxeBootAlways: false
-  accepted: true
+  accepted: false
   environmentRef:
     namespace: default
     name: default-amd64
