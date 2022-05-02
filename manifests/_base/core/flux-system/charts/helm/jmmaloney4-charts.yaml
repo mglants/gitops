@@ -2,9 +2,9 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRepository
 metadata:
-  name: traefik-charts
+  name: jmmaloney4-charts
   namespace: flux-system
 spec:
   interval: 10m
-  url: https://helm.traefik.io/traefik
+  url: https://charts.jmmaloney4.xyz
   timeout: 3m

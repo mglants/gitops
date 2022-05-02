@@ -1,4 +1,3 @@
----
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
@@ -15,9 +14,25 @@ resources:
   - k8s-at-home-charts.yaml
   - kasten-charts.yaml
   - kubernetes-sigs-descheduler-charts.yaml
-  - nfs-subdir-external-provisioner-charts.yaml
   - node-feature-discovery-charts.yaml
   - prometheus-community-charts.yaml
   - stakater-charts.yaml
-  - traefik-charts.yaml
-  - rook-ceph-charts.yaml
+  - appscode-charts.yaml
+  - authentik-charts.yaml
+  - bootc-charts.yaml
+  - democratic-csi-charts.yaml
+  - emqx-charts.yaml
+  - falco-security-charts.yaml
+  - gitea-charts.yaml
+  - influxdata-charts.yaml
+  - jmmaloney4-charts.yaml
+  - kremers-charts.yaml
+  - kubernetes-sigs-nfd-charts.yaml
+  - longhorn-charts.yaml
+  - metallb-charts.yaml
+  - mglants-charts.yaml
+  - minecraft-server-charts.yaml
+  - nextcloud-charts.yaml
+  - vernemq-charts.yaml
+  - vmware-tanzu-charts.yaml
+  - weaveworks-kured-charts.yaml
