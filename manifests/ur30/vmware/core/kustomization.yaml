@@ -5,5 +5,6 @@ bases:
   - ../../../_base/core/
   - ../../_base/core/
 resources:
+  - democratic-csi
   - flux-system
   - namespaces
