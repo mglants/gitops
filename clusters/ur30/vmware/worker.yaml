@@ -19,7 +19,7 @@ spec:
   clusterName: vmware
   replicas: 2
   selector:
-    matchLabels: null
+    matchLabels:
   template:
     spec:
       version: ${K8s_VERSION}

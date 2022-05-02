@@ -2,7 +2,7 @@
 
 set -e
 
-## The following commented environment variables should be set 
+## The following commented environment variables should be set
 ## before running this script
 
 # export GOVC_USERNAME='administrator@vsphere.local'
@@ -50,14 +50,14 @@ create () {
             -pool=${CONTROL_PLANE_POOL} \
             -on=false \
             ${CLUSTER_NAME}-control-plane-${i}
-    
+
             govc vm.change \
             -e "disk.enableUUID=1" \
             -vm ${CLUSTER_NAME}-control-plane-${i}
-        
+
             # govc vm.power -on ${CLUSTER_NAME}-control-plane-${i}
         else
-            echo "Node ${CLUSTER_NAME}-control-plane-${i} already exists" 
+            echo "Node ${CLUSTER_NAME}-control-plane-${i} already exists"
         fi
     done
 
@@ -79,14 +79,14 @@ create () {
             -pool=${WORKER_POOL} \
             -on=false \
             ${CLUSTER_NAME}-worker-${i}
-    
+
             govc vm.change \
             -e "disk.enableUUID=1" \
             -vm ${CLUSTER_NAME}-worker-${i}
-        
+
             # govc vm.power -on ${CLUSTER_NAME}-worker-${i}
         else
-            echo "Node ${CLUSTER_NAME}-worker-${i} already exists" 
+            echo "Node ${CLUSTER_NAME}-worker-${i} already exists"
         fi
     done
 

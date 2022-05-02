@@ -2,7 +2,7 @@
 
 set -e
 
-## The following commented environment variables should be set 
+## The following commented environment variables should be set
 ## before running this script
 
 # export GOVC_USERNAME='administrator@vsphere.local'
@@ -50,7 +50,7 @@ create () {
         -vm ${CLUSTER_NAME}-control-plane-${i}
 
         govc vm.disk.change -vm ${CLUSTER_NAME}-control-plane-${i} -disk.name disk-1000-0 -size ${CONTROL_PLANE_DISK}
-        
+
         govc vm.power -on ${CLUSTER_NAME}-control-plane-${i}
     done
 
