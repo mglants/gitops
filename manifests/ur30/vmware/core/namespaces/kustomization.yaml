@@ -5,3 +5,4 @@ resources:
   - flux-system.yaml
   - kube-system.yaml
   - monitoring.yaml
+  - democratic-csi.yaml
