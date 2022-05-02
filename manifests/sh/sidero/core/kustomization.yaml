@@ -4,5 +4,4 @@ kind: Kustomization
 resources:
   - namespaces
   - sidero
-  - ../../../_base/core/
   - ../../_base/core/
