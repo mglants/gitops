@@ -8,3 +8,4 @@ resources:
   - democratic-csi
   - flux-system
   - namespaces
+  - ingress-nginx
