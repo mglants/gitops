@@ -11,5 +11,4 @@ resources:
   - metallb-system.yaml
   - smarthome.yaml
   - www.yaml
-  - www copy.yaml
   - apps.yaml
