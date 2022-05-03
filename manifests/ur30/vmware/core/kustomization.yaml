@@ -9,3 +9,4 @@ resources:
   - flux-system
   - namespaces
   - ingress-nginx
+  - cert-manager
