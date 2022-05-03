@@ -1,0 +1,53 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mail
+  namespace: default
+spec:
+  ports:
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 443
+  clusterIP: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: mail
+  namespace: default
+subsets:
+  - addresses:
+      - ip: 192.168.3.10
+    ports:
+      - name: https
+        port: 443
+        protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mailssl-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    kubernetes.io/ingress.class: nginx
+spec:
+
+  rules:
+    - host: mail.ur30.ru
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mail
+                port:
+                  number: 443
+  tls:
+    - hosts:
+        - mail.ur30.ru
+      secretName: ur30ru-crt-secret
