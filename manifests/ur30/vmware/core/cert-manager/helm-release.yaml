@@ -1,0 +1,37 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  interval: 5m
+  timeout: 10m0s
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.jetstack.io/
+      chart: cert-manager
+      version: v1.7.1
+      sourceRef:
+        kind: HelmRepository
+        name: jetstack-charts
+        namespace: flux-system
+      interval: 5m
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  values:
+    installCRDs: true
+    webhook:
+      enabled: false
+    extraArgs:
+      - --dns01-recursive-nameservers=1.1.1.1:53
+      - --dns01-recursive-nameservers-only
+    cainjector:
+      replicaCount: 1
+    prometheus:
+      enabled: false
+      servicemonitor:
+        enabled: false
+        prometheusInstance: monitoring
