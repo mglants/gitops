@@ -15,9 +15,8 @@
   "kubernetes": {
     "fileMatch": ["\\.yaml$"],
     "ignorePaths": [
-      "clusters/ur30/flux-system/",
-      "clusters/sweethome/flux-system/",
-      "clusters/vultr/flux-system/",
+      "clusters",
+      "custom",
       ".github"
     ],
   },
