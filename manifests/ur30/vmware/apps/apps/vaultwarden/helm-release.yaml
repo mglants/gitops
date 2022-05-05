@@ -40,6 +40,7 @@ spec:
         enabled: true
         annotations:
           kubernetes.io/ingress.class: nginx
+          cert-manager.io/cluster-issuer: letsencrypt-prod
         hosts:
           - host: bitwarden.ur30.ru
             paths:
