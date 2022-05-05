@@ -129,7 +129,7 @@ spec:
           hosts:
             - cloud.gearage.ru
     redis:
-      enabled: false
+      enabled: true
       auth:
         enabled: true
     service:
