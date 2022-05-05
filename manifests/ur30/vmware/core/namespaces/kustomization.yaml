@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - apps.yaml
   - cert-manager.yaml
-  - flux-system.yaml
   - kube-system.yaml
   - democratic-csi.yaml
   - infra.yaml
