@@ -21,7 +21,7 @@ spec:
     image:
       registry: docker.io
       repository: bitnami/wordpress
-      tag: 5.9.2-debian-10-r12
+      tag: 5.9.3-debian-10-r12
       pullPolicy: IfNotPresent
 
     wordpressBlogName: User's Blog!
