@@ -1,0 +1,36 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: metallb
+  namespace: metallb-system
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.bitnami.com/bitnami
+      chart: metallb
+      version: 3.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami-charts
+        namespace: flux-system
+  values:
+    controller:
+      image:
+        repository: metallb/controller
+        tag: v0.11.0
+    speaker:
+      image:
+        repository: metallb/speaker
+        tag: v0.11.0
+    configInline:
+      peers:
+        - peer-address: 192.168.48.1
+          peer-asn: 65000
+          my-asn: 65005
+      address-pools:
+        - name: loadbalanced
+          protocol: bgp
+          addresses:
+            - 192.168.40.0/21
