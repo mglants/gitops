@@ -46,7 +46,7 @@ spec:
           <?php
           $CONFIG = array (
             'datadirectory' => '/nextcloud/data',
-            'trusted_proxies'   => ['ingress-nginx-controller.kube-system.svc.cluster.local'],
+            'trusted_proxies'   => ['ingress-nginx-controller.ingress-nginx.svc.cluster.local'],
             'trusted_domains' =>
             array (
                 0 => 'cloud.gearage.ru',
