@@ -50,28 +50,28 @@ spec:
           hosts:
             - netbox.gearage.ru
     maxPageSize: 0
-    remoteAuth:
-      enabled: false
-      backend: netbox.authentication.LDAPBackend
-      ldap:
-        serverUri: ldaps://ak-outpost-ldap-netbox.kube-system:636
-        ignoreCertErrors: true
-        userDnTemplate:
-        userSearchBaseDn: OU=users,DC=ldap,DC=goauthentik,DC=io
-        userSearchAttr: sAMAccountName
-        groupSearchBaseDn: DC=ldap,DC=goauthentik,DC=io
-        groupSearchClass: group
-        groupType: GroupOfNamesType
-        findGroupPerms: true
-        mirrorGroups: true
-        mirrorGroupsExcept:
-        cacheTimeout: 3600
-        requireGroupDn: ''
-        isAdminDn: CN=Netbox Admins,OU=groups,DC=ldap,DC=goauthentik,DC=io
-        isSuperUserDn: CN=Netbox SuperUsers,OU=groups,DC=ldap,DC=goauthentik,DC=io
-        attrFirstName: givenName
-        attrLastName: sn
-        attrMail: mail
+    # remoteAuth:
+    #   enabled: false
+    #   backend: netbox.authentication.LDAPBackend
+    #   ldap:
+    #     serverUri: ldaps://ak-outpost-ldap-netbox.kube-system:636
+    #     ignoreCertErrors: true
+    #     userDnTemplate:
+    #     userSearchBaseDn: OU=users,DC=ldap,DC=goauthentik,DC=io
+    #     userSearchAttr: sAMAccountName
+    #     groupSearchBaseDn: DC=ldap,DC=goauthentik,DC=io
+    #     groupSearchClass: group
+    #     groupType: GroupOfNamesType
+    #     findGroupPerms: true
+    #     mirrorGroups: true
+    #     mirrorGroupsExcept:
+    #     cacheTimeout: 3600
+    #     requireGroupDn: ''
+    #     isAdminDn: CN=Netbox Admins,OU=groups,DC=ldap,DC=goauthentik,DC=io
+    #     isSuperUserDn: CN=Netbox SuperUsers,OU=groups,DC=ldap,DC=goauthentik,DC=io
+    #     attrFirstName: givenName
+    #     attrLastName: sn
+    #     attrMail: mail
 
   valuesFrom:
     - kind: Secret
