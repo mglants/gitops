@@ -20,7 +20,7 @@ spec:
   values:
     image:
       repository: pryorda/vmware_exporter
-      tag: v0.18.2
+      tag: v0.18.3
       pullPolicy: IfNotPresent
     replicaCount: 1
     readinessProbe: {}
