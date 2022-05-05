@@ -1,0 +1,171 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kea-config
+  namespace: networking
+data:
+  config: |
+    {
+    # DHCPv4 configuration starts on the next line
+    "Dhcp4": {
+
+    # First we set up global values
+        "valid-lifetime": 28800,
+        "renew-timer": 9600,
+        "rebind-timer": 19200,
+
+    # Next we set up the interfaces to be used by the server.
+        "interfaces-config": {
+            "interfaces": ["eth0"]
+        },
+
+    # And we specify the type of lease database
+        "lease-database": {
+            "type": "memfile",
+            "persist": true,
+            "name": "/var/lib/kea/dhcp4.leases"
+        },
+        "option-data": [
+          {
+                "name": "domain-name-servers",
+                "data": "192.168.40.3"
+            },
+            {
+                "name": "domain-name",
+                "data": "ur30.local"
+            },
+            {
+                "name": "domain-search",
+                "data": "glants.xyz, ur30.local, gearage.ru, ur30.ru"
+            }
+        ],
+
+    # Finally, we list the subnets from which we will be leasing addresses.
+        "subnet4": [
+            {
+            // HOME POOL
+                "pools": [ { "pool":  "192.168.0.1 - 192.168.0.254" } ],
+                "subnet": "192.168.0.0/23",
+                "option-data": [
+                {
+                    "name": "routers",
+                    "data": "192.168.1.1"
+                }
+                ],
+                "reservations": [
+                    {
+                        "hw-address": "0c:9d:92:7f:b9:af",
+                        "ip-address": "192.168.1.200",
+                        "hostname": "zakko-pc.ur30.ru"
+                    },
+                    {
+                        "hw-address": "24:0A:64:49:E9:0C",
+                        "ip-address": "192.168.1.201",
+                        "hostname": "zakko-msi.ur30.ru"
+                    },
+                    {
+                        "hw-address": "b4:fb:e4:f6:64:f2",
+                        "ip-address": "192.168.1.101",
+                        "hostname": "kitchenap.ur30.ru"
+                    },
+                    {
+                        "hw-address": "b4:fb:e4:f6:65:a6",
+                        "ip-address": "192.168.1.100",
+                        "hostname": "cabinetap.ur30.ru"
+                    },
+                    {
+                        "hw-address": "b4:fb:e4:f6:65:22",
+                        "ip-address": "192.168.1.102",
+                        "hostname": "gardenap.ur30.ru"
+                    },
+                    {
+                        "hw-address": "f0:03:8c:af:9a:4a",
+                        "ip-address": "192.168.0.6",
+                        "hostname": "cabinet-printer.ur30.ru"
+                    },
+                    {
+                        "hw-address": "a4:cf:12:d7:2b:dd",
+                        "ip-address": "192.168.0.3",
+                        "hostname": "kotel_wemos.ur30.ru"
+                    },
+                    {
+                        "hw-address": "a4:cf:12:d7:28:00",
+                        "ip-address": "192.168.0.4",
+                        "hostname": "podval_wemos.ur30.ru"
+                    },
+                    {
+                        "hw-address": "a4:77:33:75:e9:32",
+                        "ip-address": "192.168.1.115",
+                        "hostname": "chromecast1.ur30.ru"
+                    },
+                    {
+                        "hw-address": "04:32:f4:2c:c9:4f",
+                        "ip-address": "192.168.1.110",
+                        "hostname": "ast.ur30.ru"
+                    },
+                    {
+                        "hw-address": "a4:77:33:5e:50:4a",
+                        "ip-address": "192.168.1.114",
+                        "hostname": "chromecast2.ur30.ru"
+                    },
+                    {
+                        "hw-address": "dc:a6:32:80:5b:9c",
+                        "ip-address": "192.168.1.111",
+                        "hostname": "homeassistant.ur30.ru"
+                    }
+                ]
+            },
+            {
+            // DMZ POOL
+                "pools": [ { "pool": "192.168.3.20 - 192.168.3.254" } ],
+                "subnet": "192.168.3.0/24",
+                "option-data": [
+                {
+                    "name": "routers",
+                    "data": "192.168.3.1"
+                }
+                ],
+                "reservations": [
+                    {
+                        "hw-address": "00:01:2d:69:8d:b3",
+                        "ip-address": "192.168.3.20",
+                        "hostname": "web.ur30.ru"
+                    }
+                ]
+            },
+            {
+            // GUEST VLAN
+                "pools": [ { "pool": "192.168.5.2 - 192.168.5.250" } ],
+                "subnet": "192.168.5.0/24",
+                "option-data": [
+                {
+                    "name": "routers",
+                    "data": "192.168.5.1"
+                }
+                ],
+                "reservations": [
+
+                ]
+            },
+            {
+            // K8s
+                "pools": [ { "pool": "192.168.30.2 - 192.168.30.250" } ],
+                "subnet": "192.168.30.0/24",
+                "option-data": [
+                {
+                    "name": "routers",
+                    "data": "192.168.30.1"
+                }
+                ],
+                "reservations": [
+
+                ]
+            }
+        ]
+
+
+    # DHCPv4 configuration ends with the next line
+    }
+
+    }

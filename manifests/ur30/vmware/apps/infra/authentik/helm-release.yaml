@@ -1,0 +1,61 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: authentik
+  namespace: infra
+spec:
+  interval: 5m
+  timeout: 10m0s
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.goauthentik.io
+      chart: authentik
+      version: 5.2.2
+      sourceRef:
+        kind: HelmRepository
+        name: authentik-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    replicas: 1
+    worker:
+      replicas: 1
+    image:
+      repository: ghcr.io/goauthentik/server
+      tag: 2022.1.5
+    authentik:
+      error_reporting:
+        enabled: true
+      postgresql:
+        s3_backup:
+          bucket: authentik
+          region: us-east-1
+          host: http://192.168.1.50:9000
+          insecure_skip_verify: true
+
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      hosts:
+        - host: authentik.gearage.ru
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: authentik-tls
+          hosts:
+            - authentik.gearage.ru
+    postgresql:
+      enabled: true
+      persistence:
+        existingClaim: authentik-pgsql-v1
+    redis:
+      enabled: true
+  valuesFrom:
+    - kind: Secret
+      name: authentik-helm-values
+      valuesKey: values.yaml
+      optional: false

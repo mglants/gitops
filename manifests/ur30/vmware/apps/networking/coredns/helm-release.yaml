@@ -1,0 +1,229 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: coredns
+  namespace: networking
+spec:
+  interval: 5m
+  timeout: 10m0s
+  chart:
+    spec:
+      # renovate: registryUrl=https://coredns.github.io/helm
+      chart: coredns
+      version: 1.17.0
+      sourceRef:
+        kind: HelmRepository
+        name: coredns-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    replicaCount: 2
+    serviceType: LoadBalancer
+    prometheus:
+      service:
+        enabled: false
+      monitor:
+        enabled: false
+    service:
+      externalTrafficPolicy: Local
+      loadBalancerIP: 192.168.40.3
+      annotations:
+        metallb.universe.tf/allow-shared-ip: coredns
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - coredns
+            topologyKey: kubernetes.io/hostname
+    rbac:
+      create: true
+    isClusterService: false
+    servers:
+      - zones:
+          - zone: .
+            scheme: dns://
+            use_tcp: false
+        port: 53
+        plugins:
+          - name: errors
+          - name: health
+            configBlock: |-
+              lameduck 5s
+          - name: ready
+          - name: prometheus
+            parameters: 0.0.0.0:9153
+          - name: forward
+            parameters: . tls://91.239.100.100
+            configBlock: |-
+              tls_servername anycast.censurfridns.dk
+              health_check 5s
+          - name: cache
+            parameters: 30
+          - name: loop
+          - name: reload
+          - name: loadbalance
+      - zones:
+          - zone: ur30.ru
+            scheme: dns://
+            use_tcp: false
+        port: 53
+        plugins:
+          - name: errors
+          - name: health
+            configBlock: |-
+              lameduck 5s
+          - name: ready
+          - name: prometheus
+            parameters: 0.0.0.0:9153
+          - name: cache
+            parameters: 30
+          - name: loop
+          - name: reload
+          - name: loadbalance
+          - name: file
+            parameters: /etc/coredns/ur30.ru
+      - zones:
+          - zone: gearage.ru
+            scheme: dns://
+            use_tcp: false
+        port: 53
+        plugins:
+          - name: errors
+          - name: health
+            configBlock: |-
+              lameduck 5s
+          - name: ready
+          - name: prometheus
+            parameters: 0.0.0.0:9153
+          - name: cache
+            parameters: 30
+          - name: loop
+          - name: reload
+          - name: loadbalance
+          - name: file
+            parameters: /etc/coredns/gearage.ru
+      - zones:
+          - zone: ur30.local
+            scheme: dns://
+            use_tcp: false
+        port: 53
+        plugins:
+          - name: errors
+          - name: health
+            configBlock: |-
+              lameduck 5s
+          - name: ready
+          - name: prometheus
+            parameters: 0.0.0.0:9153
+          - name: cache
+            parameters: 30
+          - name: loop
+          - name: reload
+          - name: loadbalance
+          - name: file
+            parameters: /etc/coredns/ur30.local
+      - zones:
+          - zone: ruzahouse.ru
+            scheme: dns://
+            use_tcp: false
+        port: 53
+        plugins:
+          - name: errors
+          - name: health
+            configBlock: |-
+              lameduck 5s
+          - name: ready
+          - name: prometheus
+            parameters: 0.0.0.0:9153
+          - name: cache
+            parameters: 30
+          - name: loop
+          - name: reload
+          - name: loadbalance
+          - name: file
+            parameters: /etc/coredns/ruzahouse.ru
+    zoneFiles:
+      - filename: ur30.ru
+        domain: ur30.ru
+        contents: |
+          ur30.ru.   IN SOA etta.ns.cloudflare.com. dns.cloudflare.com. 2021072401 10000 2400 604800 3600
+          alerty.ur30.ru. IN A   192.168.1.7
+          ananas.ur30.ru. IN A   192.168.1.50
+          asa.ur30.ru. IN A   192.168.1.1
+          assets.ur30.ru. IN CNAME  alerty.ur30.ru.
+          autoconfig.ur30.ru. IN CNAME  mail.ur30.ru.
+          autodiscover.ur30.ru. IN CNAME  mail.ur30.ru.
+          base1.ur30.ru. IN A   192.168.1.2
+          base2.ur30.ru. IN A   192.168.1.3
+          cosmos.ur30.ru. IN A   192.168.3.6
+          debian.ur30.ru. IN A   192.168.3.5
+          esxi1.ur30.ru. IN A   192.168.1.31
+          esxi2.ur30.ru. IN A   192.168.1.32
+          esxi3.ur30.ru. IN A   192.168.1.33
+          freeipa.ur30.ru. IN CNAME  alerty.ur30.ru.
+          galera.ur30.ru. IN CNAME  haproxy.ur30.ru.
+          galera1.ur30.ru. IN A   192.168.1.41
+          galera2.ur30.ru. IN A   192.168.1.42
+          gameservers.ur30.ru. IN A   192.168.3.30
+          gitlab.ur30.ru. IN CNAME  cosmos.ur30.ru.
+          haproxy.ur30.ru. IN A   192.168.3.2
+          home.ur30.ru. IN A   192.168.1.4
+          homeassistant.ur30.ru. IN A   192.168.1.111
+          ingress.ur30.ru. IN A   192.168.40.1
+          mail.ur30.ru. IN A   192.168.3.10
+          mc.ur30.ru. IN A   192.168.3.4
+          nas.ur30.ru. IN CNAME  ananas.ur30.ru.
+          nf.ur30.ru. IN CNAME  alerty.ur30.ru.
+          ntp.ur30.ru. IN CNAME  base1.ur30.ru.
+          ntp.ur30.ru. IN CNAME  base2.ur30.ru.
+          pfsense.ur30.ru. IN A   192.168.3.15
+          unifi.ur30.ru. IN A   192.168.40.7
+          unifistun.ur30.ru. IN CNAME  unifi.ur30.ru.
+          vsanw.ur30.ru. IN A   192.168.1.41
+          vsphere.ur30.ru. IN A   192.168.1.30
+          web.ur30.ru. IN A   192.168.3.20
+          * IN CNAME  ingress.ur30.ru.
+      - filename: gearage.ru
+        domain: gearage.ru
+        contents: |
+          gearage.ru.   IN SOA etta.ns.cloudflare.com. dns.cloudflare.com. 2021072401 10000 2400 604800 3600
+          gearage.ru. IN CNAME  haproxy.ur30.ru.
+          americano.gearage.ru. IN CNAME  haproxy.ur30.ru.
+          bastards.gearage.ru. IN CNAME  pfsense.ur30.ru.
+          cloud.gearage.ru. IN CNAME  ingress.ur30.ru.
+          cp.gearage.ru. IN CNAME  web.ur30.ru.
+          favoritecake.gearage.ru. IN CNAME  haproxy.ur30.ru.
+          gitssh.gearage.ru. IN A   192.168.30.82
+          help.gearage.ru. IN CNAME  haproxy.ur30.ru.
+          launch.gearage.ru. IN A   192.168.3.20
+          lk.gearage.ru. IN CNAME  web.ur30.ru.
+          localband.gearage.ru. IN CNAME  haproxy.ur30.ru.
+          project.gearage.ru. IN CNAME  haproxy.ur30.ru.
+          srv1.gearage.ru. IN A   192.168.3.4
+          tableone.gearage.ru. IN CNAME  haproxy.ur30.ru.
+          ts.gearage.ru. IN A   192.168.30.70
+          * IN CNAME  ingress.ur30.ru.
+      - filename: ur30.local
+        domain: ur30.local
+        contents: |
+          ur30.local.   IN SOA etta.ns.cloudflare.com. dns.cloudflare.com. 2021072401 10000 2400 604800 3600
+          unificontroller.ur30.local. IN CNAME  unifi.ur30.ru.
+          unifistun.ur30.local. IN CNAME  unifi.ur30.ru.
+          xteve.ur30.local. IN A   192.168.30.72
+          core.ur30.local. IN A   192.168.1.1
+          chedraksw.ur30.local. IN A   192.168.1.254
+          nas.ur30.ru. IN CNAME  ananas.ur30.ru.
+          podvalsw.ur30.local. IN A   192.168.1.252
+          10gsw.ur30.local. IN A   192.168.1.253
+          * IN CNAME  ingress.ur30.ru.
+      - filename: ruzahouse.ru
+        domain: ruzahouse.ru
+        contents: |
+          ruzahouse.ru.   IN SOA etta.ns.cloudflare.com. dns.cloudflare.com. 2021072401 10000 2400 604800 3600
+          ruzahouse.ru. IN CNAME  ingress.ur30.ru.
+          * IN CNAME  ingress.ur30.ru.

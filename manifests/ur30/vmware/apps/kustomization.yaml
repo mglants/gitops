@@ -4,3 +4,11 @@ kind: Kustomization
 bases:
   - ../../../_base/apps/
   - ../../_base/apps/
+resources:
+  - apps
+  - infra
+  - media
+  - monitoring
+  - networking
+  - smarthome
+  - www

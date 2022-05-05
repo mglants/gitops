@@ -1,0 +1,80 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: plex
+  namespace: media
+spec:
+  interval: 5m
+  timeout: 10m0s
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: plex
+      version: 6.2.2
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      repository: plexinc/pms-docker
+      tag: 1.26.0.5715-8cf78dab3
+    env:
+      TZ: Europe/Moscow
+      ADVERTISE_IP: http://193.41.79.236:32400/
+    service:
+      main:
+        type: LoadBalancer
+        loadBalancerIP: 192.168.40.8
+        externalTrafficPolicy: Local
+        annotations:
+          metallb.universe.tf/allow-shared-ip: plex
+        port:
+          port: 32400
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+        ingressClassName: nginx
+        hosts:
+          - host: plex.ur30.ru
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: ur30ru-crt-secret
+            hosts:
+              - plex.ur30.ru
+    persistence:
+      config:
+        enabled: true
+        existingClaim: plex-config-v1
+      transcode:
+        enabled: false
+        type: emptyDir
+        medium: Memory
+      tmp:
+        enabled: true
+        type: emptyDir
+        medium: Memory
+      nfs-public-pvc:
+        enabled: true
+        existingClaim: nfs-public-pvc
+        mountPath: /data
+        readOnly: false
+    podAnnotations:
+      backup.velero.io/backup-volumes: config
+    resources:
+      requests:
+        cpu: 1000m
+        memory: 8Gi
+      limits:
+        memory: 16Gi
+  valuesFrom:
+    - kind: Secret
+      name: plex-helm-values
+      valuesKey: values.yaml
+      optional: false

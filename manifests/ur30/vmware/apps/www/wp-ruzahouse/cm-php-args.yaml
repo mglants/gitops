@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wp-ruzahouse-php-args
+  namespace: www
+data:
+  args.ini: |-
+    post_max_size = 512M
+    upload_max_filesize = 512M
+    memory_limit = 1024M
+    max_execution_time = 0
