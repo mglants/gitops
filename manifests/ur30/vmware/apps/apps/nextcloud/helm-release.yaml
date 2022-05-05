@@ -129,8 +129,9 @@ spec:
           hosts:
             - cloud.gearage.ru
     redis:
-      enabled: true
-      usePassword: true
+      enabled: false
+      auth:
+        enabled: true
     service:
       type: LoadBalancer
       loadBalancerIP: 192.168.40.5
