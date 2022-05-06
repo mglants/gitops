@@ -137,11 +137,11 @@ data:
             {
             // IoT VLAN
                 "pools": [ { "pool": "192.168.4.10 - 192.168.4.199" } ],
-                "subnet": "192.168.5.0/24",
+                "subnet": "192.168.4.0/24",
                 "option-data": [
                 {
                     "name": "routers",
-                    "data": "192.168.5.1"
+                    "data": "192.168.4.1"
                 }
                 ],
                 "reservations": [
