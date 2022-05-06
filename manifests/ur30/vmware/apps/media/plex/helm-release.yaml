@@ -69,10 +69,9 @@ spec:
       backup.velero.io/backup-volumes: config
     resources:
       requests:
-        cpu: 4
+        cpu: 4000m
         memory: 8Gi
       limits:
-        cpu: 10
         memory: 16Gi
   valuesFrom:
     - kind: Secret
