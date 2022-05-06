@@ -214,7 +214,6 @@ spec:
           ur30.local.   IN SOA etta.ns.cloudflare.com. dns.cloudflare.com. 2021072401 10000 2400 604800 3600
           unificontroller.ur30.local. IN CNAME  unifi.ur30.ru.
           unifistun.ur30.local. IN CNAME  unifi.ur30.ru.
-          xteve.ur30.local. IN A   192.168.30.72
           core.ur30.local. IN A   192.168.1.1
           chedraksw.ur30.local. IN A   192.168.1.254
           nas.ur30.ru. IN CNAME  ananas.ur30.ru.
