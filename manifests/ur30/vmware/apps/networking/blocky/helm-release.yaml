@@ -22,8 +22,11 @@ spec:
       repository: ghcr.io/0xerr0r/blocky
       tag: v0.18
     controller:
-      replicas: 3
+      replicas: 2
       strategy: RollingUpdate
+      rollingUpdate:
+        surge: 50%
+        unavailable: 1
     env:
       TZ: Europe/Moscow
     service:
