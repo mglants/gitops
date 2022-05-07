@@ -48,6 +48,16 @@
         "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*)\n"
       ],
       "datasourceTemplate": "helm"
+    },
+    {
+      "fileMatch": [
+        "manifests/.+cluster-settings\\.yaml$"
+      ],
+      "matchStrings": [
+        //git versioning for talos and etc
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( sourceUrl=(?<sourceUrl>.*?))?\\s.*?_VERSION: (?<currentValue>.*)"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
   ],
   "packageRules": [
