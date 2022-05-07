@@ -2,7 +2,7 @@
 fail_fast: false
 repos:
   - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
-    rev: 0.0.11
+    rev: 0.1.1
     hooks:
       - id: yamlfmt
         args:

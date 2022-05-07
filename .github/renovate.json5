@@ -10,20 +10,38 @@
   // Do not rebase PRs
   "rebaseWhen": "auto",
   "helm-values": {
-    "fileMatch": ["./.+\\.yaml$"]
+    "fileMatch": ["manifests/.+helm-release\\.yaml$"]
   },
   "kubernetes": {
-    "fileMatch": ["\\.yaml$"],
-    "ignorePaths": [
-      "clusters",
-      "custom",
-      ".github"
-    ],
+    "fileMatch": ["manifests/.+\\.yaml$"]
   },
   "regexManagers": [
-    {
-      "fileMatch": ["./.+\\.yaml$"],
+      {
+      "fileMatch": [
+        "manifests/.+crds\\.yaml$"
+      ],
       "matchStrings": [
+        //crds based on helm version
+        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?) type=helm\n.*\/(?<currentValue>v.*?)\/"
+      ],
+      "datasourceTemplate": "helm"
+    },
+      {
+      "fileMatch": [
+        "manifests/.+crds\\.yaml$"
+      ],
+      "matchStrings": [
+        //crds based on docker version
+        "image=(?<depName>.*?) type=docker\n.*\/(?<currentValue>v.*?)\/"
+      ],
+      "datasourceTemplate": "docker"
+    },
+    {
+      "fileMatch": [
+        "manifests/.+helm-release\\.yaml$"
+      ],
+      "matchStrings": [
+        //helm-releases
         "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*)\n"
       ],
       "datasourceTemplate": "helm"
@@ -127,6 +145,14 @@
       "matchDatasources": ["helm"],
       "allowedVersions": "<2",
       "matchPackageNames": ["metallb"]
+    },
+    // group packages
+    {
+      "matchDatasources": ["helm", "docker"],
+      "matchPackagePatterns": ["^kube-prometheus-stack|.*prometheus-operator"],
+      "groupName": "prometheus-stack",
+      "additionalBranchPrefix": "",
+      "separateMinorPatch": true
     },
     // auto-updates - daily
     {
