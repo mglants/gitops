@@ -152,7 +152,7 @@
       "matchPackagePatterns": ["^kube-prometheus-stack|.*prometheus-operator"],
       "groupName": "prometheus-stack",
       "additionalBranchPrefix": "",
-      "separateMinorPatch": true
+      "separateMinorPatch": false
     },
     // auto-updates - daily
     {
