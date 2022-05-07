@@ -15,7 +15,7 @@
   "kubernetes": {
     "fileMatch": ["manifests/.+\\.yaml$"],
     "ignorePaths": [
-      "flux-system/.+\\.yaml$"
+      "**/flux-system/**"
     ]
   },
   "regexManagers": [
