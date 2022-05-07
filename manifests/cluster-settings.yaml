@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-settings-sidero
+  namespace: flux-system
+data:
+  CP_IP: 192.168.48.100
+  SIDERO_IP: 192.168.48.200
+  # renovate: datasource=github-releases depName=siderolabs/talos sourceUrl=https://github.com/siderolabs/talos
+  TALOS_VERSION: v1.0.1
+  K8s_VERSION: v1.23.5
