@@ -7,7 +7,7 @@
   "commitBody": "Signed-off-by: Mark Glants <mglants@users.noreply.github.com>",
   // Do not notify on closed unmerged PRs
   "suppressNotifications": ["prIgnoreNotification"],
-  // Do not rebase PRs/
+  // Do not rebase PRs
   "rebaseWhen": "auto",
   "helm-values": {
     "fileMatch": ["manifests/.+helm-release\\.yaml$"]
