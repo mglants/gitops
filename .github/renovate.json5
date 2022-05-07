@@ -18,7 +18,7 @@
   "regexManagers": [
       {
       "fileMatch": [
-        "manifests/.+crds\\.yaml$"
+        "(^|\/)crds\/kustomization\\.yaml$"
       ],
       "matchStrings": [
         //crds based on helm version
@@ -28,7 +28,7 @@
     },
       {
       "fileMatch": [
-        "manifests/.+crds\\.yaml$"
+        "(^|\/)crds\/kustomization\\.yaml$"
       ],
       "matchStrings": [
         //crds based on docker version
