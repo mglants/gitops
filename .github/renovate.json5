@@ -13,7 +13,10 @@
     "fileMatch": ["manifests/.+helm-release\\.yaml$"]
   },
   "kubernetes": {
-    "fileMatch": ["manifests/.+\\.yaml$"]
+    "fileMatch": ["manifests/.+\\.yaml$"],
+    "ignorePaths": [
+      "flux-system/.+\\.yaml$"
+    ]
   },
   "regexManagers": [
       {
