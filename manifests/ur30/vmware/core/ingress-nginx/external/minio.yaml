@@ -20,7 +20,7 @@ spec:
                 port:
                   number: 9000
   tls:
-    - secretName: ur30ru-crt-secret
+    - secretName: miniour30ru-crt-secret
       hosts:
         - minio.ur30.ru
 ---

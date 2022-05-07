@@ -51,4 +51,4 @@ spec:
   tls:
     - hosts:
         - mail.ur30.ru
-      secretName: ur30ru-crt-secret
+      secretName: mailur30ru-crt-secret
