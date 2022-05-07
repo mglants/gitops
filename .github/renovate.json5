@@ -54,7 +54,7 @@
         "manifests/.+cluster-settings\\.yaml$"
       ],
       "matchStrings": [
-        //git versioning for talos and etc
+        //git versioning for talos and etc/
         "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( sourceUrl=(?<sourceUrl>.*?))?\\s.*?_VERSION: (?<currentValue>.*)"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
