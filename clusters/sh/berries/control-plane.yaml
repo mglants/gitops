@@ -27,7 +27,7 @@ spec:
   controlPlaneConfig:
     controlplane:
       generateType: controlplane
-      talosVersion: ${TALOS_VERSION}
+      talosVersion: ${TALOS_VERSION%.*}
     init:
       generateType: init
-      talosVersion: ${TALOS_VERSION}
+      talosVersion: ${TALOS_VERSION%.*}
