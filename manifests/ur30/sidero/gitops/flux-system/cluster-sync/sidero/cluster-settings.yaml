@@ -9,4 +9,5 @@ data:
   SIDERO_IP: 192.168.48.200
   # renovate: datasource=github-releases depName=siderolabs/talos sourceUrl=https://github.com/siderolabs/talos
   TALOS_VERSION: v1.0.3
+  # renovate: datasource=github-releases depName=kubernetes/kubernetes sourceUrl=https://github.com/kubernetes/kubernetes
   K8s_VERSION: v1.23.5
