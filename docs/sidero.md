@@ -71,7 +71,11 @@ talosctl dmesg -f | grep "bootstrap sequence: done"
 # seems to take a couple minutes after that log before 6443 is open and it's ready for the clusterctl command
 
 #init management cluster
-SIDERO_CONTROLLER_MANAGER_HOST_NETWORK=true SIDERO_CONTROLLER_MANAGER_API_ENDPOINT=${SIDERO_ENDPOINT} clusterctl init -i sidero -b talos -c talos
+SIDERO_CONTROLLER_MANAGER_HOST_NETWORK=true \
+SIDERO_CONTROLLER_MANAGER_DEPLOYMENT_STRATEGY=Recreate \
+SIDERO_CONTROLLER_MANAGER_API_ENDPOINT=${SIDERO_ENDPOINT} \
+SIDERO_CONTROLLER_MANAGER_SIDEROLINK_ENDPOINT=${SIDERO_ENDPOINT} \
+clusterctl init -i sidero -b talos -c talos
 
 #verify admin cluster
 curl -I "http://${SIDERO_ENDPOINT}:8081/tftp/ipxe.efi"
