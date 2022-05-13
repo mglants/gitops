@@ -3,7 +3,7 @@ kind: Profile
 apiVersion: config.kio.kasten.io/v1alpha1
 metadata:
   name: k10-disaster-recovery
-  namespace: kasten-io
+  namespace: backup
 spec:
   locationSpec:
     type: FileStore
