@@ -1,0 +1,20 @@
+---
+kind: Profile
+apiVersion: config.kio.kasten.io/v1alpha1
+metadata:
+  name: www
+  namespace: backup
+spec:
+  locationSpec:
+    type: FileStore
+    fileStore:
+      claimName: nfs-backup-pv
+      path: www
+    credential:
+      secretType: ''
+      secret:
+        apiVersion: ''
+        kind: ''
+        name: ''
+        namespace: ''
+  type: Location
