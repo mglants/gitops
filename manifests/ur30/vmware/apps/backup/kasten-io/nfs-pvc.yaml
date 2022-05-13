@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-backup-pv
+  namespace: backup
+spec:
+  storageClassName: public
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 192.168.1.50
+    path: /mnt/Storinator/Public
+  mountOptions:
+    - noatime
+    - nfsvers=4
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-backup-pv
+  namespace: backup
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: public
+  resources:
+    requests:
+      storage: 1Mi

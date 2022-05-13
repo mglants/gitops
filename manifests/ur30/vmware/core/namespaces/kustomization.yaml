@@ -14,3 +14,4 @@ resources:
   - networking.yaml
   - smarthome.yaml
   - www.yaml
+  - backup.yaml

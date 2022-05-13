@@ -12,3 +12,4 @@ resources:
   - networking
   - smarthome
   - www
+  - backup
