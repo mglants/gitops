@@ -5,7 +5,7 @@ metadata:
   name: nfs-backup-pv
   namespace: backup
 spec:
-  storageClassName: public
+  storageClassName: backup
   capacity:
     storage: 1Mi
   accessModes:
@@ -26,7 +26,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: public
+  storageClassName: backup
   resources:
     requests:
       storage: 1Mi
