@@ -24,7 +24,7 @@ spec:
   isCA: true
 ---
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: ur30local-ca
   namespace: cert-manager
@@ -39,11 +39,11 @@ metadata:
   namespace: cert-manager
 spec:
   secretName: ur30local-crt-secret
-  duration: 2160h0m0s # 90 days
+  duration: 21600h0m0s # 90 days
   renewBefore: 240h0m0s # 10 days
   issuerRef:
     name: ur30local-ca
-    kind: Issuer
+    kind: ClusterIssuer
   commonName: ur30.local.cluster.local
   dnsNames:
     - ur30.local

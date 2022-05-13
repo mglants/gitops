@@ -40,7 +40,7 @@ spec:
       host: k10.ur30.local
       annotations:
         kubernetes.io/tls-acme: 'true'
-        cert-manager.io/cluster-issuer: selfsigning-issuer
+        cert-manager.io/cluster-issuer: ur30local-ca
       urlPath: k10
       tls:
         enabled: true
