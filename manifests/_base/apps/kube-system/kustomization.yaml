@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - descheduler
   - reloader
+  - snapshot-controller
