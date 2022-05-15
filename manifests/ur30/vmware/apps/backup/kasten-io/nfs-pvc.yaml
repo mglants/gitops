@@ -13,7 +13,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: 192.168.1.50
-    path: /mnt/Storinator/UR30Back/kasten
+    path: /mnt/Storinator/k8s/kasten
   mountOptions:
     - noatime
     - nfsvers=4
