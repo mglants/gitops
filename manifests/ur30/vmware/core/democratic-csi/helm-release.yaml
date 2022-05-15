@@ -41,6 +41,13 @@ spec:
           node-stage-secret:
           node-publish-secret:
           controller-expand-secret:
+    volumeSnapshotClasses:
+      - name: freenas-nfs-csi
+        annotations:
+          k10.kasten.io/is-snapshot-class: 'true'
+        secrets:
+          snapshotter-secret:
+
     driver:
       config:
         driver: freenas-nfs
