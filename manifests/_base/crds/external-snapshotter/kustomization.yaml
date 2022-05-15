@@ -1,0 +1,10 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # renovate: image=k8s.gcr.io/sig-storage/csi-snapshotter type=docker
+  - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.0.1/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
+  # renovate: image=k8s.gcr.io/sig-storage/csi-snapshotter type=docker
+  - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.0.1/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
+  # renovate: image=k8s.gcr.io/sig-storage/csi-snapshotter type=docker
+  - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.0.1/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
