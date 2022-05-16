@@ -68,7 +68,7 @@ spec:
           cli:
             sudoEnabled: true
           datasetParentName: vmware/k8s/nfs
-          detachedSnapshotsDatasetParentName: Storinator/k8s/snapshots
+          detachedSnapshotsDatasetParentName: vmware/k8s/snap
           datasetEnableQuotas: true
           datasetEnableReservation: false
           datasetPermissionsMode: '0777'
