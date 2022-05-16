@@ -40,5 +40,8 @@ spec:
           onSuccess:
             blueprint: media
             actionName: post-export
+        migrationToken:
+          name: media-migration-token-96nzm
+          namespace: backup
         exportData:
           enabled: true

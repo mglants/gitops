@@ -40,5 +40,8 @@ spec:
           onSuccess:
             blueprint: monitoring
             actionName: post-export
+        migrationToken:
+          name: monitoring-migration-token-rxf54
+          namespace: backup
         exportData:
           enabled: true

@@ -40,5 +40,8 @@ spec:
           onSuccess:
             blueprint: networking
             actionName: post-export
+        migrationToken:
+          name: networking-migration-token-tbwg7
+          namespace: backup
         exportData:
           enabled: true

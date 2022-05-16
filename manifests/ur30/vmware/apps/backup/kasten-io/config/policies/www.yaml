@@ -40,5 +40,8 @@ spec:
           onSuccess:
             blueprint: www
             actionName: post-export
+        migrationToken:
+          name: www-migration-token-jmvcw
+          namespace: backup
         exportData:
           enabled: true

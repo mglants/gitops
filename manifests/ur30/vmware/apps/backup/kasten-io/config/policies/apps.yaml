@@ -40,5 +40,8 @@ spec:
           onSuccess:
             blueprint: apps
             actionName: post-export
+        migrationToken:
+          name: apps-migration-token-qptzg
+          namespace: backup
         exportData:
           enabled: true

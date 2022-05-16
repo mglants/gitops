@@ -40,5 +40,8 @@ spec:
           onSuccess:
             blueprint: infra
             actionName: post-export
+        migrationToken:
+          name: infra-migration-token-ztb4g
+          namespace: backup
         exportData:
           enabled: true
