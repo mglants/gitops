@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: wp-ruzahouse-wp-v1
   namespace: www
+  labels:
+    kasten.io/backup-volume: enabled
 spec:
   accessModes:
     - ReadWriteOnce
@@ -16,6 +18,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: wp-ruzahouse-mariadb-v1
   namespace: www
+  labels:
+    kasten.io/backup-volume: enabled
 spec:
   accessModes:
     - ReadWriteOnce

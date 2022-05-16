@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: postgres-data-v1
   namespace: infra
+  labels:
+    kasten.io/backup-volume: enabled
 spec:
   accessModes:
     - ReadWriteOnce

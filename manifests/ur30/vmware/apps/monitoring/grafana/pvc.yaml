@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: grafana-data-v1
   namespace: monitoring
+  labels:
+    kasten.io/backup-volume: enabled
 spec:
   accessModes:
     - ReadWriteOnce

@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: netbox-config-v1
   namespace: apps
+  labels:
+    kasten.io/backup-volume: enabled
 spec:
   accessModes:
     - ReadWriteOnce
