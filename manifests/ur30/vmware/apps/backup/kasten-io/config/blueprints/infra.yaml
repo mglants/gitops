@@ -1,0 +1,42 @@
+---
+apiVersion: cr.kanister.io/v1alpha1
+kind: Blueprint
+metadata:
+  name: infra
+  namespace: backup
+actions:
+  post-export:
+    phases:
+      - func: KubeTask
+        name: hookPhase
+        args:
+          namespace: backup
+          image: ghcr.io/k8s-at-home/rclone:v1.58.1
+          podOverride:
+            containers:
+              - name: container
+                imagePullPolicy: IfNotPresent
+                env:
+                  - name: TZ
+                    value: Europe/London
+                volumeMounts:
+                  - name: rclone-conf
+                    mountPath: /config
+                  - name: k10-backups
+                    mountPath: /mnt/k10-backups
+            volumes:
+              - name: rclone-conf
+                secret:
+                  secretName: rclone-conf
+              - name: k10-backups
+                persistentVolumeClaim:
+                  claimName: nfs-backup-pv
+          command:
+            - rclone
+            - -v
+            - --config
+            - /config/rclone.conf
+            - sync
+            - --fast-list
+            - /mnt/k10-backups/infra
+            - gdrive:/BACKUP/UR30/Kasten/infra

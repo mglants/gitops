@@ -1,0 +1,44 @@
+---
+kind: Policy
+apiVersion: config.kio.kasten.io/v1alpha1
+metadata:
+  name: infra
+  namespace: backup
+spec:
+  frequency: '@daily'
+  retention:
+    daily: 7
+    weekly: 4
+    monthly: 12
+    yearly: 7
+  selector:
+    matchExpressions:
+      - key: k10.kasten.io/appNamespace
+        operator: In
+        values:
+          - infra
+  actions:
+    - action: backup
+      backupParameters:
+        filters:
+          includeResources:
+            - matchExpressions:
+                - key: kasten.io/backup-volume
+                  operator: In
+                  values:
+                    - enabled
+        profile:
+          name: infra
+          namespace: backup
+    - action: export
+      exportParameters:
+        frequency: '@daily'
+        profile:
+          name: infra
+          namespace: backup
+        hooks:
+          onSuccess:
+            blueprint: infra
+            actionName: post-export
+        exportData:
+          enabled: true
