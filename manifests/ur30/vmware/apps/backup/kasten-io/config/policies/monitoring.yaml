@@ -40,8 +40,5 @@ spec:
           onSuccess:
             blueprint: monitoring
             actionName: post-export
-        migrationToken:
-          name: monitoring-migration-token
-          namespace: backup
         exportData:
           enabled: true
