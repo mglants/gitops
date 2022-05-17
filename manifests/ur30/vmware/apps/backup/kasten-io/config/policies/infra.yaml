@@ -41,7 +41,7 @@ spec:
             blueprint: infra
             actionName: post-export
         migrationToken:
-          name: infra-migration-token-ztb4g
+          name: infra-migration-token
           namespace: backup
         exportData:
           enabled: true

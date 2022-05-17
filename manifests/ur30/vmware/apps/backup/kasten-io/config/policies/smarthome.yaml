@@ -41,7 +41,7 @@ spec:
             blueprint: smarthome
             actionName: post-export
         migrationToken:
-          name: smarthome-migration-token-szc75
+          name: smarthome-migration-token
           namespace: backup
         exportData:
           enabled: true

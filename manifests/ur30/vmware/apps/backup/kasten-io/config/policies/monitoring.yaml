@@ -41,7 +41,7 @@ spec:
             blueprint: monitoring
             actionName: post-export
         migrationToken:
-          name: monitoring-migration-token-rxf54
+          name: monitoring-migration-token
           namespace: backup
         exportData:
           enabled: true
