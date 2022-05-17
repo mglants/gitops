@@ -7,5 +7,6 @@ resources:
   - media.yaml
   - monitoring.yaml
   - networking.yaml
+  - secret.enc.yaml
   - smarthome.yaml
   - www.yaml

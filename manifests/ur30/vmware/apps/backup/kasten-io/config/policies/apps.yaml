@@ -40,5 +40,8 @@ spec:
           onSuccess:
             blueprint: apps
             actionName: post-export
+        migrationToken:
+          name: migration-token
+          namespace: backup
         exportData:
           enabled: true
