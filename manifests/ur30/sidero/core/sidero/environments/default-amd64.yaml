@@ -25,6 +25,5 @@ spec:
       - talos.config=http://${SIDERO_IP}:8081/configdata?uuid=
       - talos.platform=metal
       - siderolink.api=${SIDERO_IP}:8081
-      - talos.events.sink=
   initrd:
     url: https://github.com/talos-systems/talos/releases/download/v1.0.3/initramfs-amd64.xz
