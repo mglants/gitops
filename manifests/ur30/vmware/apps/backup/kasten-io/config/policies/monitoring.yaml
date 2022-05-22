@@ -7,10 +7,10 @@ metadata:
 spec:
   frequency: '@daily'
   retention:
-    daily: 7
-    weekly: 4
-    monthly: 12
-    yearly: 7
+    daily: 0
+    weekly: 0
+    monthly: 0
+    yearly: 0
   selector:
     matchExpressions:
       - key: k10.kasten.io/appNamespace
