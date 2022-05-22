@@ -2,8 +2,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - etcd-backup
-  - haste-server
-  - netbox
-  - nextcloud
-  - vaultwarden
+  - cronjob.yaml
+  - secret.enc.yaml
+  - pvc.yaml

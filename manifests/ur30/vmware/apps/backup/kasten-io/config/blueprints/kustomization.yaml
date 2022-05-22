@@ -10,6 +10,3 @@ resources:
   - networking.yaml
   - smarthome.yaml
   - www.yaml
-  - ectd-backup-pvc.yaml
-  - etcd-backup.enc.yaml
-  - etcd-backup.yaml

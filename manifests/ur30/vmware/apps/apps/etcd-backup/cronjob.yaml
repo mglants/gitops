@@ -1,0 +1,52 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: etcd-backup
+spec:
+  schedule: 0 3 * * *
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: talosctl
+              image: ghcr.io/siderolabs/talosctl:v1.0.3
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: TZ
+                  value: Europe/London
+              volumeMounts:
+                - name: talosctl-conf
+                  mountPath: /config
+                - name: etcd-backup
+                  mountPath: /mnt/etcd-backup
+              command:
+                - talosctl
+                - --talosconfig
+                - /config/config
+                - --context
+                - ur30-sidero
+                - -n
+                - 192.168.48.200
+                - etcd
+                - snapshot
+                - /mnt/etcd-backup/ur30-sidero.snapshot &&
+                - talosctl
+                - --talosconfig
+                - /config/config
+                - --context
+                - ur30-vmware
+                - -n
+                - 192.168.48.100
+                - etcd
+                - snapshot
+                - /mnt/etcd-backup/ur30-vmware.snapshot
+          volumes:
+            - name: talosctl-conf
+              secret:
+                secretName: talosctl-conf
+            - name: etcd-backup
+              persistentVolumeClaim:
+                claimName: etcd-backup-v1
+          restartPolicy: OnFailure
