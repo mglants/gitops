@@ -8,5 +8,5 @@ resources:
   - monitoring.yaml
   - networking.yaml
   - secret.enc.yaml
-  - smarthome.yaml
+  # - smarthome.yaml
   - www.yaml
