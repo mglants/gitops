@@ -40,8 +40,5 @@ spec:
           onSuccess:
             blueprint: infra
             actionName: post-export
-        migrationToken:
-          name: migration-token
-          namespace: backup
         exportData:
           enabled: true

@@ -36,12 +36,9 @@ spec:
         profile:
           name: apps
           namespace: backup
-        # hooks:
-        #   onSuccess:
-        #     blueprint: apps
-        #     actionName: post-export
-        migrationToken:
-          name: migration-token
-          namespace: backup
+        hooks:
+          onSuccess:
+            blueprint: apps
+            actionName: post-export
         exportData:
           enabled: true
