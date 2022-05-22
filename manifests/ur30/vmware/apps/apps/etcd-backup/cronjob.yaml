@@ -23,7 +23,7 @@ spec:
                 - name: etcd-backup
                   mountPath: /mnt/etcd-backup
               command:
-                - talosctl
+                - /talosctl
                 - --talosconfig
                 - /config/config
                 - --context
@@ -33,7 +33,7 @@ spec:
                 - etcd
                 - snapshot
                 - /mnt/etcd-backup/ur30-sidero.snapshot &&
-                - talosctl
+                - /talosctl
                 - --talosconfig
                 - /config/config
                 - --context
