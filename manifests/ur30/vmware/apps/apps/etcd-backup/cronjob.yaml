@@ -3,6 +3,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: etcd-backup
+  namespace: apps
 spec:
   schedule: 0 3 * * *
   jobTemplate:
