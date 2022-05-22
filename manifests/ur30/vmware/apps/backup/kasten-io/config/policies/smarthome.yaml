@@ -7,10 +7,10 @@ metadata:
 spec:
   frequency: '@daily'
   retention:
-    daily: 7
-    weekly: 4
-    monthly: 12
-    yearly: 7
+    daily: 3
+    weekly: 0
+    monthly: 0
+    yearly: 0
   selector:
     matchExpressions:
       - key: k10.kasten.io/appNamespace
@@ -33,6 +33,11 @@ spec:
     - action: export
       exportParameters:
         frequency: '@daily'
+        retention:
+          daily: 3
+          weekly: 2
+          monthly: 3
+          yearly: 0
         profile:
           name: smarthome
           namespace: backup
