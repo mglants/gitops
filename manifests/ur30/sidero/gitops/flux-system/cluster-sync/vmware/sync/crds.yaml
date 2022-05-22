@@ -8,6 +8,7 @@ spec:
   kubeConfig:
     secretRef:
       name: vmware-kubeconfig
+  timeout: 5m0s
   interval: 10m0s
   sourceRef:
     kind: GitRepository
