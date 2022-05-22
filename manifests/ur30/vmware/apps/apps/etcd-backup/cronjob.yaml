@@ -10,8 +10,8 @@ spec:
     spec:
       template:
         spec:
-          containers:
-            - name: talosctl
+          initContainers:
+            - name: etcd-sidero
               image: ghcr.io/siderolabs/talosctl:v1.0.3
               imagePullPolicy: IfNotPresent
               env:
@@ -32,7 +32,20 @@ spec:
                 - 192.168.48.200
                 - etcd
                 - snapshot
-                - /mnt/etcd-backup/ur30-sidero.snapshot &&
+                - /mnt/etcd-backup/ur30-sidero.snapshot
+          containers:
+            - name: etcd-vmware
+              image: ghcr.io/siderolabs/talosctl:v1.0.3
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: TZ
+                  value: Europe/London
+              volumeMounts:
+                - name: talosctl-conf
+                  mountPath: /config
+                - name: etcd-backup
+                  mountPath: /mnt/etcd-backup
+              command:
                 - /talosctl
                 - --talosconfig
                 - /config/config
