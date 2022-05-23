@@ -8,9 +8,6 @@ spec:
   frequency: '@daily'
   retention:
     daily: 3
-    weekly: 0
-    monthly: 0
-    yearly: 0
   selector:
     matchExpressions:
       - key: k10.kasten.io/appNamespace
@@ -31,11 +28,6 @@ spec:
           name: infra
           namespace: backup
     - action: export
-      retention:
-        daily: 3
-        weekly: 2
-        monthly: 3
-        yearly: 0
       exportParameters:
         frequency: '@daily'
         profile:
@@ -47,3 +39,7 @@ spec:
             actionName: post-export
         exportData:
           enabled: true
+      retention:
+        daily: 3
+        weekly: 2
+        monthly: 3
