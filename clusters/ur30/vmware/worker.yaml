@@ -18,6 +18,11 @@ metadata:
 spec:
   clusterName: vmware
   replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   selector:
     matchLabels:
   template:
