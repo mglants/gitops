@@ -47,6 +47,8 @@ spec:
         resources:
           limits:
             cpu: 200m
+      tls:
+        enabled: false
       admissionWebhooks:
         enabled: false
     alertmanager:
