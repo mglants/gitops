@@ -18,7 +18,7 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
-    replicas: 3
+    replicas: 2
     config:
       distributor:
         ring:
@@ -73,7 +73,7 @@ spec:
       enabled: true
     affinity:
       podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
+        preferredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
               matchExpressions:
                 - key: app
