@@ -24,4 +24,4 @@ spec:
       - slab_nomerge=
       - talos.platform=metal
   initrd:
-    url: https://github.com/talos-systems/talos/releases/download/v1.0.3/initramfs-amd64.xz
+    url: https://github.com/talos-systems/talos/releases/download/${TALOS_VERSION}/initramfs-amd64.xz
