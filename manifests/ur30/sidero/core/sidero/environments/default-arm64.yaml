@@ -2,7 +2,7 @@
 apiVersion: metal.sidero.dev/v1alpha1
 kind: Environment
 metadata:
-  name: default-amd64
+  name: default-arm64
   namespace: sidero
 spec:
   kernel:
