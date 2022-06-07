@@ -1,0 +1,30 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: berries-crds
+  namespace: flux-system
+spec:
+  kubeConfig:
+    secretRef:
+      name: berries-kubeconfig
+  timeout: 5m0s
+  interval: 10m0s
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  path: ./manifests/sh/berries/crds
+  prune: false
+  validation: client
+  postBuild:
+    substitute: {}
+    # substituteFrom:
+    #   - kind: Secret
+    #     name: cluster-secrets-berries
+    #   - kind: ConfigMap
+    #     name: cluster-settings-berries
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age

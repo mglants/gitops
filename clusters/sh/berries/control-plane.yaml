@@ -10,7 +10,7 @@ spec:
       serverClassRef:
         apiVersion: metal.sidero.dev/v1alpha1
         kind: ServerClass
-        name: master
+        name: master-sh
 ---
 apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
 kind: TalosControlPlane

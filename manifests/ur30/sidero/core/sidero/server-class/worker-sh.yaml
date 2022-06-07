@@ -2,20 +2,19 @@
 apiVersion: metal.sidero.dev/v1alpha1
 kind: ServerClass
 metadata:
-  name: master
+  name: worker-sh
 spec:
   configPatches:
     - op: replace
       path: /machine/install/disk
-      value: /dev/mmcblk0
+      value: /dev/sda
     - op: add
       path: /machine/network
       value:
         interfaces:
           - interface: eth0
             dhcp: true
-            # vip:
-            #   ip: ${CP_SH_IP}
   selector:
     matchLabels:
-      master-node: 'true'
+      worker-node: 'true'
+      region: sh
