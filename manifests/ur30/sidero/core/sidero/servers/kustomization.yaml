@@ -7,3 +7,4 @@ resources:
   - vmware-control-plane-3.yaml
   - vmware-worker-0.yaml
   - vmware-worker-1.yaml
+  - berries-control-plane-1.yaml
