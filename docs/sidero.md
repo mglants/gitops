@@ -13,7 +13,7 @@ The following applies to sidero v0.5
     "https://github.com/kubernetes-sigs/cluster-api/releases/download/v0.4.5/clusterctl-linux-amd64"
     chmod +x /usr/local/bin/clusterctl
     ```
-- talosctl 0.14.0
+- talosctl 1.0.3
      ```
     sudo curl -Lo /usr/local/bin/talosctl \
     "https://github.com/talos-systems/talos/releases/latest/download/talosctl-linux-amd64"
@@ -41,13 +41,8 @@ talosctl gen config --config-patch-control-plane @cp.patch.yaml ur30-sidero "htt
 ```
 
 ### SweetHome
-```bash
-#ip of single-node cluster running talos
-export SIDERO_ENDPOINT=172.16.30.200
+SweetHome uses UR30's sidero-cluster
 
-#generate config
-talosctl gen config --config-patch='[{"op": "add", "path": "/cluster/allowSchedulingOnMasters", "value": true},{"op": "replace", "path": "/machine/install/disk", "value": "/dev/sda"}]' sh-sidero "https://${SIDERO_ENDPOINT}:6443/"
-```
 ```bash
 #apply generated config
 talosctl apply-config --insecure -n ${SIDERO_ENDPOINT} -f controlplane.yaml
@@ -110,13 +105,9 @@ rm vmtoolsd-secret.yaml
 ```
 ## Bootstrap Flux
 Ensure we're using the correct context
-### UR30
+### UR30 and SweetHome
 ```bash
 kubectx admin@ur30-sidero
-```
-### SweetHome
-```bash
-kubectx admin@sh-sidero
 ```
 
 Run pre-installation checks
@@ -134,43 +125,35 @@ cat flux.agekey | kubectl create secret generic sops-age \
     --from-file=age.agekey=/dev/stdin
 ```
 Install Flux
-### UR30
+### UR30 and SweetHome
 ```bash
 # due to a race condition with the Flux CRDs, this command will need to be run twice
 kubectl apply --kustomize=./manifests/ur30/sidero/gitops/flux-system
-```
-### SweetHome
-```bash
-# due to a race condition with the Flux CRDs, this command will need to be run twice
-kubectl apply --kustomize=./manifests/sh/sidero/gitops/flux-system
 ```
 
 ## Get kubeconfig
 
 ### UR30
 ```bash
-# fetch kubeconfig
-kubectl get secret -n flux-system vmware-kubeconfig -o yaml -o jsonpath='{.data.value}' | base64 -d > kubeconfig
+# fetch kubeconfig vmware
+kubectl get secret -n flux-system vmware-kubeconfig -o yaml -o jsonpath='{.data.value}' | base64 -d > kubeconfig-vmware
 ```
-
-### SweetHome
-
 ```bash
-# fetch kubeconfig
-kubectl get secret -n flux-system berries-kubeconfig -o yaml -o jsonpath='{.data.value}' | base64 -d > kubeconfig
+# fetch kubeconfig berries
+kubectl get secret -n flux-system berries-kubeconfig -o yaml -o jsonpath='{.data.value}' | base64 -d > kubeconfig-berries
 ```
+
 
 ```bash
 # merge kubeconfig files
 cp ~/.kube/config ~/.kube/config.bak
-KUBECONFIG=~/.kube/config:$(pwd)/kubeconfig kubectl config view --flatten > /tmp/kubeconfig
+KUBECONFIG=~/.kube/config:$(pwd)/kubeconfig-vmware:kubeconfig-berries kubectl config view --flatten > /tmp/kubeconfig
 mv /tmp/kubeconfig ~/.kube/config
 ```
 
 ## Tidy up context names
 
 ```bash
-kubectx sh-sidero=admin@sh-sidero
 kubectx sh-berries=berries-admin@berries
 kubectx ur30-sidero=admin@ur30-sidero
 kubectx ur30-vmware=vmware-admin@vmware
@@ -179,5 +162,9 @@ kubectx ur30-vmware=vmware-admin@vmware
 ## Updating
 Upgrade managment plane(sidero)
 ```bash
+SIDERO_CONTROLLER_MANAGER_HOST_NETWORK=true \
+SIDERO_CONTROLLER_MANAGER_DEPLOYMENT_STRATEGY=Recreate \
+SIDERO_CONTROLLER_MANAGER_API_ENDPOINT=${SIDERO_ENDPOINT} \
+SIDERO_CONTROLLER_MANAGER_SIDEROLINK_ENDPOINT=${SIDERO_ENDPOINT} \
 clusterctl upgrade plan
 ```
