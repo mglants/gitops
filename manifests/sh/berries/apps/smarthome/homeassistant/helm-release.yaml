@@ -34,15 +34,17 @@ spec:
         ingressClassName: nginx
         annotations:
           nginx.org/websocket-services: home-assistant
+          cert-manager.io/cluster-issuer: letsencrypt-prod
         hosts:
           - host: ha.glants.xyz
             paths:
               - path: /
                 pathType: Prefix
         tls:
-          - secretName: glants-crt-secret
+          - secretName: ha-glants-crt
             hosts:
               - ha.glants.xyz
+
     metrics:
       # -- Enable and configure a Prometheus serviceMonitor for the chart under this key.
       # @default -- See values.yaml
