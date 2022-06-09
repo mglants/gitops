@@ -6,7 +6,7 @@ spec:
         - name: tftp-folder
           emptyDir: {}
       initContainers:
-        - image: ghcr.io/mglants/raspberrypi4-uefi:sha-3341cf7
+        - image: ghcr.io/mglants/raspberrypi4-uefi:sha-8438641
           imagePullPolicy: Always
           name: tftp-folder-setup
           command:
