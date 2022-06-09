@@ -123,7 +123,6 @@ spec:
       image:
         repository: arm64v8/postgres
         tag: 14.3
-      postgresqlDataDir: /data/pgdata
       volumePermissions:
         enabled: true
         image:
@@ -138,11 +137,9 @@ spec:
         initialDelaySeconds: 60
       postgresqlUsername: home-assistant
       postgresqlDatabase: home-assistant
-      primary:
-        persistence:
+      persistence:
+        primary:
           enabled: true
-          existingClaim: homeassistant-postgres-v1
-          mountPath: /data
   valuesFrom:
     - kind: Secret
       name: homeassistant-helm-values
