@@ -78,7 +78,7 @@ metadata:
   labels:
     app.kubernetes.io/name: graphite-exporter
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app.kubernetes.io/name: graphite-exporter
   ports:
