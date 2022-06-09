@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   - sidero
   - vmware
-  # - berries
+  - berries
