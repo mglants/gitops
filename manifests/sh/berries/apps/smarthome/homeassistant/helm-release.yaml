@@ -137,8 +137,9 @@ spec:
         initialDelaySeconds: 60
       readinessProbe:
         initialDelaySeconds: 60
-      postgresqlUsername: home-assistant
-      postgresqlDatabase: home-assistant
+      auth:
+        username: home-assistant
+        database: home-assistant
       persistence:
         primary:
           enabled: true
