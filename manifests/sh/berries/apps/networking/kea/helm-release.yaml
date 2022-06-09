@@ -1,0 +1,114 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kea-dhcp
+  namespace: default
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.glants.xyz
+      chart: kea-dhcp
+      version: 0.4.2
+      sourceRef:
+        kind: HelmRepository
+        name: mglants-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      repository: smailkoz/kea-dhcp
+      tag: 2.1.2
+    env:
+      TZ: Europe/Moscow
+    service:
+      dhcp:
+        type: LoadBalancer
+        loadBalancerIP: 172.16.32.3
+    podAnnotations:
+      secret.reloader.stakater.com/reload: kea-helm-values
+      configmap.reloader.stakater.com/reload: kea-dhcp
+    kea:
+      dhcp4:
+        enabled: true
+        validlifetime: '4000'
+        renewtimer: '1000'
+        rebindtimer: '2000'
+        loglevel: DEBUG
+        options:
+          - name: domain-name-servers
+            data: 172.16.32.254
+          - name: domain-name
+            data: sweethome
+          - name: domain-search
+            data: glants.xyz, home, home.arpa
+          - name: tftp-server-name
+            data: 172.16.30.200
+            code: 66
+        subnets:
+          - subnet: 192.168.214.0/24
+            pools:
+              - pool: 192.168.214.100 - 192.168.214.200
+            option-data:
+              - name: routers
+                data: 192.168.214.1
+          - subnet: 172.16.10.0/24
+            pools:
+              - pool: 172.16.10.100 - 172.16.10.254
+            option-data:
+              - name: routers
+                data: 172.16.10.1
+          - subnet: 172.16.11.0/28
+            pools:
+              - pool: 172.16.11.2 - 172.16.11.14
+            option-data:
+              - name: routers
+                data: 172.16.11.1
+          - subnet: 172.16.20.0/25
+            pools:
+              - pool: 172.16.20.5 - 172.16.20.19
+            option-data:
+              - name: routers
+                data: 172.16.20.1
+      dhcp6:
+        enabled: false
+      ddns:
+        enabled: true
+        loglevel: DEBUG
+        forward:
+          ddns-domains:
+            - name: home.arpa.
+              key-name: ''
+              dns-servers:
+                - ip-address: 172.16.32.2
+                  port: 53
+        reverse:
+          ddns-domains:
+            - name: 168.192.in-addr.arpa.
+              key-name: ''
+              dns-servers:
+                - ip-address: 172.16.32.2
+                  port: 53
+            - name: 16.172.in-addr.arpa.
+              key-name: ''
+              dns-servers:
+                - ip-address: 172.16.32.2
+                  port: 53
+      ctrlagent:
+        # Needed for HA, monitoring and stork
+        enabled: true
+        loglevel: DEBUG
+    persistence:
+      enabled: false
+    metrics:
+      enabled: true
+    tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+  valuesFrom:
+    - kind: Secret
+      name: kea-helm-values
+      valuesKey: reservations.yaml
+      optional: false

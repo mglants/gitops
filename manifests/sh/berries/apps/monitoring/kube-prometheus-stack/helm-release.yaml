@@ -1,0 +1,108 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      version: 34.1.1
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community-charts
+        namespace: flux-system
+      interval: 5m
+  timeout: 20m
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  values:
+    # defaultRules:
+    #   rules:
+    #     kubeApiserverAvailability: true
+    #     kubeApiserver: true
+    server:
+      resources:
+        requests:
+          memory: 1500Mi
+          cpu: 25m
+        limits:
+          memory: 2000Mi
+    prometheusOperator:
+      createCustomResource: true
+      configReloaderCpu: 200m
+      admissionWebhooks:
+        enabled: false
+    alertmanager:
+      alertmanagerSpec:
+        storage:
+          volumeClaimTemplate:
+            spec:
+              resources:
+                requests:
+                  storage: 5Gi
+      ingress:
+        enabled: true
+        pathType: Prefix
+        annotations:
+          kubernetes.io/ingress.class: nginx
+          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.214.0/24, 10.13.12.0/24
+        hosts:
+          - alertmanager.home
+      config:
+        global:
+          resolve_timeout: 5m
+    nodeExporter:
+      serviceMonitor:
+        relabelings:
+          - sourceLabels: [__meta_kubernetes_pod_node_name]
+            targetLabel: instance
+            action: replace
+    grafana:
+      enabled: false
+      forceDeployDashboards: true
+    kubeEtcd:
+      enabled: false
+    kubeControllerManager:
+      enabled: false
+    kubeScheduler:
+      enabled: false
+    kubeProxy:
+      enabled: false
+    prometheus:
+      ingress:
+        enabled: true
+        pathType: Prefix
+        annotations:
+          kubernetes.io/ingress.class: nginx
+          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.214.0/24, 10.13.12.0/24
+        hosts:
+          - prometheus.home
+      prometheusSpec:
+        replicas: 1
+        replicaExternalLabelName: replica
+        ruleSelector: {}
+        ruleNamespaceSelector: {}
+        ruleSelectorNilUsesHelmValues: false
+        serviceMonitorSelector: {}
+        serviceMonitorNamespaceSelector: {}
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelector: {}
+        podMonitorNamespaceSelector: {}
+        podMonitorSelectorNilUsesHelmValues: false
+        retention: 6h
+        enableAdminAPI: true
+        walCompression: true
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              resources:
+                requests:
+                  storage: 20Gi
+      thanosService:
+        enabled: false

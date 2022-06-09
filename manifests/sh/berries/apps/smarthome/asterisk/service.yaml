@@ -1,0 +1,66 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: asterisk
+  namespace: smarthome
+  annotations:
+    metallb.universe.tf/allow-shared-ip: asterisk
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 172.16.32.7
+  selector:
+    app: asterisk
+  ports:
+    - name: iax
+      port: 4569
+      protocol: UDP
+      targetPort: iax
+    - name: sip
+      port: 5060
+      protocol: UDP
+      targetPort: sip
+    - name: rtp-10000
+      port: 10000
+      protocol: UDP
+      targetPort: rtp-10000
+    - name: rtp-10001
+      port: 10001
+      protocol: UDP
+      targetPort: rtp-10001
+    - name: rtp-10002
+      port: 10002
+      protocol: UDP
+      targetPort: rtp-10002
+    - name: rtp-10003
+      port: 10003
+      protocol: UDP
+      targetPort: rtp-10003
+    - name: rtp-10004
+      port: 10004
+      protocol: UDP
+      targetPort: rtp-10004
+    - name: rtp-10005
+      port: 10005
+      protocol: UDP
+      targetPort: rtp-10005
+    - name: rtp-10006
+      port: 10006
+      protocol: UDP
+      targetPort: rtp-10006
+    - name: rtp-10007
+      port: 10007
+      protocol: UDP
+      targetPort: rtp-10007
+    - name: rtp-10008
+      port: 10008
+      protocol: UDP
+      targetPort: rtp-10008
+    - name: rtp-10009
+      port: 10009
+      protocol: UDP
+      targetPort: rtp-10009
+    - name: rtp-10010
+      port: 10010
+      protocol: UDP
+      targetPort: rtp-10010

@@ -1,0 +1,104 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: graphite-exporter
+  namespace: monitoring
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: graphite-exporter
+  template:
+    metadata:
+      annotations:
+        configmap.reloader.stakater.com/reload: graphite-exporter
+      labels:
+        app.kubernetes.io/name: graphite-exporter
+    spec:
+      volumes:
+        - name: graphite-exporter
+          configMap:
+            name: graphite-exporter
+      containers:
+        - name: graphite-exporter
+          image: prom/graphite-exporter:latest
+          args: [--graphite.mapping-config=/tmp/graphite_mapping.conf]
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /tmp/graphite_mapping.conf
+              subPath: graphite_mapping.conf
+              name: graphite-exporter
+          ports:
+            - name: prometheus
+              containerPort: 9108
+              protocol: TCP
+            - name: graphite-tcp
+              containerPort: 9109
+              protocol: TCP
+            - name: graphite-udp
+              containerPort: 9109
+              protocol: UDP
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 50Mi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: graphite-exporter
+  namespace: monitoring
+data:
+  graphite_mapping.conf: |
+    # mappings:
+    # - match: "servers.*.*.*"
+    #   name: "${3}"
+    #   labels:
+    #     instance: "${1}"
+    #     job: "truenas"
+    #     type: "${2}"
+    # - match: "servers.*.*.*.*"
+    #   name: "${3}_${4}"
+    #   labels:
+    #     instance: "${1}"
+    #     job: "truenas"
+    #     type: "${2}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: graphite-exporter
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: graphite-exporter
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: graphite-exporter
+  ports:
+    - name: prometheus
+      port: 9108
+      protocol: TCP
+      targetPort: prometheus
+    - name: graphite-tcp
+      port: 2003
+      protocol: TCP
+      targetPort: graphite-tcp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: graphite-exporter
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: graphite-exporter
+  endpoints:
+    - port: prometheus

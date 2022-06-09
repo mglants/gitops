@@ -1,0 +1,88 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: asterisk
+  namespace: smarthome
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: asterisk
+  template:
+    metadata:
+      annotations:
+        configmap.reloader.stakater.com/reload: asterisk-config
+      labels:
+        app: asterisk
+    spec:
+      volumes:
+        - name: asterisk-config
+          configMap:
+            name: asterisk-config
+            items:
+              - key: extensions.conf
+                path: extensions.conf
+              - key: modules.conf
+                path: modules.conf
+              - key: rtp.conf
+                path: rtp.conf
+              - key: pjsip.conf
+                path: pjsip.conf
+              - key: logger.conf
+                path: logger.conf
+      containers:
+        - name: asterisk
+          image: christoofar/asterisk:latest
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /etc/asterisk
+              name: asterisk-config
+          ports:
+            - name: iax
+              containerPort: 4569
+              protocol: UDP
+            - name: sip
+              containerPort: 5060
+              protocol: UDP
+            - name: rtp-10000
+              containerPort: 10000
+              protocol: UDP
+            - name: rtp-10001
+              containerPort: 10001
+              protocol: UDP
+            - name: rtp-10002
+              containerPort: 10002
+              protocol: UDP
+            - name: rtp-10003
+              containerPort: 10003
+              protocol: UDP
+            - name: rtp-10004
+              containerPort: 10004
+              protocol: UDP
+            - name: rtp-10005
+              containerPort: 10005
+              protocol: UDP
+            - name: rtp-10006
+              containerPort: 10006
+              protocol: UDP
+            - name: rtp-10007
+              containerPort: 10007
+              protocol: UDP
+            - name: rtp-10008
+              containerPort: 10008
+              protocol: UDP
+            - name: rtp-10009
+              containerPort: 10009
+              protocol: UDP
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+            requests:
+              cpu: 300m
+              memory: 512Mi

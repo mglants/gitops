@@ -1,0 +1,52 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: node-red
+  namespace: smarthome
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: node-red
+      version: 10.0.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      repository: nodered/node-red
+      tag: 2.2.2-12-minimal
+    env:
+      TZ: Europe/Moscow
+      FLOWS: flows.json
+      NODE_RED_ENABLE_PROJECTS: 'true'
+      NODE_RED_ENABLE_SAFE_MODE: 'false'
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: nginx
+          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.214.0/24, 10.13.12.0/24
+        hosts:
+          - host: node-red.home
+            paths:
+              - path: /
+                pathType: Prefix
+    persistence:
+      data:
+        enabled: true
+        existingClaim: node-red-data-v1
+    podSecurityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+    resources:
+      requests:
+        memory: 350Mi
+        cpu: 25m
+      limits:
+        memory: 500Mi
