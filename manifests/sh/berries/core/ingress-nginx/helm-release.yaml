@@ -27,7 +27,7 @@ spec:
       admissionWebhooks:
         enabled: false
       service:
-        loadBalancerIP: 172.16.28.1
+        loadBalancerIP: 172.16.32.1
         externalTrafficPolicy: Local
       metrics:
         enabled: false
