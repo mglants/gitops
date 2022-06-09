@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: home-assistant
-      version: 12.1.0
+      version: 13.2.0
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: ghcr.io/home-assistant/home-assistant
-      tag: 2022.6.4
+      tag: 2022.5.4
     env:
       TZ: Europe/Moscow
     hostNetwork: true
@@ -122,9 +122,10 @@ spec:
       enabled: true
       image:
         repository: arm64v8/postgres
-        tag: 13.6
+        tag: 14.3
       postgresqlDataDir: /data/pgdata
       volumePermissions:
+        enabled: true
         image:
           repository: arm64v8/alpine
           tag: '3.15'
@@ -138,8 +139,10 @@ spec:
       postgresqlUsername: home-assistant
       postgresqlDatabase: home-assistant
       persistence:
-        enabled: true
-        existingClaim: homeassistant-postgres-v1
+        primary:
+          enabled: true
+          existingClaim: homeassistant-postgres-v1
+          mountPath: /data
   valuesFrom:
     - kind: Secret
       name: homeassistant-helm-values
