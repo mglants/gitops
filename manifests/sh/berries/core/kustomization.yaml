@@ -6,3 +6,7 @@ bases:
 resources:
   - flux-system
   - namespaces
+  - cert-manager
+  - ingress-nginx
+  - democratic-csi
+  - metallb-system

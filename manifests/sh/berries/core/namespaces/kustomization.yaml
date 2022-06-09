@@ -4,3 +4,12 @@ kind: Kustomization
 resources:
   - kube-system.yaml
   - monitoring.yaml
+  - apps.yaml
+  - backup.yaml
+  - cert-manager.yaml
+  - democratic-csi.yaml
+  - ingress-nginx.yaml
+  - media.yaml
+  - metallb-system.yaml
+  - networking.yaml
+  - smarthome.yaml
