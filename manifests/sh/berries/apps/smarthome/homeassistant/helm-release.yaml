@@ -138,8 +138,8 @@ spec:
       readinessProbe:
         initialDelaySeconds: 60
       auth:
-        username: home-assistant
-        database: home-assistant
+        username: homeassistant
+        database: homeassistant
       persistence:
         primary:
           enabled: true
