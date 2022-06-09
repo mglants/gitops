@@ -116,6 +116,8 @@ spec:
           home.arpa: udp:172.16.32.2
           168.192.in-addr.arpa: udp:172.16.32.2
           16.172.in-addr.arpa: udp:172.16.32.2
+          ur30.ru: udp:192.168.40.3
+          ur30.local: udp:192.168.40.3
       caching:
         minTime: 5m
         maxTime: 30m
