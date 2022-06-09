@@ -26,7 +26,7 @@ spec:
         tag: v0.12.1
     configInline:
       peers:
-        - peer-address: 192.168.30.1
+        - peer-address: 172.16.30.1
           peer-asn: 65001
           my-asn: 65005
       address-pools:
