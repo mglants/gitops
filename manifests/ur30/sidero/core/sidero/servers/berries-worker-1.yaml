@@ -1,0 +1,25 @@
+---
+apiVersion: metal.sidero.dev/v1alpha1
+kind: Server
+metadata:
+  labels:
+    worker-node: 'true'
+    region: sh
+  name: 00d03114-0000-0000-0000-dca632f9bca5
+spec:
+  pxeBootAlways: true
+  accepted: true
+  environmentRef:
+    namespace: default
+    name: default-arm64
+  cpu:
+    manufacturer: Broadcom
+    version: BCM2711 (ARM Cortex-A72)
+  hostname: berries-worker-1
+  system:
+    family: Raspberry Pi
+    manufacturer: Raspberry Pi Foundation
+    productName: Raspberry Pi 4 Model B
+    serialNumber: 0000DCA632F9BCA5
+    skuNumber: 0000000000D03114
+    version: D03114
