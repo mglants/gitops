@@ -10,3 +10,4 @@ resources:
   - berries-control-plane-1.yaml
   - berries-worker-1.yaml
   - berries-worker-2.yaml
+  - berries-worker-3.yaml
