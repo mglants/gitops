@@ -20,10 +20,20 @@ spec:
       image:
         repository: metallb/controller
         tag: v0.12.1
+    tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Equal
+        value: 'true'
+        effect: NoSchedule
     speaker:
       image:
         repository: metallb/speaker
         tag: v0.12.1
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Equal
+          value: 'true'
+          effect: NoSchedule
     configInline:
       peers:
         - peer-address: 172.16.30.1
