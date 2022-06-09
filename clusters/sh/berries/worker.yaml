@@ -20,6 +20,11 @@ spec:
   replicas: 3
   selector:
     matchLabels:
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     spec:
       version: ${K8s_VERSION}
