@@ -89,8 +89,7 @@ spec:
       configmap.reloader.stakater.com/reload: blocky-config
     tolerations:
       - key: node-role.kubernetes.io/master
-        operator: Equal
-        value: 'true'
+        operator: Exists
         effect: NoSchedule
     # affinity:
     #   podAntiAffinity:

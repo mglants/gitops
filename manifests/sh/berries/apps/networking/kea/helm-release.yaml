@@ -105,8 +105,7 @@ spec:
       enabled: true
     tolerations:
       - key: node-role.kubernetes.io/master
-        operator: Equal
-        value: 'true'
+        operator: Exists
         effect: NoSchedule
   valuesFrom:
     - kind: Secret
