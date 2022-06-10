@@ -21,7 +21,7 @@ spec:
       # -- image repository
       repository: ghcr.io/k8s-at-home/network-ups-tools
       # -- image tag
-      tag: v2.7.4-2474-gb4a58380
+      tag: v2.8.0
       # -- image pull policy
       pullPolicy: IfNotPresent
 
