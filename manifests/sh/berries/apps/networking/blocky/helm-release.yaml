@@ -119,13 +119,13 @@ spec:
       conditional:
       # optional: replace domain in the query with other domain before resolver lookup in the mapping
         mapping:
-          glants.xyz: udp:172.16.32.2
-          home: udp:172.16.32.2
-          home.arpa: udp:172.16.32.2
-          168.192.in-addr.arpa: udp:172.16.32.2
-          16.172.in-addr.arpa: udp:172.16.32.2
-          ur30.ru: udp:192.168.40.3
-          ur30.local: udp:192.168.40.3
+          glants.xyz: 172.16.32.2
+          home: 172.16.32.2
+          home.arpa: 172.16.32.2
+          168.192.in-addr.arpa: 172.16.32.2
+          16.172.in-addr.arpa: 172.16.32.2
+          ur30.ru: 192.168.40.3
+          ur30.local: 192.168.40.3
       caching:
         minTime: 5m
         maxTime: 30m
