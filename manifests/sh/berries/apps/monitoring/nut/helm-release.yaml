@@ -24,14 +24,14 @@ spec:
       tag: v2.8.0
       # -- image pull policy
       pullPolicy: IfNotPresent
-    controller:
-      strategy: Recreate
+
     # -- environment variables.
     # @default -- See below
     env:
       # -- Set the container timezone
       TZ: Europe/Moscow
-    strategy: Recreate
+    strategy:
+      type: Recreate
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
