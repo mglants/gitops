@@ -61,7 +61,8 @@ spec:
     backupsEnabled: true
     snapshotsEnabled: true
     upgradeCRDs: true
-    cleanUpCRDs: false
+    cleanUpCRDs: true
+    deployRestic: false
     kubectl:
       image:
         repository: ghcr.io/k8s-at-home/kubectl
