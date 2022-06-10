@@ -21,7 +21,11 @@ spec:
     csiDriver:
       # should be globally unique for a given cluster
       name: org.democratic-csi.nfs
-
+    node:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
     # add note here about volume expansion requirements
     storageClasses:
       - name: freenas-nfs-csi
