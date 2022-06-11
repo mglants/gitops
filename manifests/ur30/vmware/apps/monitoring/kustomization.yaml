@@ -10,4 +10,5 @@ resources:
   - promtail
   - speedtest
   - telegraf
+  - uptime-kuma
   - vmware-exporter
