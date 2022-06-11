@@ -17,7 +17,7 @@ spec:
   values:
     image:
       repository: velero/velero
-      tag: main
+      tag: v1.8.1
     configuration:
       extraEnvVars:
         TZ: Europe/Moscow
