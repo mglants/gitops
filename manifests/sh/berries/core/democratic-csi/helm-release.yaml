@@ -29,6 +29,8 @@ spec:
     # add note here about volume expansion requirements
     storageClasses:
       - name: freenas-nfs-csi
+        annotations:
+          storageclass.kubernetes.io/is-default-class: 'true'
         defaultClass: true
         reclaimPolicy: Delete
         volumeBindingMode: Immediate
@@ -49,6 +51,7 @@ spec:
       - name: freenas-nfs-csi
         annotations:
           k10.kasten.io/is-snapshot-class: 'true'
+          snapshot.storage.kubernetes.io/is-default-class: 'true'
         labels:
           velero.io/csi-volumesnapshot-class: 'true'
         parameters:
@@ -76,7 +79,6 @@ spec:
           datasetPermissionsMode: '0777'
           datasetPermissionsUser: 0
           datasetPermissionsGroup: 0
-        iscsi:
         nfs:
           shareHost: 172.16.30.200
           shareAlldirs: false
