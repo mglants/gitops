@@ -12,7 +12,7 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: 192.168.30.200
+    server: 172.16.30.200
     path: /mnt/bulky/frigate
   mountOptions:
     - noatime
