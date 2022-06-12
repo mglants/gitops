@@ -8,3 +8,4 @@ resources:
   - homeassistant
   - node-red
   - zigbee2mqtt
+  - frigate

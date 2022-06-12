@@ -1,0 +1,124 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: frigate
+  namespace: smarthome
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: frigate
+      version: 8.1.2
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      repository: blakeblackshear/frigate
+      tag: 0.10.1-aarch64
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          nginx.ingress.kubernetes.io/whitelist-source-range: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
+        hosts:
+          - host: frigate.home
+            paths:
+              - path: /
+                pathType: Prefix
+    securityContext:
+      privileged: false
+    persistence:
+      data:
+        enabled: true
+        accessMode: ReadWriteOnce
+        size: 10Gi
+        mountPath: /data
+      media:
+        enabled: true
+        existingClaim: nfs-frigate-pvc
+        mountPath: /media
+      cache:
+        enabled: true
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 512Mi
+        mountPath: /tmp/cache
+    podAnnotations:
+      backup.velero.io/backup-volumes: data
+    resources:
+      requests:
+        memory: 1000Mi
+        cpu: 750m
+      limits:
+        memory: 2000Mi
+    env:
+      TZ: Europe/Moscow
+    configmap:
+      config:
+        enabled: true
+        data:
+          config.yml: |
+            mqtt:
+              host: emqx
+              topic_prefix: frigate
+              user: mqtt
+              password: '{FRIGATE_MQTT_PASSWORD}'
+
+            database:
+              path: /data/frigate.db
+
+            objects:
+              track:
+                - person
+              filters:
+                person:
+                  min_area: 2500
+                  max_area: 100000
+                  threshold: 0.75
+
+            record:
+              enabled: true
+              retain:
+                days: 7
+              events:
+                retain:
+                  default: 14
+
+            snapshots:
+              enabled: True
+              timestamp: False
+              bounding_box: True
+              crop: False
+
+            cameras:
+              hallway:
+                ffmpeg:
+                  inputs:
+                    - path: rtsp://admin:{FRIGATE_RTSP_PASSWORD}@172.16.11.10:554/ISAPI/Streaming/Channels/102
+                      roles:
+                        - detect
+                    - path: rtsp://admin:{FRIGATE_RTSP_PASSWORD}@172.16.11.10:554/ISAPI/Streaming/Channels/101
+                      roles:
+                        - rtmp
+                        - record
+                detect:
+                  height: 576
+                  width: 704
+                  fps: 5
+                objects:
+                  filters:
+                    person:
+                      min_area: 1500
+                      max_area: 100000
+                      threshold: 0.75
+                      min_score: 0.60
+  valuesFrom:
+    - kind: Secret
+      name: frigate-helm-values
+      optional: false
