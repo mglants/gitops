@@ -36,8 +36,7 @@ spec:
     persistence:
       data:
         enabled: true
-        accessMode: ReadWriteOnce
-        size: 10Gi
+        existingClaim: frigate-data-v1
         mountPath: /data
       media:
         enabled: true
