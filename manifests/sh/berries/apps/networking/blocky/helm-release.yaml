@@ -111,7 +111,7 @@ spec:
     config: |-
       bootstrapDns: tcp+udp:1.1.1.1
       upstream:
-        externalResolvers:
+        default:
         - tcp-tls:dns3.digitalcourage.de:853
         - tcp-tls:dnsse.alekberg.net:443
         - https://cloudflare-dns.com/dns-query
