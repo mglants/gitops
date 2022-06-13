@@ -17,7 +17,8 @@ spec:
   values:
     image:
       repository: velero/velero
-      tag: v1.8.1
+      tag: master
+      pullPolicy: Always
     configuration:
       extraEnvVars:
         TZ: Europe/Moscow
