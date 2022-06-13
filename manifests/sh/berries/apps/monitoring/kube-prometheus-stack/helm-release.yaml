@@ -66,14 +66,6 @@ spec:
     grafana:
       enabled: false
       forceDeployDashboards: true
-    kubeEtcd:
-      enabled: false
-    kubeControllerManager:
-      enabled: false
-    kubeScheduler:
-      enabled: false
-    kubeProxy:
-      enabled: false
     prometheus:
       ingress:
         enabled: true
