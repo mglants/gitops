@@ -39,7 +39,7 @@ spec:
       admissionWebhooks:
         enabled: false
       tls:
-      enabled: false
+        enabled: false
     alertmanager:
       alertmanagerSpec:
         storage:
