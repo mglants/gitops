@@ -125,6 +125,8 @@ spec:
           16.172.in-addr.arpa: 172.16.32.2
           ur30.ru: 192.168.40.3
           ur30.local: 192.168.40.3
+      clientLookup:
+        upstream: 172.16.32.2
       caching:
         minTime: 5m
         maxTime: 30m
