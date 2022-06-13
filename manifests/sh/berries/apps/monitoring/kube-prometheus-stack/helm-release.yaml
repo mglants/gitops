@@ -38,6 +38,8 @@ spec:
       configReloaderCpu: 200m
       admissionWebhooks:
         enabled: false
+      tls:
+      enabled: false
     alertmanager:
       alertmanagerSpec:
         storage:
