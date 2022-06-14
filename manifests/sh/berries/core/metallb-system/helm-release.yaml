@@ -28,10 +28,6 @@ spec:
       image:
         repository: metallb/speaker
         tag: v0.12.1
-      tolerations:
-        - key: node-role.kubernetes.io/master
-          operator: Exists
-          effect: NoSchedule
     configInline:
       peers:
         - peer-address: 172.16.30.1
