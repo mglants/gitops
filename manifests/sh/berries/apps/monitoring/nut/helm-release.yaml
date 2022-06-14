@@ -97,20 +97,29 @@ spec:
       # -- Enable and configure Prometheus Rules for the chart under this key.
       # @default -- See values.yaml
       prometheusRule:
-        enabled: false
+        enabled: true
         labels: {}
         # -- Configure additionial rules for the chart under this key.
         # @default -- See prometheusrules.yaml
-        rules: []
-        # - alert: UpsStatusUnknown
-        #   annotations:
-        #     description: UPS {{ "{{ $labels.ups }}" }} is reporting a status of unknown.
-        #     summary: UPS status unknown.
-        #   expr: |
-        #     nut_status == 0
-        #   for: 10s
-        #   labels:
-        #     severity: critical
+        rules:
+          - alert: UpsStatusUnknown
+            annotations:
+              description: UPS {{ "{{ $labels.ups }}" }} is reporting a status of unknown.
+              summary: UPS status unknown.
+            expr: |
+              nut_status == 0
+            for: 10s
+            labels:
+              severity: warning
+          - alert: UpsLowBattery
+            annotations:
+              description: UPS {{ "{{ $labels.ups }}" }} is low on battery.
+              summary: UPS is low on battery.
+            expr: |
+              nut_battery_charge <= nut_battery_charge_low
+            for: 10s
+            labels:
+              severity: critical
       exporter:
         image:
           # -- image repository
