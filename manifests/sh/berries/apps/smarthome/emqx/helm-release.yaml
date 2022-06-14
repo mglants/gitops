@@ -69,6 +69,10 @@ spec:
         tls:
           - hosts:
               - emqx.home
+    metrics:
+      enabled: true
+      type: prometheus
+
   valuesFrom:
     - kind: Secret
       name: emqx-helm-values
