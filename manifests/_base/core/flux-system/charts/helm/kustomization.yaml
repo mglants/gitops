@@ -39,3 +39,4 @@ resources:
   - vernemq-charts.yaml
   - vmware-tanzu-charts.yaml
   - weaveworks-kured-charts.yaml
+  - timescale-charts.yaml
