@@ -4,6 +4,7 @@ ignore: |
     custom/
     *-crds.yaml
     *.patch.yaml
+    *.enc.yaml
 extends: default
 rules:
     truthy:
