@@ -21,7 +21,7 @@ spec:
     image:
       repository: netboxcommunity/netbox
       pullPolicy: IfNotPresent
-      tag: v3.2.4
+      tag: v3.2.5
     timeZone: Europe/Moscow
 
     postgresql:
