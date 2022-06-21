@@ -25,13 +25,13 @@ spec:
       provider: aws
       backupStorageLocation:
         name: default
-        bucket: velerosh
+        bucket: velero
         default: true
         config:
           region: us-east-1
           s3ForcePathStyle: true
-          s3Url: http://192.168.1.50:9000
-          publicUrl: http://192.168.1.50:9000
+          s3Url: http://172.16.30.200:9000
+          publicUrl: http://172.16.30.200:9000
           insecureSkipTLSVerify: 'true'
       volumeSnapshotLocation:
         name: default
