@@ -94,7 +94,7 @@ spec:
           mountPath: /nextcloud
         - name: public
           mountPath: /public
-        - name: public
+        - name: zakko
           mountPath: /zakko
     nginx:
       ## You need to set an fpm version of the image for nextcloud if you want to use nginx!
