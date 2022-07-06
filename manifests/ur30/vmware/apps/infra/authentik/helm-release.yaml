@@ -23,7 +23,7 @@ spec:
       replicas: 1
     image:
       repository: ghcr.io/goauthentik/server
-      tag: 2022.6.3
+      tag: 2022.7.2
     authentik:
       error_reporting:
         enabled: true
