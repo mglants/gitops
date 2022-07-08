@@ -12,7 +12,7 @@ spec:
         spec:
           initContainers:
             - name: etcd-sidero
-              image: ghcr.io/siderolabs/talosctl:v1.0.3
+              image: ghcr.io/siderolabs/talosctl:v1.1.0
               imagePullPolicy: IfNotPresent
               env:
                 - name: TZ
@@ -35,7 +35,7 @@ spec:
                 - /mnt/etcd-backup/ur30-sidero.snapshot
           containers:
             - name: etcd-vmware
-              image: ghcr.io/siderolabs/talosctl:v1.0.3
+              image: ghcr.io/siderolabs/talosctl:v1.1.0
               imagePullPolicy: IfNotPresent
               env:
                 - name: TZ
