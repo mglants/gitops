@@ -103,10 +103,6 @@ spec:
       enabled: false
     metrics:
       enabled: true
-    tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
   valuesFrom:
     - kind: Secret
       name: kea-helm-values

@@ -87,10 +87,6 @@ spec:
         #     severity: critical
     podAnnotations:
       configmap.reloader.stakater.com/reload: blocky-config
-    tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
     # affinity:
     #   podAntiAffinity:
     #     requiredDuringSchedulingIgnoredDuringExecution:
