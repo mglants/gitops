@@ -116,7 +116,7 @@ spec:
         # MQTT base topic for zigbee2mqtt MQTT messages
         base_topic: zigbee2mqtt
         # MQTT server URL
-        server: mqtt://emqx.default.svc.cluster.local
+        server: mqtt://emqx
         # MQTT server authentication, uncomment if required:
         user: mqtt
         client_id: zigbee2mqtt
