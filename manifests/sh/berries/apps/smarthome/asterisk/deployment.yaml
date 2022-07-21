@@ -79,6 +79,9 @@ spec:
             - name: rtp-10009
               containerPort: 10009
               protocol: UDP
+            - name: rtp-10010
+              containerPort: 10010
+              protocol: UDP
           resources:
             limits:
               cpu: 500m
