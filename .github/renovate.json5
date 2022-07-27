@@ -149,6 +149,13 @@
       "additionalBranchPrefix": "",
       "separateMinorPatch": false
     },
+    {
+      "matchDatasources": ["github-releases", "docker"],
+      "matchPackagePatterns": ["siderolabs/talos|.*siderolabs/talosctl"],
+      "groupName": "talos",
+      "additionalBranchPrefix": "",
+      "separateMinorPatch": false
+    },
     // auto-updates - daily
     {
       "datasources": ["docker"],
