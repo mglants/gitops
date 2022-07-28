@@ -37,10 +37,12 @@ spec:
       namespace: monitoring
       path: /snmp
       scrapeTimeout: 10s
-      module:
-        - if_mib
       params:
-        - name: mikrotik
+        - module:
+            - if_mib
+          name: mikrotik
           target: 172.16.5.251
-        - name: main-switch
+        - module:
+            - if_mib
+          name: main-switch
           target: 172.16.5.254
