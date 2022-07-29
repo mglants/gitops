@@ -30,7 +30,7 @@ spec:
       name: configmap-reload
       image:
         repository: jimmidyson/configmap-reload
-        tag: v0.5.0
+        tag: v0.7.1
         pullPolicy: IfNotPresent
     serviceMonitor:
       enabled: true
