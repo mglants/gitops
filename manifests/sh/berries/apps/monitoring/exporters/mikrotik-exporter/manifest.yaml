@@ -21,8 +21,8 @@ spec:
       volumes:
         - name: mikrotik-exporter
           secret:
-            name: mikrotik-exporter
-            optional: true
+            secretName: mikrotik-exporter
+            optional: false
       containers:
         - name: mikrotik-exporter
           image: nshttpd/mikrotik-exporter:v1.6.1
