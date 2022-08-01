@@ -100,3 +100,6 @@ spec:
                   storage: 20Gi
       thanosService:
         enabled: false
+  valuesFrom:
+    - kind: Secret
+      name: kube-prometheus-stack-helm-values
