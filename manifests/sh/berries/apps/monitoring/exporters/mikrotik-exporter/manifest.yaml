@@ -26,7 +26,9 @@ spec:
       containers:
         - name: mikrotik-exporter
           image: ogi4i/mikrotik-exporter:v1.1.2
-          args: [-config-file /tmp/config.yaml]
+          args:
+            - -config-file=/tmp/config.yaml
+            - -port=9436
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /tmp/config.yaml
