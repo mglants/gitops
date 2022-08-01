@@ -104,3 +104,13 @@ spec:
           labels:
             severity: critical
             notifications: 'true'
+        - alert: ScrapeFail
+          annotations:
+            description: Scrape {{ $labels.collector }} is reporting a status failed.
+            summary: Scrape is failed.
+          expr: |
+            mikrotik_scrape_collector_duration_seconds{success!="true",job=~"mikrotik-exporter"}
+          for: 5m
+          labels:
+            severity: critical
+            notifications: 'true'
