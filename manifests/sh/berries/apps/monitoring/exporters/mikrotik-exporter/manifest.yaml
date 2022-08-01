@@ -22,6 +22,7 @@ spec:
         - name: mikrotik-exporter
           secret:
             name: mikrotik-exporter
+            optional: true
       containers:
         - name: mikrotik-exporter
           image: nshttpd/mikrotik-exporter:v1.6.1
