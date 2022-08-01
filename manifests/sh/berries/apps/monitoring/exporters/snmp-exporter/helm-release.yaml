@@ -40,9 +40,5 @@ spec:
       params:
         - module:
             - if_mib
-          name: mikrotik
-          target: 172.16.5.251
-        - module:
-            - if_mib
           name: main-switch
           target: 172.16.5.254

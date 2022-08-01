@@ -6,3 +6,4 @@ resources:
   # - graphite-exporter
   - snmp-exporter
   # - ipmi-exporter
+  - mikrotik-exporter
