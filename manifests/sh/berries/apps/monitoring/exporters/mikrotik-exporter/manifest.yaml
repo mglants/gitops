@@ -74,3 +74,33 @@ spec:
       app.kubernetes.io/name: mikrotik-exporter
   endpoints:
     - port: prometheus
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: mikrotik-exporter
+  namespace: monitoring
+spec:
+  groups:
+    - name: mikrotik-exporter
+      rules:
+        - alert: MikrotikExporterAbsent
+          annotations:
+            description: Mirtorik Exporter has disappeared from Prometheus target discovery.
+            summary: Mirtorik Exporter is down.
+          expr: |
+            absent(up{job=~"mikrotik-exporter"} == 1)
+          for: 5m
+          labels:
+            severity: critical
+            notifications: 'true'
+        - alert: NetwatchDown
+          annotations:
+            description: Netwatch {{ $labels.comment }} is reporting a status down.
+            summary: Netwatch is down.
+          expr: |
+            mikrotik_netwatch_status{job=~"mikrotik-exporter"} == 0
+          for: 2m
+          labels:
+            severity: critical
+            notifications: 'true'
