@@ -99,7 +99,7 @@ spec:
             description: Netwatch {{ $labels.comment }} is reporting a status down.
             summary: Netwatch is down.
           expr: |
-            mikrotik_netwatch_status{job=~"mikrotik-exporter"} == 0
+            mikrotik_netwatch_status{job=~"mikrotik-exporter"} !=1
           for: 2m
           labels:
             severity: critical
