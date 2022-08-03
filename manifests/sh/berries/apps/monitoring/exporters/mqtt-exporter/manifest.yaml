@@ -88,5 +88,3 @@ spec:
           regex: zigbee2mqtt_(.*)
           replacement: $1
           target_label: sensor
----
-...
