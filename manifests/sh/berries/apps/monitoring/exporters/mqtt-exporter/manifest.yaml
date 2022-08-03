@@ -84,7 +84,7 @@ spec:
   endpoints:
     - port: prometheus
       metricRelabelings:
-        - source_labels: [sensor]
+        - sourceLabels: [sensor]
           regex: zigbee2mqtt_(.*)
           replacement: $1
           target_label: sensor
