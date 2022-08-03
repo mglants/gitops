@@ -7,3 +7,4 @@ resources:
   - snmp-exporter
   # - ipmi-exporter
   - mikrotik-exporter
+  - mqtt-exporter
