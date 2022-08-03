@@ -41,6 +41,22 @@ spec:
       tls:
         enabled: false
     alertmanager:
+      config:
+        global:
+          resolve_timeout: 5m
+        route:
+          group_by: [namespace]
+          group_wait: 30s
+          group_interval: 5m
+          repeat_interval: 12h
+          receiver: 'null'
+          routes:
+            - receiver: 'null'
+              matchers:
+                - alertname =~ "InfoInhibitor|Watchdog"
+            - receiver: telegram
+              matchers:
+                - severity =~ "warning|critical"
       alertmanagerSpec:
         storage:
           volumeClaimTemplate:
@@ -56,9 +72,6 @@ spec:
           nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.214.0/24, 10.13.12.0/24
         hosts:
           - alertmanager.home
-      config:
-        global:
-          resolve_timeout: 5m
     nodeExporter:
       serviceMonitor:
         relabelings:
