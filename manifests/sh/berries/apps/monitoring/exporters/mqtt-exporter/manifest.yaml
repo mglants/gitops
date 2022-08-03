@@ -88,3 +88,33 @@ spec:
           regex: zigbee2mqtt_(.*)
           replacement: $1
           targetLabel: sensor
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: mqtt-exporter
+  namespace: monitoring
+spec:
+  groups:
+    - name: mqtt-exporter
+      rules:
+        - alert: MqttExporterAbsent
+          annotations:
+            description: Mqtt Exporter has disappeared from Prometheus target discovery.
+            summary: Mqtt Exporter is down.
+          expr: |
+            absent(up{job=~"mqtt-exporter"} == 1)
+          for: 5m
+          labels:
+            severity: critical
+            notifications: 'true'
+        - alert: ZigbeeDeviceDown
+          annotations:
+            description: Zigbee device {{ $labels.sensor }} is down.
+            summary: Zigbee device is not available.
+          expr: |
+            sensor_zigbee_availability{job=~"mqtt-exporter"} !=1
+          for: 15m
+          labels:
+            severity: warning
+            notifications: 'true'
