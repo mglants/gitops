@@ -16,10 +16,6 @@ resources:
   - https://raw.githubusercontent.com/metallb/metallb/v0.13.4/config/crd/bases/metallb.io_l2advertisements.yaml
   # renovate: image=quay.io/metallb/controller type=docker
   - https://raw.githubusercontent.com/metallb/metallb/v0.13.4/config/crd/bases/metallb.io_communities.yaml
-commonAnnotations:
-  meta.helm.sh/release-namespace: metallb-system
-  app.kubernetes.io/managed-by: Helm
-  meta.helm.sh/release-name: metallb
 patchesStrategicMerge:
   # renovate: image=quay.io/metallb/controller type=docker
   - https://raw.githubusercontent.com/metallb/metallb/v0.13.4/config/crd/crd-conversion-patch.yaml
