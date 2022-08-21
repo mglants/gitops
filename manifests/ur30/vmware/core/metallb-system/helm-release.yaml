@@ -10,27 +10,21 @@ spec:
     spec:
       # renovate: registryUrl=https://charts.bitnami.com/bitnami
       chart: metallb
-      version: 3.0.12
+      version: 4.0.2
       sourceRef:
         kind: HelmRepository
         name: bitnami-charts
         namespace: flux-system
+  install:
+    crds: Skip
+  upgrade:
+    crds: Skip
   values:
     controller:
       image:
-        repository: metallb/controller
-        tag: v0.12.1
+        repository: bitnami/metallb-controller
+        tag: 0.13.4
     speaker:
       image:
-        repository: metallb/speaker
-        tag: v0.12.1
-    configInline:
-      peers:
-        - peer-address: 192.168.48.1
-          peer-asn: 65000
-          my-asn: 65005
-      address-pools:
-        - name: loadbalanced
-          protocol: bgp
-          addresses:
-            - 192.168.40.0/21
+        repository: bitnami/metallb-speaker
+        tag: 0.13.4

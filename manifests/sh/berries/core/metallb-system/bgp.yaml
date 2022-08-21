@@ -1,0 +1,31 @@
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: mikrotik
+  namespace: metallb-system
+spec:
+  holdTime: 1m30s
+  keepaliveTime: 0s
+  myASN: 65005
+  peerASN: 65001
+  peerAddress: 172.16.30.1
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: loadbalanced
+  namespace: metallb-system
+spec:
+  addresses:
+    - 172.16.32.0/20
+  avoidBuggyIPs: true
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: bgpadvertisement1
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - loadbalanced
