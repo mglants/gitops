@@ -20,7 +20,7 @@ spec:
   values:
     image:
       repository: influxdb
-      tag: 2.3.0
+      tag: 2.4.0
     service:
       type: LoadBalancer
     persistence:
