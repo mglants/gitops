@@ -62,7 +62,6 @@ data:
     type=aor
     max_contacts=6
     remove_existing=yes
-    remove_unavailable=yes
     qualify_frequency=0
     ;===== Sip-Phones ==============
 
