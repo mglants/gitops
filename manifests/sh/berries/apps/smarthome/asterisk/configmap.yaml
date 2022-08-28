@@ -304,8 +304,7 @@ data:
     rtpstart = 10000
     rtpend   = 10010
     strictrtp = no
-    icesupport=yes
-    stunaddr=stun.l.google.com:19302
+    icesupport=no
   logger.conf: |
     [logfiles]
     console => notice,warning,error,dtmf,debug
