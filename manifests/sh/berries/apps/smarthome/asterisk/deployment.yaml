@@ -42,7 +42,7 @@ spec:
                 path: http.conf
       containers:
         - name: asterisk
-          image: christoofar/asterisk:latest
+          image: smailkoz/asterisk:18.13.0-alpine
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /etc/asterisk
