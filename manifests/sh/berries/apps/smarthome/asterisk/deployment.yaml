@@ -21,6 +21,9 @@ spec:
         app: asterisk
     spec:
       volumes:
+        - name: asterisk-cert
+          secret:
+            secretName: asterisk-cert-secret
         - name: asterisk-config
           configMap:
             name: asterisk-config
@@ -42,6 +45,8 @@ spec:
           volumeMounts:
             - mountPath: /etc/asterisk
               name: asterisk-config
+            - mountPath: /etc/asterisk/keys
+              name: asterisk-cert
           resources:
             limits:
               cpu: 500m

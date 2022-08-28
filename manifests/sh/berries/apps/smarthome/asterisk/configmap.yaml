@@ -12,28 +12,49 @@ data:
     bind = 0.0.0.0:5060
     external_signaling_address = 94.141.170.143
     external_media_address = 94.141.170.143
+
+    [transport-tls]
+    type=transport
+    protocol=tls
+    bind=0.0.0.0:5061
+    method=tlsv1_2
+    cert_file=/etc/asterisk/keys/fullchain.pem
+    priv_key_file=/etc/asterisk/keys/privkey.pem
+
+    [transport-wss]
+    type=transport
+    protocol=wss
+    bind=0.0.0.0
+
+
     ;===== Sip-Phone templates =====
 
     [ph-endp](!)
     type=endpoint
+    send_rpid=yes
+    send_pai=yes
+    device_state_busy_at=1
+    webrtc=yes
     language=ru
     context=phones
-    direct_media=no
-    rewrite_contact=no
-    allow=!all,h264,alaw,ulaw
+    disallow=all
+    allow=ulaw,alaw,speex,gsm,g726,g723,g722,opus,h264,vp8,vp9
     bind_rtp_to_media_address = yes
     rtp_symmetric = no
     dtmf_mode=auto_info
-    transport=udp-transport
-
+    force_rport=yes
+    rewrite_contact=yes
+    direct_media=no
+    ; Common AUTH parameters
     [ph-auth](!)
     type=auth
 
     [ph-aor](!)
     type=aor
-    max_contacts=5
+    max_contacts=6
     remove_existing=yes
-    qualify_frequency=30
+    remove_unavailable=yes
+    qualify_frequency=0
     ;===== Sip-Phones ==============
 
     [100](ph-endp)
@@ -263,11 +284,19 @@ data:
     ;noload => chan_oss.so
     noload => chan_console.so
     ;
+    noload => res_hep.so
+    noload => res_hep_pjsip.so
+    noload => res_hep_rtcp.so
+    noload => app_voicemail_imap.so
+    noload => app_voicemail_odbc.so
+    noload => chan_dongle.so ; comment out this line if you want to use chan-dongle
   rtp.conf: |
     [general]
     rtpstart = 10000
     rtpend   = 10010
     strictrtp = no
+    icesupport=yes
+    stunaddr=stun.l.google.com:19302
   logger.conf: |
     [logfiles]
     console => notice,warning,error,dtmf,debug
