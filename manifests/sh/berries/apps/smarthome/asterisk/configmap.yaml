@@ -6,6 +6,15 @@ metadata:
   namespace: smarthome
 data:
   # file-like keys
+  http.conf: |
+    [general]
+    enabled=yes
+    bindaddr=0.0.0.0
+    bindport=8088
+    tlsenable=yes
+    tlsbindaddr=0.0.0.0:8089
+    tlscertfile=/etc/asterisk/keys/tls.crt
+    tlsprivatekey=/etc/asterisk/keys/tls.key
   pjsip.conf: |
     [udp-transport]
     type = transport
@@ -18,8 +27,8 @@ data:
     protocol=tls
     bind=0.0.0.0:5061
     method=tlsv1_2
-    cert_file=/etc/asterisk/keys/fullchain.pem
-    priv_key_file=/etc/asterisk/keys/privkey.pem
+    cert_file=/etc/asterisk/keys/tls.crt
+    priv_key_file=/etc/asterisk/keys/tls.key
 
     [transport-wss]
     type=transport

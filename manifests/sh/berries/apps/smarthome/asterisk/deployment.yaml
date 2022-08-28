@@ -38,6 +38,8 @@ spec:
                 path: pjsip.conf
               - key: logger.conf
                 path: logger.conf
+              - key: http.conf
+                path: http.conf
       containers:
         - name: asterisk
           image: christoofar/asterisk:latest
@@ -61,6 +63,12 @@ spec:
             - name: sip
               containerPort: 5060
               protocol: UDP
+            - name: http
+              containerPort: 8088
+              protocol: TCP
+            - name: https
+              containerPort: 8089
+              protocol: TCP
             - name: rtp-10000
               containerPort: 10000
               protocol: UDP
