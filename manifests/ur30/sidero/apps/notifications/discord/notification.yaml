@@ -30,3 +30,5 @@ spec:
     - kind: HelmRelease
       name: '*'
   suspend: false
+  exclusionList:
+    - ^Dependencies.*
