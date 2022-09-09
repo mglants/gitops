@@ -29,8 +29,6 @@ spec:
     # add note here about volume expansion requirements
     storageClasses:
       - name: freenas-nfs-csi
-        annotations:
-          storageclass.kubernetes.io/is-default-class: 'true'
         defaultClass: true
         reclaimPolicy: Delete
         volumeBindingMode: Immediate
