@@ -19,11 +19,12 @@ spec:
   validation: client
   postBuild:
     substitute: {}
-    # substituteFrom:
-    #   - kind: Secret
-    #     name: cluster-secrets-vmware
-    #   - kind: ConfigMap
-    #     name: cluster-settings-vmware
+    substituteFrom:
+      - kind: ConfigMap
+        name: sync-settings-vmware
+        # substituteFrom:
+        #   - kind: Secret
+        #     name: cluster-secrets-vmware
   decryption:
     provider: sops
     secretRef:

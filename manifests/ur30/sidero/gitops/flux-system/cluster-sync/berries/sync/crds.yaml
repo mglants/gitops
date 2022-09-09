@@ -19,11 +19,12 @@ spec:
   validation: client
   postBuild:
     substitute: {}
-    # substituteFrom:
-    #   - kind: Secret
-    #     name: cluster-secrets-berries
-    #   - kind: ConfigMap
-    #     name: cluster-settings-berries
+    substituteFrom:
+      - kind: ConfigMap
+        name: sync-settings-berries
+        # substituteFrom:
+        #   - kind: Secret
+        #     name: cluster-secrets-berries
   decryption:
     provider: sops
     secretRef:
