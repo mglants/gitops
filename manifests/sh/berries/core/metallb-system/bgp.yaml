@@ -10,6 +10,7 @@ spec:
   myASN: 65005
   peerASN: 65001
   peerAddress: 172.16.30.1
+  peerPort: 179
 ---
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
@@ -19,6 +20,7 @@ metadata:
 spec:
   addresses:
     - 172.16.32.0/20
+  autoAssign: true
   avoidBuggyIPs: true
 ---
 apiVersion: metallb.io/v1beta1
