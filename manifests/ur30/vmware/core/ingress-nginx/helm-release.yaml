@@ -19,6 +19,10 @@ spec:
       interval: 5m
   values:
     controller:
+      updateStrategy:
+        rollingUpdate:
+          maxUnavailable: 1
+        type: RollingUpdate
       replicaCount: 2
       config:
         custom-http-errors: 404,401,403,500,503
