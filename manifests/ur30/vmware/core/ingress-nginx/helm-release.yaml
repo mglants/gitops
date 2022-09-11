@@ -22,6 +22,7 @@ spec:
       updateStrategy:
         rollingUpdate:
           maxUnavailable: 1
+          maxSurge: 50%
         type: RollingUpdate
       replicaCount: 2
       config:
