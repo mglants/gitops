@@ -61,7 +61,7 @@ spec:
           - name: prometheus
             parameters: 0.0.0.0:9153
           - name: forward
-            parameters: . tls://1.1.1.1
+            parameters: . 127.0.0.1:5301 127.0.0.1:5302
             configBlock: |-
               tls_servername one.one.one.one
               health_check 5s
@@ -70,6 +70,26 @@ spec:
           - name: loop
           - name: reload
           - name: loadbalance
+      - zones:
+          - zone: .
+            scheme: dns://
+            use_tcp: false
+        plugins:
+          - name: forward
+            parameters: . 8.8.8.8 8.8.4.4
+            configBlock: |-
+              tls_servername dns.google
+        port: 5301
+      - zones:
+          - zone: .
+            scheme: dns://
+            use_tcp: false
+        plugins:
+          - name: forward
+            parameters: . 1.1.1.1 1.0.0.1
+            configBlock: |-
+              tls_servername cloudflare-dns.com
+        port: 5302
       - zones:
           - zone: ur30.ru
             scheme: dns://
