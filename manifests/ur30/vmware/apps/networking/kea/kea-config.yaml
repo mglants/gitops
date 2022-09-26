@@ -110,9 +110,9 @@ data:
                         "hostname": "chromecast2.ur30.ru"
                     },
                     {
-                        "hw-address": "dc:a6:32:80:5b:9c",
+                        "hw-address": "02:81:39:75:cd:7a",
                         "ip-address": "192.168.1.111",
-                        "hostname": "homeassistant.ur30.ru"
+                        "hostname": "orangepi.ur30.ru"
                     }
                 ]
             },
