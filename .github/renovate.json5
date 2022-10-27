@@ -150,6 +150,13 @@
       "separateMinorPatch": false
     },
     {
+      "matchDatasources": ["helm", "docker"],
+      "matchPackagePatterns": ["^metallb|.*metallb.*"],
+      "groupName": "metallb",
+      "additionalBranchPrefix": "",
+      "separateMinorPatch": false
+    },
+    {
       "matchDatasources": ["github-releases", "docker"],
       "matchPackagePatterns": ["siderolabs/talos|.*siderolabs/talosctl"],
       "groupName": "talos",
