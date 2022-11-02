@@ -23,7 +23,7 @@ spec:
       # -- image pull policy
       pullPolicy: IfNotPresent
       # -- image tag
-      tag: 2022.10.1
+      tag: 2022.10.2
 
     # -- environment variables.
     # @default -- See below
