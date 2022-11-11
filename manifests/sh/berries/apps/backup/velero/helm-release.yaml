@@ -17,7 +17,7 @@ spec:
   values:
     image:
       repository: velero/velero
-      tag: v1.9.2-rc.1
+      tag: v1.10.0-rc.1
       pullPolicy: Always
     configuration:
       extraEnvVars:
