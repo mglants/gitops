@@ -23,9 +23,9 @@ spec:
     controller:
       replicas: 2
       strategy:
-      rollingUpdate:
-        unavailable: 1
-        surge: 1
+        rollingUpdate:
+          unavailable: 1
+          surge: 0
     env:
       TZ: Europe/Moscow
     service:
