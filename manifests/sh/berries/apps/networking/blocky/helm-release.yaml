@@ -25,7 +25,7 @@ spec:
       strategy:
       rollingUpdate:
         unavailable: 1
-        surge: 0
+        surge: 1
     env:
       TZ: Europe/Moscow
     service:
