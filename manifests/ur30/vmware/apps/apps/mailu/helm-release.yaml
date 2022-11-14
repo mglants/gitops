@@ -21,13 +21,13 @@ spec:
     # Default values for mailu.
     # A list of mail hostnames is required. The first will be used as primary mail hostname
     hostnames:
-      - mail.ur30.ru
+      - mailn.ur30.ru
 
     # The mail domain is required. See https://github.com/Mailu/Mailu/blob/master/docs/faq.rst#what-is-the-difference-between-domain-and-hostnames
     domain: mail.ur30.ru
 
     # The secret key is required for protecting authentication cookies and must be set individually for each deployment
-    secretKey: chang3m3!
+    # secretKey: in secret
 
     database:
       # type of the database for mailu (sqlite or mysql)
