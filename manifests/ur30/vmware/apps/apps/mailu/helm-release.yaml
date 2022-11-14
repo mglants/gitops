@@ -435,3 +435,8 @@ spec:
           memory: 200Mi
           cpu: 200m
       delay: 600
+  valuesFrom:
+    - kind: Secret
+      name: mailu-helm-values
+      valuesKey: values.yaml
+      optional: false
