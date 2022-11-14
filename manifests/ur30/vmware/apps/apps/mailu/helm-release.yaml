@@ -383,7 +383,7 @@ spec:
       # logLevel: WARNING
       image:
         repository: mailu/radicale
-        tag: 1.9.26
+        tag: 1.9.40
       startupProbe:
         periodSeconds: 10
         failureThreshold: 30
