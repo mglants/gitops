@@ -356,7 +356,7 @@ spec:
       # logLevel: WARNING
       image:
         repository: mailu/roundcube
-        tag: 1.9.26
+        tag: 1.9.40
       uri: /roundcube
       resources:
         requests:
