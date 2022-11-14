@@ -52,7 +52,9 @@ spec:
         database: mailu
         # user: in secret
         # password: in secret
-
+        roundcubeDatabase: roundcube
+        # roundcubeUser: in secret
+        # roundcubePassword: in secret
     persistence:
       # Setings for a single volume for all apps
       # set single_pvc: false to use a per app volume and set the properties in <app>.persistence (ex. admin.persistence)
@@ -375,7 +377,6 @@ spec:
         periodSeconds: 10
         failureThreshold: 1
         timeoutSeconds: 5
-
 
     webdav:
       enabled: false
