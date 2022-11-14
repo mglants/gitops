@@ -214,7 +214,7 @@ spec:
       image:
         repository: mailu/postfix
         # tag defaults to mailuVersion
-        tag: 1.9.26
+        tag: 1.9.40
       containerSecurityContext: {}
       #    CRI-O users will need to add the following:
       #    capabilities:
