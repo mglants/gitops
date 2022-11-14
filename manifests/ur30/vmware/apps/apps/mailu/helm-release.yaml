@@ -161,7 +161,7 @@ spec:
       image:
         repository: mailu/admin
         # tag defaults to mailuVersion
-        tag: 1.9.26
+        tag: 1.9.40
 
       resources:
         requests:
