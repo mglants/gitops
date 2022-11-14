@@ -12,9 +12,11 @@ rules:
     comments:
         min-spaces-from-content: 1
     line-length: disable
+    comments-indentation: disable
     braces:
         min-spaces-inside: 0
         max-spaces-inside: 1
+    document-end: disable
     brackets:
         min-spaces-inside: 0
         max-spaces-inside: 0

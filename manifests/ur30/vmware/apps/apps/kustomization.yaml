@@ -7,3 +7,4 @@ resources:
   - netbox
   - nextcloud
   - vaultwarden
+  - mailu

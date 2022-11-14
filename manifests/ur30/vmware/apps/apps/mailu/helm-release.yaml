@@ -1,0 +1,437 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: mailu
+  namespace: apps
+spec:
+  interval: 5m
+  timeout: 10m0s
+  chart:
+    spec:
+      # renovate: registryUrl=https://mailu.github.io/helm-charts/
+      chart: mailu
+      version: 0.3.3
+      sourceRef:
+        kind: HelmRepository
+        name: mailu-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    # Default values for mailu.
+    # A list of mail hostnames is required. The first will be used as primary mail hostname
+    hostnames:
+      - mail.ur30.ru
+
+    # The mail domain is required. See https://github.com/Mailu/Mailu/blob/master/docs/faq.rst#what-is-the-difference-between-domain-and-hostnames
+    domain: mail.ur30.ru
+
+    # The secret key is required for protecting authentication cookies and must be set individually for each deployment
+    secretKey: chang3m3!
+
+    database:
+      # type of the database for mailu (sqlite or mysql)
+      # default database is an embedded sqlite
+      # for mysql, see settings below
+      type: mysql
+
+      # type of the database for roundcube (sqlite or mysql)
+      # default database is an embedded sqlite
+      # for mysql, see settings below
+      roundcubeType: mysql
+
+      # For mysql/mariadb use the following config:
+      # Set the host to use an external database.
+      # If not host is set, a database instance is created by this chart.
+      #   type: mysql
+      mysql:
+        # root password for mysql database
+        # rootPassword: in secret
+
+        # settings for mailu (required if mailu database type is "mysql")
+        database: mailu
+        # user: in secret
+        # password: in secret
+
+    persistence:
+      # Setings for a single volume for all apps
+      # set single_pvc: false to use a per app volume and set the properties in <app>.persistence (ex. admin.persistence)
+      single_pvc: true
+      existingClaim: mailu-data-v1
+
+    # Change this if you're using different address ranges for pods
+    subnet: 10.244.0.0/16
+
+    # default log level. can be overridden globally or per service
+    logLevel: WARNING
+
+    # local part of the postmaster email address (Mailu will use @$DOMAIN as domain part)
+    postmaster: postmaster
+
+    mail:
+      messageSizeLimitInMegabytes: 50
+
+      # Configuration to prevent brute-force attacks. See the documentation for further information: https://mailu.io/master/configuration.html
+      authRatelimitIP: 60/hour
+      authRatelimitIPv4Mask: 24
+      authRatelimitIPv6Mask: 56
+      authRatelimitUser: 100/day
+      authRatelimitExemtionLength: 86400
+      # authRatelimitExemtion:
+
+      # Configuration to reduce outgoing spam in case of an compromised account. See the documentation for further information: https://mailu.io/1.9/configuration.html?highlight=MESSAGE_RATELIMIT
+      messageRatelimit: 200/day
+      # messageRatelimitExemption:
+
+    # certmanager settings
+    certmanager:
+      enabled: true
+      issuerType: ClusterIssuer
+      issuerName: letsencrypt-prod
+      apiVersion: cert-manager.io/v1
+
+    # Set ingress and loadbalancer config
+    ingress:
+      externalIngress: true
+      tlsFlavor: cert
+      className: nginx
+      annotations:
+        nginx.ingress.kubernetes.io/proxy-body-size: '0'
+      realIpHeader: X-Forwarded-For
+      realIpFrom: 0.0.0.0/0
+
+    # Frontend load balancer for non-HTTP(s) services
+    front:
+      # logLevel: WARNING
+      image:
+        repository: mailu/nginx
+        # tag defaults to mailuVersion
+        tag: 1.9.26
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 100m
+        limits:
+          memory: 200Mi
+          cpu: 200m
+      startupProbe:
+        periodSeconds: 10
+        failureThreshold: 30
+        timeoutSeconds: 5
+      livenessProbe:
+        periodSeconds: 10
+        failureThreshold: 3
+        timeoutSeconds: 5
+      readinessProbe:
+        periodSeconds: 10
+        failureThreshold: 1
+        timeoutSeconds: 5
+      # Deployment or DaemonSet
+      controller:
+        kind: Deployment
+      nodeSelector: {}
+
+      # Expose front mail ports via hostPort
+      hostPort:
+        enabled: false
+
+      # Expose front mail ports via external service (ClusterIP or LoadBalancer)
+      externalService:
+        enabled: true
+        # LoadBalancer
+        type: LoadBalancer
+        # loadBalancerIP:
+        externalTrafficPolicy: Local
+        annotations: {}
+        pop3:
+          pop3: false
+          pop3s: true
+        imap:
+          imap: false
+          imaps: true
+        smtp:
+          smtp: true
+          smtps: true
+          submission: true
+
+    admin:
+      # logLevel: WARNING
+      image:
+        repository: mailu/admin
+        # tag defaults to mailuVersion
+        tag: 1.9.26
+
+      resources:
+        requests:
+          memory: 500Mi
+          cpu: 500m
+        limits:
+          memory: 500Mi
+          cpu: 500m
+      podAnnotations: {}
+      startupProbe:
+        periodSeconds: 10
+        failureThreshold: 30
+        timeoutSeconds: 5
+      livenessProbe:
+        periodSeconds: 10
+        failureThreshold: 3
+        timeoutSeconds: 5
+      readinessProbe:
+        periodSeconds: 10
+        failureThreshold: 1
+        timeoutSeconds: 5
+
+
+    redis:
+      image:
+        repository: redis
+        tag: 5-alpine
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 100m
+        limits:
+          memory: 300Mi
+          cpu: 200m
+      startupProbe:
+        periodSeconds: 10
+        failureThreshold: 30
+        timeoutSeconds: 5
+      livenessProbe:
+        periodSeconds: 10
+        failureThreshold: 3
+        timeoutSeconds: 5
+      readinessProbe:
+        periodSeconds: 10
+        failureThreshold: 1
+        timeoutSeconds: 5
+
+    postfix:
+      # logLevel: WARNING
+      image:
+        repository: mailu/postfix
+        # tag defaults to mailuVersion
+        tag: 1.9.26
+      containerSecurityContext: {}
+      #    CRI-O users will need to add the following:
+      #    capabilities:
+      #      add:
+      #        - SYS_CHROOT
+      resources:
+        requests:
+          memory: 2Gi
+          cpu: 500m
+        limits:
+          memory: 2Gi
+          cpu: 500m
+      startupProbe:
+        periodSeconds: 10
+        failureThreshold: 30
+        timeoutSeconds: 5
+      livenessProbe:
+        periodSeconds: 10
+        failureThreshold: 3
+        timeoutSeconds: 5
+      readinessProbe:
+        periodSeconds: 10
+        failureThreshold: 1
+        timeoutSeconds: 5
+
+    dovecot:
+      enabled: true
+      # logLevel: WARNING
+      image:
+        repository: mailu/dovecot
+        # tag defaults to mailuVersion
+        tag: 1.9.26
+      containerSecurityContext: {}
+      #    CRI-O users will need to add the following:
+      #    capabilities:
+      #      add:
+      #        - SYS_CHROOT
+      resources:
+        requests:
+          memory: 500Mi
+          cpu: 500m
+        limits:
+          memory: 500Mi
+          cpu: 500m
+      startupProbe:
+        periodSeconds: 10
+        failureThreshold: 30
+        timeoutSeconds: 5
+      livenessProbe:
+        periodSeconds: 10
+        failureThreshold: 3
+        timeoutSeconds: 5
+      readinessProbe:
+        periodSeconds: 10
+        failureThreshold: 1
+        timeoutSeconds: 5
+      # enable dovecot overrides
+      # overrides:
+      #   dovecot.conf: |
+      #     # More info here: https://mailu.io/1.8/kubernetes/mailu/index.html#dovecot
+      #     mail_nfs_index = yes
+      #     mail_nfs_storage = yes
+      #     mail_fsync = always
+      #     mmap_disable = yes
+      #     mail_max_userip_connections=100
+
+    rspamd:
+      # logLevel: WARNING
+      image:
+        repository: mailu/rspamd
+        # tag defaults to mailuVersion
+        tag: 1.9.26
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 100m
+        limits:
+          memory: 200Mi
+          cpu: 200m
+      startupProbe: # give it 15 minutes for initial rule compilation
+        periodSeconds: 10
+        failureThreshold: 90
+        timeoutSeconds: 5
+      livenessProbe:
+        periodSeconds: 10
+        failureThreshold: 3
+        timeoutSeconds: 5
+      readinessProbe:
+        periodSeconds: 10
+        failureThreshold: 1
+        timeoutSeconds: 5
+
+    clamav:
+      enabled: true
+      # logLevel: WARNING
+      image:
+        repository: mailu/clamav
+        # tag defaults to mailuVersion
+        tag: 1.9.26
+      persistence:
+        size: 2Gi
+        storageClass: ''
+        accessMode: ReadWriteOnce
+        claimNameOverride: ''
+        # annotations:
+        #  "helm.sh/resource-policy": keep
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 1000m
+        limits:
+          memory: 2Gi
+          cpu: 1000m
+      startupProbe: # give it 10 minutes for initial freshclam update
+        periodSeconds: 10
+        failureThreshold: 60
+        timeoutSeconds: 5
+      livenessProbe:
+        periodSeconds: 10
+        failureThreshold: 3
+        timeoutSeconds: 5
+      readinessProbe:
+        periodSeconds: 10
+        failureThreshold: 1
+        timeoutSeconds: 5
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: component
+                    operator: In
+                    values:
+                      - rspamd
+              topologyKey: kubernetes.io/hostname
+
+    roundcube:
+      enabled: true
+      # logLevel: WARNING
+      image:
+        repository: mailu/roundcube
+        tag: 1.9.26
+      uri: /roundcube
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 100m
+        limits:
+          memory: 200Mi
+          cpu: 200m
+      startupProbe:
+        periodSeconds: 10
+        failureThreshold: 30
+        timeoutSeconds: 5
+      livenessProbe:
+        periodSeconds: 10
+        failureThreshold: 3
+        timeoutSeconds: 5
+      readinessProbe:
+        periodSeconds: 10
+        failureThreshold: 1
+        timeoutSeconds: 5
+
+
+    webdav:
+      enabled: false
+      # logLevel: WARNING
+      image:
+        repository: mailu/radicale
+        tag: 1.9.26
+      startupProbe:
+        periodSeconds: 10
+        failureThreshold: 30
+        timeoutSeconds: 5
+      livenessProbe:
+        periodSeconds: 10
+        failureThreshold: 3
+        timeoutSeconds: 5
+      readinessProbe:
+        periodSeconds: 10
+        failureThreshold: 1
+        timeoutSeconds: 5
+
+    mysql:
+      image:
+        repository: library/mariadb
+        tag: 10.4.10
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 512Mi
+          cpu: 200m
+      startupProbe:
+        periodSeconds: 10
+        failureThreshold: 30
+        timeoutSeconds: 5
+      livenessProbe:
+        periodSeconds: 10
+        failureThreshold: 3
+        timeoutSeconds: 5
+      readinessProbe:
+        periodSeconds: 10
+        failureThreshold: 1
+        timeoutSeconds: 5
+
+    fetchmail:
+      enabled: true
+      # logLevel: WARNING
+      image:
+        repository: mailu/fetchmail
+        # tag defaults to mailuVersion
+        tag: 1.9.26
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 100m
+        limits:
+          memory: 200Mi
+          cpu: 200m
+      delay: 600
