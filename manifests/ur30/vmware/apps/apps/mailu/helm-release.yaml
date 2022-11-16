@@ -363,8 +363,8 @@ spec:
           memory: 100Mi
           cpu: 100m
         limits:
-          memory: 200Mi
-          cpu: 200m
+          memory: 1024Mi
+          cpu: 1000m
       startupProbe:
         periodSeconds: 10
         failureThreshold: 30
