@@ -163,6 +163,13 @@
       "additionalBranchPrefix": "",
       "separateMinorPatch": false
     },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": ["^mailu.*"],
+      "groupName": 'mailu",
+      "additionalBranchPrefix": "",
+      "separateMinorPatch": false
+    },
     // auto-updates - daily
     {
       "datasources": ["docker"],
