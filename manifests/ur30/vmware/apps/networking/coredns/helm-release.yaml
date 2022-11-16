@@ -198,7 +198,7 @@ spec:
           home.ur30.ru. IN A   192.168.1.4
           homeassistant.ur30.ru. IN A   192.168.1.111
           ingress.ur30.ru. IN A   192.168.40.1
-          mail.ur30.ru. IN A   192.168.3.10
+          mail.ur30.ru. IN A   192.168.40.9
           mc.ur30.ru. IN A   192.168.3.4
           nas.ur30.ru. IN CNAME  ananas.ur30.ru.
           nf.ur30.ru. IN CNAME  alerty.ur30.ru.
