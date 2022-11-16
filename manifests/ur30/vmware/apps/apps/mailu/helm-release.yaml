@@ -292,8 +292,8 @@ spec:
           memory: 100Mi
           cpu: 100m
         limits:
-          memory: 200Mi
-          cpu: 200m
+          memory: 1Gi
+          cpu: 1000m
       startupProbe: # give it 15 minutes for initial rule compilation
         periodSeconds: 10
         failureThreshold: 90
