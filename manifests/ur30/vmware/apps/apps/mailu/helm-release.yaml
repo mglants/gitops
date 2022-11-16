@@ -108,7 +108,7 @@ spec:
       image:
         repository: mailu/nginx
         # tag defaults to mailuVersion
-        tag: 1.9.26
+        tag: 1.9.40
       resources:
         requests:
           memory: 100Mi
@@ -161,7 +161,7 @@ spec:
       image:
         repository: mailu/admin
         # tag defaults to mailuVersion
-        tag: 1.9.26
+        tag: 1.9.40
 
       resources:
         requests:
@@ -214,7 +214,7 @@ spec:
       image:
         repository: mailu/postfix
         # tag defaults to mailuVersion
-        tag: 1.9.26
+        tag: 1.9.40
       containerSecurityContext: {}
       #    CRI-O users will need to add the following:
       #    capabilities:
@@ -246,7 +246,7 @@ spec:
       image:
         repository: mailu/dovecot
         # tag defaults to mailuVersion
-        tag: 1.9.26
+        tag: 1.9.40
       containerSecurityContext: {}
       #    CRI-O users will need to add the following:
       #    capabilities:
@@ -286,7 +286,7 @@ spec:
       image:
         repository: mailu/rspamd
         # tag defaults to mailuVersion
-        tag: 1.9.26
+        tag: 1.9.40
       resources:
         requests:
           memory: 100Mi
@@ -313,7 +313,7 @@ spec:
       image:
         repository: mailu/clamav
         # tag defaults to mailuVersion
-        tag: 1.9.26
+        tag: 1.9.40
       persistence:
         size: 2Gi
         storageClass: ''
@@ -356,7 +356,7 @@ spec:
       # logLevel: WARNING
       image:
         repository: mailu/roundcube
-        tag: 1.9.26
+        tag: 1.9.40
       uri: /roundcube
       resources:
         requests:
@@ -383,7 +383,7 @@ spec:
       # logLevel: WARNING
       image:
         repository: mailu/radicale
-        tag: 1.9.26
+        tag: 1.9.40
       startupProbe:
         periodSeconds: 10
         failureThreshold: 30
@@ -427,7 +427,7 @@ spec:
       image:
         repository: mailu/fetchmail
         # tag defaults to mailuVersion
-        tag: 1.9.26
+        tag: 1.9.40
       resources:
         requests:
           memory: 100Mi
