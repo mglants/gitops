@@ -400,7 +400,7 @@ spec:
     mysql:
       image:
         repository: library/mariadb
-        tag: 10.4.10
+        tag: 10.9.4
       resources:
         requests:
           memory: 256Mi
