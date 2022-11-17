@@ -129,7 +129,7 @@ spec:
         enabled: true
         image:
           repository: arm64v8/alpine
-          tag: '3.16'
+          tag: '3.17'
       securityContext:
         fsGroup: 999
         runAsUser: 999
