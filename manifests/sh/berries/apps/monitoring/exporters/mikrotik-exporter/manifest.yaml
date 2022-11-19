@@ -25,7 +25,7 @@ spec:
             optional: false
       containers:
         - name: mikrotik-exporter
-          image: ogi4i/mikrotik-exporter:v1.2.0
+          image: ogi4i/mikrotik-exporter:v1.3.0
           args:
             - -config-file=/tmp/config.yaml
             - -port=9436
