@@ -1,0 +1,56 @@
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta1
+kind: Provider
+metadata:
+  name: discord
+  namespace: flux-system
+spec:
+  type: discord
+  username: Flux - ${CLUSTER_NAME}
+  channel: flux
+  secretRef:
+    name: discord-webhook-url
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta1
+kind: Alert
+metadata:
+  name: ${CLUSTER_NAME}-discord
+  namespace: flux-system
+spec:
+  summary: ${CLUSTER_NAME}
+  providerRef:
+    name: discord
+
+  eventSeverity: info
+  eventSources:
+    - kind: HelmRelease
+      namespace: apps
+      name: '*'
+    - kind: HelmRelease
+      namespace: backup
+      name: '*'
+    - kind: HelmRelease
+      namespace: cert-manager
+      name: '*'
+    - kind: HelmRelease
+      namespace: democratic-csi
+      name: '*'
+    - kind: HelmRelease
+      namespace: ingress-nginx
+      name: '*'
+    - kind: HelmRelease
+      namespace: kube-system
+      name: '*'
+    - kind: HelmRelease
+      namespace: metallb-system
+      name: '*'
+    - kind: HelmRelease
+      namespace: monitoring
+      name: '*'
+    - kind: HelmRelease
+      namespace: networking
+      name: '*'
+    - kind: HelmRelease
+      namespace: smarthome
+      name: '*'
+  suspend: false
