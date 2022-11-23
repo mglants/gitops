@@ -22,10 +22,10 @@ spec:
       tag: v0.20
     controller:
       replicas: 2
-      strategy:
-        rollingUpdate:
-          unavailable: 1
-          surge: 0
+      strategy: RollingUpdate
+      rollingUpdate:
+        unavailable: 1
+        surge: 0
     env:
       TZ: Europe/Moscow
     service:

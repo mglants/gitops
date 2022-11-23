@@ -41,3 +41,4 @@ resources:
   - vmware-tanzu-charts.yaml
   - weaveworks-kured-charts.yaml
   - timescale-charts.yaml
+  - bjw-s-charts.yaml
