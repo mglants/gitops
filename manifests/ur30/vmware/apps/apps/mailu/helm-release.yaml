@@ -22,6 +22,7 @@ spec:
     # A list of mail hostnames is required. The first will be used as primary mail hostname
     hostnames:
       - mail.ur30.ru
+      - webmail.ur30.ru
 
     # The mail domain is required. See https://github.com/Mailu/Mailu/blob/master/docs/faq.rst#what-is-the-difference-between-domain-and-hostnames
     domain: mail.ur30.ru
