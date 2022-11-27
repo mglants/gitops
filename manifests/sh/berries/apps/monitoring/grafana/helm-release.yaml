@@ -148,7 +148,7 @@ spec:
           - name: loki
             type: loki
             access: proxy
-            url: http://loki.monitoring.svc.cluster.local:3100
+            url: http://loki-gateway:80
     grafana.ini:
       server:
         root_url: http://grafana.home
