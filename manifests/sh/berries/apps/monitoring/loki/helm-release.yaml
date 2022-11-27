@@ -114,7 +114,7 @@ spec:
         enabled: true
         ingressClassName: nginx
         hosts:
-          - host: loki.ur30.local
+          - host: loki.home
             paths:
               - path: /
                 pathType: Prefix
