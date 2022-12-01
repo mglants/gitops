@@ -16,7 +16,16 @@ spec:
         name: emqx-charts
         namespace: flux-system
       interval: 5m
+  install:
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  timeout: 20m
   values:
+    image:
+      repository: emqx/emqx
     replicaCount: 1
     recreatePods: true
     service:
