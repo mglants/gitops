@@ -6,7 +6,6 @@ metadata:
   namespace: smarthome
 spec:
   interval: 5m
-  timeout: 10m0s
   chart:
     spec:
       # renovate: registryUrl=https://repos.emqx.io/charts
@@ -17,7 +16,16 @@ spec:
         name: emqx-charts
         namespace: flux-system
       interval: 5m
+  install:
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  timeout: 20m
   values:
+    image:
+      repository: emqx/emqx
     replicaCount: 1
     recreatePods: true
     service:
@@ -25,6 +33,8 @@ spec:
       loadBalancerIP: 192.168.40.10
     emqxConfig:
       EMQX_ALLOW_ANONYMOUS: 'false'
+      EMQX_LOADED_MODULES: emqx_mod_presence,emqx_mod_acl_internal,emqx_mod_topic_metrics
+      EMQX_LOADED_PLUGINS: emqx_management,emqx_recon,emqx_retainer,emqx_dashboard,emqx_rule_engine,emqx_auth_mnesia,emqx_prometheus
     #   EMQX_ACL_NOMATCH: "deny"
 
     emqxAclConfig: >
@@ -32,25 +42,6 @@ spec:
       {allow, {ipaddr, "127.0.0.1"}, pubsub, ["$SYS/#", "#"]}.
       {allow, all, subscribe, ["$SYS/#", {eq, "#"}]}.
       {allow, all}.
-
-    emqxLoadedPlugins: >
-      {emqx_management, true}.
-      {emqx_recon, true}.
-      {emqx_retainer, true}.
-      {emqx_dashboard, true}.
-      {emqx_telemetry, false}.
-      {emqx_rule_engine, true}.
-      {emqx_bridge_mqtt, false}.
-      {emqx_auth_mnesia, true}.
-      {emqx_prometheus, true}.
-
-    emqxLoadedModules: >
-      {emqx_mod_presence, true}.
-      {emqx_mod_delayed, false}.
-      {emqx_mod_rewrite, false}.
-      {emqx_mod_subscription, false}.
-      {emqx_mod_topic_metrics, true}.
-
     resources:
       limits:
         memory: 256Mi
@@ -70,6 +61,10 @@ spec:
         tls:
           - hosts:
               - emqx.ur30.local
+    metrics:
+      enabled: true
+      type: prometheus
+
   valuesFrom:
     - kind: Secret
       name: emqx-helm-values
