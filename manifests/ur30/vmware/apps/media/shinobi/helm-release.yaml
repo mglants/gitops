@@ -63,6 +63,7 @@ spec:
         existingClaim: nfs-public-pvc
         subPath: shinobi
         mountPath: /home/Shinobi/videos
+        readOnly: false
       shm:
         enabled: true
         type: emptyDir
