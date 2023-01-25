@@ -1,0 +1,71 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: shinobi
+  namespace: media
+spec:
+  interval: 5m
+  timeout: 10m0s
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: shinobi
+      version: 1.2.2
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      repository: registry.gitlab.com/shinobi-systems/shinobi
+      tag: dev
+      pullPolicy: Always
+    env:
+      TZ: Europe/Moscow
+    # -- Configures service settings for the chart.
+    # @default -- See values.yaml
+    service:
+      main:
+        ports:
+          http:
+            port: 8080
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+        ingressClassName: nginx
+        hosts:
+          - host: shinobi.ur30.ru
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: shinibiur30ru-crt-secret
+            hosts:
+              - shinobi.ur30.ru
+
+    # -- Configure persistence settings for the chart under this key.
+    # @default -- See values.yaml
+    persistence:
+      config:
+        enabled: true
+        mountPath: /config
+        existingClaim: shinobi-config-v1
+      database:
+        enabled: true
+        mountPath: /var/lib/mysql
+        existingClaim: shinobi-mysql-v1
+      videos:
+        enabled: true
+        existingClaim: nfs-public-pvc
+        subPath: shinobi
+        mountPath: /home/Shinobi/videos
+      shm:
+        enabled: true
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 1Gi
+        mountPath: /dev/shm/streams
