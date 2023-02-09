@@ -64,3 +64,4 @@ spec:
         memory: 8Gi
       limits:
         memory: 16Gi
+        cpu: 8000m
