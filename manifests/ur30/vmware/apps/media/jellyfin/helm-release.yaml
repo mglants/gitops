@@ -1,0 +1,66 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: jellyfin
+  namespace: media
+spec:
+  interval: 5m
+  timeout: 10m0s
+  chart:
+    spec:
+      # renovate: registryUrl=https://loeken.github.io/helm-charts
+      chart: jellyfin
+      version: 1.0.0
+      sourceRef:
+        kind: HelmRepository
+        name: loeken-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      # -- image repository
+      repository: loeken/jellyfin
+      # -- image tag
+      tag: 10.8.9-alpine
+      # -- image pull policy
+      pullPolicy: IfNotPresent
+    env:
+      TZ: Europe/Moscow
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+        ingressClassName: nginx
+        hosts:
+          - host: jellyfin.ur30.ru
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: jellyfinur30ru-crt-secret
+            hosts:
+              - jellyfin.ur30.ru
+    persistence:
+      config:
+        enabled: true
+        existingClaim: jellyfin-config-v1
+      cache:
+        enabled: true
+        type: emptyDir
+        medium: Memory
+        mountPath: /cache
+      media:
+        enabled: true
+        existingClaim: nfs-public-pvc
+        mountPath: /media
+        readOnly: false
+    podAnnotations:
+      backup.velero.io/backup-volumes: config
+    resources:
+      requests:
+        cpu: 4000m
+        memory: 8Gi
+      limits:
+        memory: 16Gi
