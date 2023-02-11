@@ -43,3 +43,4 @@ resources:
   - timescale-charts.yaml
   - bjw-s-charts.yaml
   - loeken-at-home-charts.yaml
+  - itzg-charts.yaml

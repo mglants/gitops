@@ -1,0 +1,47 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: minecraft-bedrock-survival
+  namespace: minecraft
+spec:
+  chart:
+    spec:
+      # renovate: registryUrl=https://itzg.github.io/minecraft-server-charts/
+      chart: minecraft-bedrock
+      version: 2.0.2
+      sourceRef:
+        kind: HelmRepository
+        name: itzg-charts
+        namespace: flux-system
+  interval: 5m
+  install:
+    remediation:
+      retries: 3
+  test:
+    # Fix problem where helm fails to uninstall
+    enable: false
+  # Default values
+  # https://github.com/itzg/minecraft-server-charts/blob/master/charts/minecraft-bedrock/values.yaml
+  values:
+    image:
+      repository: itzg/minecraft-bedrock-server
+      tag: 2022.1.0
+    minecraftServer:
+      serverName: Bedrock Server
+      eula: 'TRUE'
+      version: 1.19.2.02
+      gameMode: survival
+      memory: 2048M
+      serviceType: LoadBalancer
+      loadBalancerIP: 192.168.40.12
+    persistence:
+      dataDir:
+        enabled: true
+        existingClaim: minecraft-bedrock-v1
+    resources:
+      requests:
+        memory: 2048Mi
+        cpu: 250m
+      limits:
+        memory: 3072Mi

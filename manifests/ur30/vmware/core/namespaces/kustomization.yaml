@@ -15,3 +15,5 @@ resources:
   - smarthome.yaml
   - www.yaml
   - backup.yaml
+  - games.yaml
+  - vpn.yaml
