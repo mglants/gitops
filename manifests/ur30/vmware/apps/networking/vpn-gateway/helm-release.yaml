@@ -33,6 +33,10 @@ spec:
       vpn:
         enabled: true
         type: gluetun
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
         gluetun:
           image:
             repository: qmcgaw/gluetun
@@ -61,6 +65,9 @@ spec:
         #   value: set in secret
         # - name: VPN_ENDPOINT_PORT
         #   value: set in secret
+        envFrom:
+          - secretRef:
+              name: vpn-gateway-secret
         livenessProbe:
           exec:
             command:
