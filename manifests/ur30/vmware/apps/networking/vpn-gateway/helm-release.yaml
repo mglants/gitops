@@ -1,0 +1,102 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: vpn-gateway
+  labels:
+    # Avoid variable substitution of shell variables bellow
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://angelnu.github.io/helm-charts
+      chart: pod-gateway
+      version: 6.0.0
+      interval: 15m
+      sourceRef:
+        kind: HelmRepository
+        name: angelnu-charts
+        namespace: flux-system
+  # See https://github.com/angelnu/helm-charts/blob/main/charts/apps/pod-gateway/values.yaml
+  values:
+    image:
+      repository: ghcr.io/angelnu/pod-gateway
+      tag: v1.8.1
+    webhook:
+      image:
+        repository: ghcr.io/angelnu/gateway-admision-controller
+        pullPolicy: Always
+        tag: v1.8.1
+    addons:
+      vpn:
+        enabled: true
+        type: gluetun
+        gluetun:
+          image:
+            repository: qmcgaw/gluetun
+            tag: v3.32
+        env:
+          - name: VPN_SERVICE_PROVIDER
+            value: custom
+          - name: VPN_TYPE
+            value: wireguard
+          - name: VPN_INTERFACE
+            value: wg0
+          - name: FIREWALL
+            value: false
+          - name: DOT
+            value: false
+        # - name:  WIREGUARD_PUBLIC_KEY
+        #   value: set in secret
+        # - name:  WIREGUARD_PRIVATE_KEY
+        #   value: set in secret
+        # - name:  WIREGUARD_PRESHARED_KEY
+        #   value: set in secret
+        # - name:  WIREGUARD_ADDRESSES
+        #   value: set in secret
+        # - name: VPN_ENDPOINT_IP
+        #   value: set in secret
+        # - name: VPN_ENDPOINT_PORT
+        #   value: set in secret
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - if [ $(wget -q -O- https://ipinfo.io/country) == 'NL' ]; then exit 0; else exit $?; fi
+          initialDelaySeconds: 30
+          periodSeconds: 60
+          failureThreshold: 3
+
+        networkPolicy:
+          enabled: false
+
+    routed_namespaces:
+      - vpn
+
+    settings:
+      # -- If using a VPN, interface name created by it
+      VPN_INTERFACE: wg0
+      # -- Prevent non VPN traffic to leave the gateway
+      VPN_BLOCK_OTHER_TRAFFIC: true
+      # -- If VPN_BLOCK_OTHER_TRAFFIC is true, allow VPN traffic over this port
+      VPN_TRAFFIC_PORT: 1637
+      # -- Traffic to these IPs will be send through the K8S gateway
+      VPN_LOCAL_CIDRS: 10.0.0.0/8 192.168.0.0/16 172.16.0.0/12
+
+    # -- settings to expose ports, usually through a VPN provider.
+    # NOTE: if you change it you will need to manually restart the gateway POD
+    # publicPorts:
+    # - hostname: deluge
+    #   IP: 10
+    #   ports:
+    #   - type: udp
+    #     port: 18289
+    #   - type: tcp
+    #     port: 18289
+  valuesFrom:
+    - kind: Secret
+      name: vpn-gateway-helm-values
+      valuesKey: values.yaml
+      optional: false
