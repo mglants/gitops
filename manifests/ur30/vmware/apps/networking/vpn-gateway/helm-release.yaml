@@ -28,7 +28,7 @@ spec:
       image:
         repository: ghcr.io/angelnu/gateway-admision-controller
         pullPolicy: Always
-        tag: v1.8.1
+        tag: v3.7.0
     addons:
       vpn:
         enabled: true
@@ -36,7 +36,8 @@ spec:
         gluetun:
           image:
             repository: qmcgaw/gluetun
-            tag: v3.32
+            tag: latest
+            pullPolicy: Always
         env:
           - name: VPN_SERVICE_PROVIDER
             value: custom
