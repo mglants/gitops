@@ -50,9 +50,9 @@ spec:
           - name: VPN_INTERFACE
             value: wg0
           - name: FIREWALL
-            value: false
+            value: off
           - name: DOT
-            value: false
+            value: off
         # - name:  WIREGUARD_PUBLIC_KEY
         #   value: set in secret
         # - name:  WIREGUARD_PRIVATE_KEY
