@@ -29,6 +29,9 @@ spec:
         repository: ghcr.io/angelnu/gateway-admision-controller
         pullPolicy: Always
         tag: v3.7.0
+      gatewayAnnotation: setGateway
+      gatewayDefault: false
+      gatewayLabel: setGateway
     addons:
       vpn:
         enabled: true
@@ -83,6 +86,7 @@ spec:
 
     routed_namespaces:
       - vpn
+      - media
 
     settings:
       # -- If using a VPN, interface name created by it
