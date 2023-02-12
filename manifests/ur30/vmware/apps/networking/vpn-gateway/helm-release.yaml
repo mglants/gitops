@@ -104,8 +104,3 @@ spec:
     #     port: 18289
     #   - type: tcp
     #     port: 18289
-  valuesFrom:
-    - kind: Secret
-      name: vpn-gateway-helm-values
-      valuesKey: values.yaml
-      optional: false
