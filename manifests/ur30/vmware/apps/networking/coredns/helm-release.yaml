@@ -61,9 +61,9 @@ spec:
           - name: prometheus
             parameters: 0.0.0.0:9153
           - name: forward
-            parameters: . 127.0.0.1:5302
+            parameters: . 127.0.0.1:5302 127.0.0.1:5303
             configBlock: |-
-              health_check 5s
+              health_check 5s domain example.org
           - name: cache
             parameters: 30
           - name: loop
@@ -78,6 +78,7 @@ spec:
             parameters: . 8.8.8.8 8.8.4.4
             configBlock: |-
               tls_servername dns.google
+              health_check 5s domain example.org
         port: 5301
       - zones:
           - zone: .
@@ -88,7 +89,19 @@ spec:
             parameters: . 1.1.1.1 1.0.0.1
             configBlock: |-
               tls_servername cloudflare-dns.com
+              health_check 5s domain example.org
         port: 5302
+      - zones:
+          - zone: .
+            scheme: dns://
+            use_tcp: false
+        plugins:
+          - name: forward
+            parameters: . 9.9.9.9 149.112.112.112
+            configBlock: |-
+              tls_servername dns.quad9.net
+              health_check 5s domain example.org
+        port: 5303
       - zones:
           - zone: ur30.ru
             scheme: dns://
