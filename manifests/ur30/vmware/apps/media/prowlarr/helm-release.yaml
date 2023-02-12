@@ -49,6 +49,7 @@ spec:
       fsGroup: 1001
     podAnnotations:
       backup.velero.io/backup-volumes: config
+      setGateway: 'true'
     prometheus:
       podMonitor:
         enabled: true

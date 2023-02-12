@@ -47,6 +47,7 @@ spec:
                 pathType: Prefix
     podAnnotations:
       backup.velero.io/backup-volumes: config
+      setGateway: 'true'
     persistence:
       config:
         enabled: true

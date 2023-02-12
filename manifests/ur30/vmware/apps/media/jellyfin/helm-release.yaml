@@ -58,6 +58,7 @@ spec:
         readOnly: false
     podAnnotations:
       backup.velero.io/backup-volumes: config
+      setGateway: 'true'
     resources:
       requests:
         cpu: 4000m

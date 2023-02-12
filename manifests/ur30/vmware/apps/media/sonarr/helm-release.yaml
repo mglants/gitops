@@ -25,7 +25,6 @@ spec:
       tag: v3.0.9.1549
       # -- image pull policy
       pullPolicy: IfNotPresent
-
     podSecurityContext:
       fsGroup: 568
     env:
@@ -57,3 +56,4 @@ spec:
         mountPath: /media
     podAnnotations:
       backup.velero.io/backup-volumes: config
+      setGateway: 'true'
