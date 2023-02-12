@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nfs-public-pv
+  name: nfs-public-vpn-pv
   namespace: vpn
 spec:
   storageClassName: public-vpn
@@ -21,7 +21,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nfs-public-pvc
+  name: nfs-public-vpn-pvc
   namespace: vpn
 spec:
   accessModes:
