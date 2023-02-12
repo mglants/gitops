@@ -20,9 +20,9 @@ spec:
   values:
     image:
       # -- image repository
-      repository: ghcr.io/k8s-at-home/radarr
+      repository: linuxserver/radarr
       # -- image tag
-      tag: v4.2.4.6635
+      tag: version-4.3.2.6857
       # -- image pull policy
       pullPolicy: IfNotPresent
     podSecurityContext:

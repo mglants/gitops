@@ -20,9 +20,9 @@ spec:
   values:
     image:
       # -- image repository
-      repository: ghcr.io/k8s-at-home/sonarr
+      repository: linuxserver/sonarr
       # -- image tag
-      tag: v3.0.9.1549
+      tag: version-3.0.9.1549
       # -- image pull policy
       pullPolicy: IfNotPresent
     podSecurityContext:
