@@ -180,9 +180,9 @@
       "packageNames": [
         "ghcr.io/home-assistant/home-assistant",
         "docker.io/esphome/esphome",
-        "ghcr.io/k8s-at-home/radarr",
-        "ghcr.io/k8s-at-home/sonarr",
-        "ghcr.io/k8s-at-home/nzbget",
+        "linuxserver/radarr",
+        "linuxserver/sonarr",
+        "linuxserver/nzbget",
         "docker.io/koenkk/zigbee2mqtt",
         "docker.io/plexinc/pms-docker",
         "docker.io/nodered/node-red"
@@ -196,7 +196,7 @@
       "schedule": ["before 3am on Monday"],
       "updateTypes": ["minor", "patch"],
       "packageNames": [
-        "ghcr.io/k8s-at-home/prowlarr"
+        "linuxserver/prowlarr"
       ]
     },
     {
