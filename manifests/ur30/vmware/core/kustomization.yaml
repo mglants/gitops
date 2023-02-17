@@ -11,3 +11,4 @@ resources:
   - ingress-nginx
   - metallb-system
   - cert-manager
+  - kube-system
