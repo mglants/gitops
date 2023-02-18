@@ -50,6 +50,7 @@ spec:
       annotations:
         kubernetes.io/ingress.class: nginx
         cert-manager.io/cluster-issuer: letsencrypt-prod
+        external-dns.alpha.kubernetes.io/target: dd.ur30.ru
       hostname: ruzahouse.ru
       tls: true
 

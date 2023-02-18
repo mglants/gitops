@@ -39,6 +39,7 @@ spec:
       ingressClassName: nginx
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-prod
+        external-dns.alpha.kubernetes.io/target: dd.ur30.ru
       hosts:
         - host: authentik.gearage.ru
           paths:
