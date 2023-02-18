@@ -28,7 +28,7 @@ spec:
       - service
       - ingress
     provider: cloudflare
-    labelFilter: external-dns.alpha.kubernetes.io/target
+    annotationFilter: external-dns.alpha.kubernetes.io/target
     cloudflare:
       proxied: false
   valuesFrom:
