@@ -24,7 +24,7 @@ spec:
       repository: bitnami/external-dns
       tag: 0.13.2
     sources:
-      - crd
+      # - crd
       - service
       - ingress
     provider: cloudflare
