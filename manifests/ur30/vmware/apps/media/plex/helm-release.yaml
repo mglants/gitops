@@ -20,7 +20,7 @@ spec:
   values:
     image:
       repository: plexinc/pms-docker
-      tag: 1.31.0.6654-02189b09f
+      tag: 1.31.1.6733-bc0674160
     env:
       TZ: Europe/Moscow
       ADVERTISE_IP: http://193.41.79.236:32400/
