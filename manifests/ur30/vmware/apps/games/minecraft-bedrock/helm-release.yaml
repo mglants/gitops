@@ -30,7 +30,7 @@ spec:
     minecraftServer:
       serverName: Bedrock Server
       eula: 'TRUE'
-      version: 1.19.60.04
+      version: LATEST
       gameMode: survival
       memory: 2048M
       serviceType: LoadBalancer
