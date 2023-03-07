@@ -30,16 +30,16 @@ spec:
         ports:
           http:
             port: 8112
-      daemon:
+          daemon:
+            port: 58846
+          input:
+            port: 57047
         type: LoadBalancer
         loadBalancerIP: 192.168.40.6
         annotations:
-          metallb.universe.tf/allow-shared-ip: media
-        ports:
-          daemon:
-            primary: false
-            port: 58846
-            protocol: tcp
+          metallb.universe.tf/allow-shared-ip: deluge
+        externalTrafficPolicy: Local
+
     ingress:
       main:
         enabled: true
