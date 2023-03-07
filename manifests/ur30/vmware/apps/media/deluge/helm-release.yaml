@@ -27,6 +27,8 @@ spec:
       TZ: Europe/Moscow
     service:
       main:
+        type: LoadBalancer
+        loadBalancerIP: 192.168.40.13
         ports:
           http:
             enabled: true
@@ -34,12 +36,14 @@ spec:
           daemon:
             enabled: true
             port: 58846
-          input:
+      bittorrent:
+        enabled: true
+        ports:
+          bittorrent:
             enabled: true
             port: 57047
+            protocol: TCP
             targetPort: 57047
-        type: LoadBalancer
-        loadBalancerIP: 192.168.40.13
 
     ingress:
       main:
