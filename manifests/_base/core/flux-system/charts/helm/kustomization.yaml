@@ -45,3 +45,4 @@ resources:
   - loeken-at-home-charts.yaml
   - itzg-charts.yaml
   - angelnu-charts.yaml
+  - weaveworks-gitops-charts.yaml
