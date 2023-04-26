@@ -31,4 +31,4 @@ spec:
   controlPlaneConfig:
     controlplane:
       generateType: controlplane
-      talosVersion: ${TALOS_VERSION}
+      talosVersion: ${TALOS_SH_VERSION}
