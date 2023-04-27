@@ -11,7 +11,7 @@ spec:
   accepted: true
   environmentRef:
     namespace: default
-    name: default-amd64
+    name: sh-amd64
   cpu:
     manufacturer: QEMU
     version: pc-i440fx-5.2
