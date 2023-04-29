@@ -27,7 +27,7 @@ spec:
     type: RollingUpdate
   template:
     spec:
-      version: ${K8s_VERSION}
+      version: ${K8s_SH_VERSION}
       bootstrap:
         configRef:
           apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3

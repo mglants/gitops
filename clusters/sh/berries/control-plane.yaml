@@ -18,7 +18,7 @@ metadata:
   name: berries-cp
   namespace: flux-system
 spec:
-  version: ${K8s_VERSION}
+  version: ${K8s_SH_VERSION}
   replicas: 1
   rolloutStrategy:
     rollingUpdate:
