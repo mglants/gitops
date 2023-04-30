@@ -36,8 +36,8 @@ spec:
               address = "0.0.0.0:11234"
           path: /etc/cri/conf.d/20-customization.part
           op: create
-    - op: remove
-      path: /cluster/apiServer/admissionControl
+    # - op: remove
+    #   path: /cluster/apiServer/admissionControl
     - op: add
       path: /cluster/network/cni
       value:
