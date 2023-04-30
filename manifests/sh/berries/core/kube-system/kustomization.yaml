@@ -5,3 +5,4 @@ resources:
   - node-feature-discovery
   - cilium
   - kubelet-csr-approver
+  - metrics-server
