@@ -48,3 +48,4 @@ resources:
   - weaveworks-gitops-charts.yaml
   - cilium-charts.yaml
   - postfinance-charts.yaml
+  - kubernetes-metrics-server-charts.yaml

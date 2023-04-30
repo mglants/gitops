@@ -11,3 +11,4 @@ resources:
   - ingress-nginx
   - democratic-csi
   - metallb-system
+  - metrics-server
