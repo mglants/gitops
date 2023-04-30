@@ -1,0 +1,1397 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: cilium
+  namespace: kube-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: cilium-operator
+  namespace: kube-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: hubble-relay
+  namespace: kube-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: hubble-ui
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: cilium
+  name: cilium-config-agent
+  namespace: kube-system
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: cilium
+  name: cilium
+rules:
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - networkpolicies
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - discovery.k8s.io
+    resources:
+      - endpointslices
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ''
+    resources:
+      - namespaces
+      - services
+      - pods
+      - endpoints
+      - nodes
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions
+    verbs:
+      - list
+      - watch
+      - get
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumloadbalancerippools
+      - ciliumbgppeeringpolicies
+      - ciliumclusterwideenvoyconfigs
+      - ciliumclusterwidenetworkpolicies
+      - ciliumegressgatewaypolicies
+      - ciliumendpoints
+      - ciliumendpointslices
+      - ciliumenvoyconfigs
+      - ciliumidentities
+      - ciliumlocalredirectpolicies
+      - ciliumnetworkpolicies
+      - ciliumnodes
+      - ciliumnodeconfigs
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumidentities
+      - ciliumendpoints
+      - ciliumnodes
+    verbs:
+      - create
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumidentities
+    verbs:
+      - update
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumendpoints
+    verbs:
+      - delete
+      - get
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumnodes
+      - ciliumnodes/status
+    verbs:
+      - get
+      - update
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumnetworkpolicies/status
+      - ciliumclusterwidenetworkpolicies/status
+      - ciliumendpoints/status
+      - ciliumendpoints
+    verbs:
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: cilium
+  name: cilium-operator
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+      - delete
+  - apiGroups:
+      - ''
+    resources:
+      - nodes
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - ''
+    resources:
+      - nodes
+      - nodes/status
+    verbs:
+      - patch
+  - apiGroups:
+      - discovery.k8s.io
+    resources:
+      - endpointslices
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ''
+    resources:
+      - services/status
+    verbs:
+      - update
+      - patch
+  - apiGroups:
+      - ''
+    resources:
+      - namespaces
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ''
+    resources:
+      - services
+      - endpoints
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumnetworkpolicies
+      - ciliumclusterwidenetworkpolicies
+    verbs:
+      - create
+      - update
+      - deletecollection
+      - patch
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumnetworkpolicies/status
+      - ciliumclusterwidenetworkpolicies/status
+    verbs:
+      - patch
+      - update
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumendpoints
+      - ciliumidentities
+    verbs:
+      - delete
+      - list
+      - watch
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumidentities
+    verbs:
+      - update
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumnodes
+    verbs:
+      - create
+      - update
+      - get
+      - list
+      - watch
+      - delete
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumnodes/status
+    verbs:
+      - update
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumendpointslices
+      - ciliumenvoyconfigs
+    verbs:
+      - create
+      - update
+      - get
+      - list
+      - watch
+      - delete
+      - patch
+  - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions
+    verbs:
+      - create
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - apiextensions.k8s.io
+    resourceNames:
+      - ciliumloadbalancerippools.cilium.io
+      - ciliumbgppeeringpolicies.cilium.io
+      - ciliumclusterwideenvoyconfigs.cilium.io
+      - ciliumclusterwidenetworkpolicies.cilium.io
+      - ciliumegressgatewaypolicies.cilium.io
+      - ciliumendpoints.cilium.io
+      - ciliumendpointslices.cilium.io
+      - ciliumenvoyconfigs.cilium.io
+      - ciliumexternalworkloads.cilium.io
+      - ciliumidentities.cilium.io
+      - ciliumlocalredirectpolicies.cilium.io
+      - ciliumnetworkpolicies.cilium.io
+      - ciliumnodes.cilium.io
+      - ciliumnodeconfigs.cilium.io
+    resources:
+      - customresourcedefinitions
+    verbs:
+      - update
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumloadbalancerippools
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumloadbalancerippools/status
+    verbs:
+      - patch
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - create
+      - get
+      - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: cilium
+  name: hubble-ui
+rules:
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - networkpolicies
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ''
+    resources:
+      - componentstatuses
+      - endpoints
+      - namespaces
+      - nodes
+      - pods
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - cilium.io
+    resources:
+      - '*'
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: cilium
+  name: cilium-config-agent
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cilium-config-agent
+subjects:
+  - kind: ServiceAccount
+    name: cilium
+    namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: cilium
+  name: cilium
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cilium
+subjects:
+  - kind: ServiceAccount
+    name: cilium
+    namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: cilium
+  name: cilium-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cilium-operator
+subjects:
+  - kind: ServiceAccount
+    name: cilium-operator
+    namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: cilium
+  name: hubble-ui
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: hubble-ui
+subjects:
+  - kind: ServiceAccount
+    name: hubble-ui
+    namespace: kube-system
+---
+apiVersion: v1
+data:
+  agent-not-ready-taint-key: node.cilium.io/agent-not-ready
+  arping-refresh-period: 30s
+  auto-direct-node-routes: 'true'
+  bpf-lb-algorithm: maglev
+  bpf-lb-external-clusterip: 'false'
+  bpf-lb-map-max: '65536'
+  bpf-lb-mode: hybrid
+  bpf-lb-sock: 'false'
+  bpf-map-dynamic-size-ratio: '0.0025'
+  bpf-policy-map-max: '16384'
+  bpf-root: /sys/fs/bpf
+  cgroup-root: /sys/fs/cgroup
+  cilium-endpoint-gc-interval: 5m0s
+  cluster-id: '1'
+  cluster-name: sh-berries
+  cni-uninstall: 'true'
+  custom-cni-conf: 'false'
+  debug: 'false'
+  debug-verbose: ''
+  disable-cnp-status-updates: 'true'
+  disable-endpoint-crd: 'false'
+  enable-auto-protect-node-port-range: 'true'
+  enable-bgp-control-plane: 'false'
+  enable-bpf-clock-probe: 'true'
+  enable-endpoint-health-checking: 'true'
+  enable-endpoint-routes: 'true'
+  enable-health-check-nodeport: 'true'
+  enable-health-checking: 'true'
+  enable-hubble: 'true'
+  enable-hubble-open-metrics: 'false'
+  enable-ipv4: 'true'
+  enable-ipv4-masquerade: 'true'
+  enable-ipv6: 'false'
+  enable-ipv6-big-tcp: 'false'
+  enable-ipv6-masquerade: 'true'
+  enable-k8s-terminating-endpoint: 'true'
+  enable-l2-neigh-discovery: 'true'
+  enable-l7-proxy: 'true'
+  enable-local-redirect-policy: 'false'
+  enable-policy: default
+  enable-remote-node-identity: 'true'
+  enable-sctp: 'false'
+  enable-svc-source-range-check: 'true'
+  enable-vtep: 'false'
+  enable-well-known-identities: 'false'
+  enable-xt-socket-fallback: 'true'
+  hubble-disable-tls: 'false'
+  hubble-listen-address: :4244
+  hubble-metrics: dns:query;ignoreAAAA, drop tcp flow http icmp port-distribution
+  hubble-metrics-server: :9965
+  hubble-socket-path: /var/run/cilium/hubble.sock
+  hubble-tls-cert-file: /var/lib/cilium/tls/hubble/server.crt
+  hubble-tls-client-ca-files: /var/lib/cilium/tls/hubble/client-ca.crt
+  hubble-tls-key-file: /var/lib/cilium/tls/hubble/server.key
+  identity-allocation-mode: crd
+  identity-gc-interval: 15m0s
+  identity-heartbeat-timeout: 30m0s
+  install-no-conntrack-iptables-rules: 'false'
+  ipam: kubernetes
+  ipv4-native-routing-cidr: 10.244.0.0/16
+  kube-proxy-replacement: strict
+  kube-proxy-replacement-healthz-bind-address: 0.0.0.0:10256
+  monitor-aggregation: medium
+  monitor-aggregation-flags: all
+  monitor-aggregation-interval: 5s
+  node-port-bind-protection: 'true'
+  nodes-gc-interval: 5m0s
+  operator-api-serve-addr: 127.0.0.1:9234
+  preallocate-bpf-maps: 'false'
+  procfs: /host/proc
+  remove-cilium-node-taints: 'true'
+  set-cilium-is-up-condition: 'true'
+  sidecar-istio-proxy-image: cilium/istio_proxy
+  skip-cnp-status-startup-clean: 'false'
+  synchronize-k8s-nodes: 'true'
+  tofqdns-dns-reject-response-code: refused
+  tofqdns-enable-dns-compression: 'true'
+  tofqdns-endpoint-max-ip-per-hostname: '50'
+  tofqdns-idle-connection-grace-period: 0s
+  tofqdns-max-deferred-connection-deletes: '10000'
+  tofqdns-min-ttl: '3600'
+  tofqdns-proxy-response-max-delay: 100ms
+  tunnel: disabled
+  unmanaged-pod-watcher-interval: '15'
+  vtep-cidr: ''
+  vtep-endpoint: ''
+  vtep-mac: ''
+  vtep-mask: ''
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: cilium-config
+  namespace: kube-system
+---
+apiVersion: v1
+data:
+  config.yaml: "cluster-name: sh-berries\npeer-service: \"hubble-peer.kube-system.svc.cluster.local:443\"\nlisten-address: :4245\ndial-timeout: \nretry-timeout:\
+    \ \nsort-buffer-len-max: \nsort-buffer-drain-timeout: \ntls-client-cert-file: /var/lib/hubble-relay/tls/client.crt\ntls-client-key-file: /var/lib/hubble-relay/tls/client.key\n\
+    tls-hubble-server-ca-files: /var/lib/hubble-relay/tls/hubble-server-ca.crt\ndisable-server-tls: true\n"
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: hubble-relay-config
+  namespace: kube-system
+---
+apiVersion: v1
+data:
+  nginx.conf: "server {\n    listen       8081;\n    listen       [::]:8081;\n    server_name  localhost;\n    root /app;\n    index index.html;\n    client_max_body_size\
+    \ 1G;\n\n    location / {\n        proxy_set_header Host $host;\n        proxy_set_header X-Real-IP $remote_addr;\n\n        # CORS\n        add_header\
+    \ Access-Control-Allow-Methods \"GET, POST, PUT, HEAD, DELETE, OPTIONS\";\n        add_header Access-Control-Allow-Origin *;\n        add_header Access-Control-Max-Age\
+    \ 1728000;\n        add_header Access-Control-Expose-Headers content-length,grpc-status,grpc-message;\n        add_header Access-Control-Allow-Headers\
+    \ range,keep-alive,user-agent,cache-control,content-type,content-transfer-encoding,x-accept-content-transfer-encoding,x-accept-response-streaming,x-user-agent,x-grpc-web,grpc-timeout;\n\
+    \        if ($request_method = OPTIONS) {\n            return 204;\n        }\n        # /CORS\n\n        location /api {\n            proxy_http_version\
+    \ 1.1;\n            proxy_pass_request_headers on;\n            proxy_hide_header Access-Control-Allow-Origin;\n            proxy_pass http://127.0.0.1:8090;\n\
+    \        }\n        location / {\n            # double `/index.html` is required here \n            try_files $uri $uri/ /index.html /index.html;\n\
+    \        }\n    }\n}"
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: hubble-ui-nginx
+  namespace: kube-system
+---
+apiVersion: v1
+data:
+  ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURGRENDQWZ5Z0F3SUJBZ0lSQUovaGJJNElCcHNmMUtKWSswMGc4Vmd3RFFZSktvWklodmNOQVFFTEJRQXcKRkRFU01CQUdBMVVFQXhNSlEybHNhWFZ0SUVOQk1CNFhEVEl6TURRek1EQXhOVEF3TkZvWERUSTJNRFF5T1RBeApOVEF3TkZvd0ZERVNNQkFHQTFVRUF4TUpRMmxzYVhWdElFTkJNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DCkFROEFNSUlCQ2dLQ0FRRUFwT0FuNnhISzNtb0VLTzN5SHMrbFovaFhpS0dqc0RnMTNTUFA0eE4xeFBsTFFDeXAKdzdUaGdrQWErbVVoYjE2VDk4NEVXdUJTdDB6alI0TCtRR3pFYmVJQWRENy82T2lQak9WQUU4Y0RvTTh1dHM2TwpLNnJDWGM5eVRhdFNodGluTit1Q1NvamdyQys3WlMvWGp4cmVkQVJqMUF6Vm83RE4xTGdXSzBkK3lTaFhXWlFxCjRDTWRNaktFbTJydE50ZDdyL1p4dXdXQjJhaSsvQnk5c3h2ek9qbVlnRFpFK1Z6NUxCS2hLWjdac2lkelJUNlkKL0wwdjRlVlp1VEJ2TE9iMlh3ZmhHL2c0b0YyYU9MTXVhZTZPM0NLY1ZDSU5JRDhSd3pRSmpOdzF6OHdMMGM0aApTMjM5cGRITDBtYUdZdG02cWVndHkxTDA1WmgvMUF6OStFUWNjUUlEQVFBQm8yRXdYekFPQmdOVkhROEJBZjhFCkJBTUNBcVF3SFFZRFZSMGxCQll3RkFZSUt3WUJCUVVIQXdFR0NDc0dBUVVGQndNQ01BOEdBMVVkRXdFQi93UUYKTUFNQkFmOHdIUVlEVlIwT0JCWUVGSFByMkVuTEZUQlEvZVZKajdzRUtaNnNxYW96TUEwR0NTcUdTSWIzRFFFQgpDd1VBQTRJQkFRQ0xMdThmZmQxK1A1RG9sL2NVSC8zSlRldkdmZHdFNFVoVUhWbWJCRG8zeUVwRmw3SXhmZVB3CjRPVUdlV0xybzVJcmFnSHJDL0lhUVZVRTBqQ2c3QTVvWlY2Q3VLZWZFRkxPV0JSQ2pWSmRrUE9OdmJIUEM3VFQKTFU1NWZpYjdIanZWRmlGYVJQbXl3U2plWEl5eUNNOHFZWlk3WFlacFRTbldueDl2RWxYakhGeXNtVXdPeVNPagpoS3loemtQenpmZkZBY2EvV1FoQjc2S0I0SUhTcE1EVjNvbmxFSEVVOUx2akpsbnNRYjl6WXgzVERNU2NKTS82Cmt1ZUt6cVoxaDdmRjFmVmdDb3kwZXNMV1NSY1dyL05pK2FJejN1YmRiYXdoa2hZN25iSFc0R3hIa1NYdkg1SE0KNGRiNys0Mm5WNDVrTEwxdkZHV2VtektnY1gweEpsTXkKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  ca.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBcE9BbjZ4SEszbW9FS08zeUhzK2xaL2hYaUtHanNEZzEzU1BQNHhOMXhQbExRQ3lwCnc3VGhna0FhK21VaGIxNlQ5ODRFV3VCU3QwempSNEwrUUd6RWJlSUFkRDcvNk9pUGpPVkFFOGNEb004dXRzNk8KSzZyQ1hjOXlUYXRTaHRpbk4rdUNTb2pnckMrN1pTL1hqeHJlZEFSajFBelZvN0ROMUxnV0swZCt5U2hYV1pRcQo0Q01kTWpLRW0ycnROdGQ3ci9aeHV3V0IyYWkrL0J5OXN4dnpPam1ZZ0RaRStWejVMQktoS1o3WnNpZHpSVDZZCi9MMHY0ZVZadVRCdkxPYjJYd2ZoRy9nNG9GMmFPTE11YWU2TzNDS2NWQ0lOSUQ4Und6UUpqTncxejh3TDBjNGgKUzIzOXBkSEwwbWFHWXRtNnFlZ3R5MUwwNVpoLzFBejkrRVFjY1FJREFRQUJBb0lCQUgydUZSKytaMXRWaXlnOApBWlYxQ1l3UXBZRVVYZmVGVWFIcG01MW9CeDBJUDFHQytrR2h6MGovWHRGQ1o5TkNVQjdVbjBNNnZqTFYzR1oxCnR5UWJCVDBSeXZEUjJUZU1sMmg2bEhhKy9NZ0hSbis1UW15TTlTNlhaSFZLUkZWZ0wwK1VLYlJ4VkhwTXhGZGsKdWJkdmJ1VVhONVc3MXRxNWVwMU5XakRSaGhjRmZSV2pjSUFwYVYrL2RUQmVLeW5hQTdFd1hldjZUTWk4TmhPVwplb0VKN2F3bzdpL3FyMGlYdEMzU1BIZzV3d0x4R0lPSlNTdkRJbi9KRnF0eSszQUlGeDR0WWRBVjdKTjhaQzZhCksvd1pIdWVhMkx1MG9HK1FnMTRhS0VkaGFzSnZMejhsTFRwNy9TL0lRMkJLa3RFblI1Rk9RYkNjSGxMK3RadDMKUCtXNkxURUNnWUVBeWdZbXRNU0FWYjZ0VE1KRDREU2RidVB1U2FWMkNjcDZ2by9lOXZOd2dGSmwxSEdRUWVjYQo1RDVYOUo2LzI4VjQ5VmVjS2hvcVkvb25GSlRYNERyS1F0b2syWUc3RmdaUCs1cExuTUtGVTlPUzR6WG4wQ0RSCndlYUduTVB2NFRHUERRQTZMN3gvTktzN0xyOVR0aXViWWJVb0RuZnQ5MjJvVk05TlJmQ3BwYzBDZ1lFQTBPMHAKaUJEZ0ExV1JyNmhrV0tQRWhOaHV3SE9hTjFFK1dzY0RJSWFTUk56QllnQ2lSbmlpTTVDVXFpN1FwY0FaUlorSApnWUhFUlhUakM2M2pCVHQ4WE9ldGZyeklwaHpKaUljSkU3Y1RhWUlTbC9jb1BFb2tJQ0tneHFUSmszcmdBU0RKCjhBTXpCZnNoRkZFTnJ1bm1mdjhreC9jdWlJdFpaNmVlWUtzKzdUVUNnWUJDQVNoOFB3YysvSUZhWnM0T1hxSmgKTEk4WitMbE1FWjl3eTBpcG5uZlBOUnlZQUZLRmRhQlBtaDdhaVZOZDFuTGlsYkVzQUVpQlNhV2pEODVJTUcwTQowb0RmbjRja2R3T0N6TEtQa081R3FRV0F2b2Z5ZEFhVU4yRWJydGljMXJoS0l4emZvOUpidnVZaks5ZUoyVTEyCjZ0MGZmUWQrbzVFdnhGc1cwcjVhc1FLQmdRQ212TStMYnVSSTVPNmJBTW5zeis1VGt5TjRaZ29xb2FVZzczajQKYVUyc3RYMkVTRHM2QUtaNmZxV1cyRHZlUEZ3dTYyMUtseFRiMWJncHB3SHFPQm85VHd4d2ZCdXFMb2xNYzNCMApFb1RrakZGb2hIRFJCTjZsNHR6ckM3SndCLzFrQ1JZQWZaMG41YzcxbHVaVHRRb21TbHZCVnUwRlBpa0JCNDNuCldtT2pEUUtCZ0Y0dk0rMStnMnk0eVhBbVJFclk5ckE5KzJpRTZGOFNwS0paZ011aFVLOGZhUHJST0xZa0xCMzEKWXhqYUJSVURrcFYxSE5CNjVsaUN0NkNCbEpOQi9CZ2xpYkxDc2RyMyt0b0ZCdGsyWG1nbHhNUytVN29zSGZETgpYSVJ3NFZxVnlQSUJFUUlWK29MQnRkTGFycGJnWHIrUkdPVStBd29xREk1WjljRDBDdUFsCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+kind: Secret
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: cilium-ca
+  namespace: kube-system
+---
+apiVersion: v1
+data:
+  ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURGRENDQWZ5Z0F3SUJBZ0lSQUovaGJJNElCcHNmMUtKWSswMGc4Vmd3RFFZSktvWklodmNOQVFFTEJRQXcKRkRFU01CQUdBMVVFQXhNSlEybHNhWFZ0SUVOQk1CNFhEVEl6TURRek1EQXhOVEF3TkZvWERUSTJNRFF5T1RBeApOVEF3TkZvd0ZERVNNQkFHQTFVRUF4TUpRMmxzYVhWdElFTkJNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DCkFROEFNSUlCQ2dLQ0FRRUFwT0FuNnhISzNtb0VLTzN5SHMrbFovaFhpS0dqc0RnMTNTUFA0eE4xeFBsTFFDeXAKdzdUaGdrQWErbVVoYjE2VDk4NEVXdUJTdDB6alI0TCtRR3pFYmVJQWRENy82T2lQak9WQUU4Y0RvTTh1dHM2TwpLNnJDWGM5eVRhdFNodGluTit1Q1NvamdyQys3WlMvWGp4cmVkQVJqMUF6Vm83RE4xTGdXSzBkK3lTaFhXWlFxCjRDTWRNaktFbTJydE50ZDdyL1p4dXdXQjJhaSsvQnk5c3h2ek9qbVlnRFpFK1Z6NUxCS2hLWjdac2lkelJUNlkKL0wwdjRlVlp1VEJ2TE9iMlh3ZmhHL2c0b0YyYU9MTXVhZTZPM0NLY1ZDSU5JRDhSd3pRSmpOdzF6OHdMMGM0aApTMjM5cGRITDBtYUdZdG02cWVndHkxTDA1WmgvMUF6OStFUWNjUUlEQVFBQm8yRXdYekFPQmdOVkhROEJBZjhFCkJBTUNBcVF3SFFZRFZSMGxCQll3RkFZSUt3WUJCUVVIQXdFR0NDc0dBUVVGQndNQ01BOEdBMVVkRXdFQi93UUYKTUFNQkFmOHdIUVlEVlIwT0JCWUVGSFByMkVuTEZUQlEvZVZKajdzRUtaNnNxYW96TUEwR0NTcUdTSWIzRFFFQgpDd1VBQTRJQkFRQ0xMdThmZmQxK1A1RG9sL2NVSC8zSlRldkdmZHdFNFVoVUhWbWJCRG8zeUVwRmw3SXhmZVB3CjRPVUdlV0xybzVJcmFnSHJDL0lhUVZVRTBqQ2c3QTVvWlY2Q3VLZWZFRkxPV0JSQ2pWSmRrUE9OdmJIUEM3VFQKTFU1NWZpYjdIanZWRmlGYVJQbXl3U2plWEl5eUNNOHFZWlk3WFlacFRTbldueDl2RWxYakhGeXNtVXdPeVNPagpoS3loemtQenpmZkZBY2EvV1FoQjc2S0I0SUhTcE1EVjNvbmxFSEVVOUx2akpsbnNRYjl6WXgzVERNU2NKTS82Cmt1ZUt6cVoxaDdmRjFmVmdDb3kwZXNMV1NSY1dyL05pK2FJejN1YmRiYXdoa2hZN25iSFc0R3hIa1NYdkg1SE0KNGRiNys0Mm5WNDVrTEwxdkZHV2VtektnY1gweEpsTXkKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  ca.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBcE9BbjZ4SEszbW9FS08zeUhzK2xaL2hYaUtHanNEZzEzU1BQNHhOMXhQbExRQ3lwCnc3VGhna0FhK21VaGIxNlQ5ODRFV3VCU3QwempSNEwrUUd6RWJlSUFkRDcvNk9pUGpPVkFFOGNEb004dXRzNk8KSzZyQ1hjOXlUYXRTaHRpbk4rdUNTb2pnckMrN1pTL1hqeHJlZEFSajFBelZvN0ROMUxnV0swZCt5U2hYV1pRcQo0Q01kTWpLRW0ycnROdGQ3ci9aeHV3V0IyYWkrL0J5OXN4dnpPam1ZZ0RaRStWejVMQktoS1o3WnNpZHpSVDZZCi9MMHY0ZVZadVRCdkxPYjJYd2ZoRy9nNG9GMmFPTE11YWU2TzNDS2NWQ0lOSUQ4Und6UUpqTncxejh3TDBjNGgKUzIzOXBkSEwwbWFHWXRtNnFlZ3R5MUwwNVpoLzFBejkrRVFjY1FJREFRQUJBb0lCQUgydUZSKytaMXRWaXlnOApBWlYxQ1l3UXBZRVVYZmVGVWFIcG01MW9CeDBJUDFHQytrR2h6MGovWHRGQ1o5TkNVQjdVbjBNNnZqTFYzR1oxCnR5UWJCVDBSeXZEUjJUZU1sMmg2bEhhKy9NZ0hSbis1UW15TTlTNlhaSFZLUkZWZ0wwK1VLYlJ4VkhwTXhGZGsKdWJkdmJ1VVhONVc3MXRxNWVwMU5XakRSaGhjRmZSV2pjSUFwYVYrL2RUQmVLeW5hQTdFd1hldjZUTWk4TmhPVwplb0VKN2F3bzdpL3FyMGlYdEMzU1BIZzV3d0x4R0lPSlNTdkRJbi9KRnF0eSszQUlGeDR0WWRBVjdKTjhaQzZhCksvd1pIdWVhMkx1MG9HK1FnMTRhS0VkaGFzSnZMejhsTFRwNy9TL0lRMkJLa3RFblI1Rk9RYkNjSGxMK3RadDMKUCtXNkxURUNnWUVBeWdZbXRNU0FWYjZ0VE1KRDREU2RidVB1U2FWMkNjcDZ2by9lOXZOd2dGSmwxSEdRUWVjYQo1RDVYOUo2LzI4VjQ5VmVjS2hvcVkvb25GSlRYNERyS1F0b2syWUc3RmdaUCs1cExuTUtGVTlPUzR6WG4wQ0RSCndlYUduTVB2NFRHUERRQTZMN3gvTktzN0xyOVR0aXViWWJVb0RuZnQ5MjJvVk05TlJmQ3BwYzBDZ1lFQTBPMHAKaUJEZ0ExV1JyNmhrV0tQRWhOaHV3SE9hTjFFK1dzY0RJSWFTUk56QllnQ2lSbmlpTTVDVXFpN1FwY0FaUlorSApnWUhFUlhUakM2M2pCVHQ4WE9ldGZyeklwaHpKaUljSkU3Y1RhWUlTbC9jb1BFb2tJQ0tneHFUSmszcmdBU0RKCjhBTXpCZnNoRkZFTnJ1bm1mdjhreC9jdWlJdFpaNmVlWUtzKzdUVUNnWUJDQVNoOFB3YysvSUZhWnM0T1hxSmgKTEk4WitMbE1FWjl3eTBpcG5uZlBOUnlZQUZLRmRhQlBtaDdhaVZOZDFuTGlsYkVzQUVpQlNhV2pEODVJTUcwTQowb0RmbjRja2R3T0N6TEtQa081R3FRV0F2b2Z5ZEFhVU4yRWJydGljMXJoS0l4emZvOUpidnVZaks5ZUoyVTEyCjZ0MGZmUWQrbzVFdnhGc1cwcjVhc1FLQmdRQ212TStMYnVSSTVPNmJBTW5zeis1VGt5TjRaZ29xb2FVZzczajQKYVUyc3RYMkVTRHM2QUtaNmZxV1cyRHZlUEZ3dTYyMUtseFRiMWJncHB3SHFPQm85VHd4d2ZCdXFMb2xNYzNCMApFb1RrakZGb2hIRFJCTjZsNHR6ckM3SndCLzFrQ1JZQWZaMG41YzcxbHVaVHRRb21TbHZCVnUwRlBpa0JCNDNuCldtT2pEUUtCZ0Y0dk0rMStnMnk0eVhBbVJFclk5ckE5KzJpRTZGOFNwS0paZ011aFVLOGZhUHJST0xZa0xCMzEKWXhqYUJSVURrcFYxSE5CNjVsaUN0NkNCbEpOQi9CZ2xpYkxDc2RyMyt0b0ZCdGsyWG1nbHhNUytVN29zSGZETgpYSVJ3NFZxVnlQSUJFUUlWK29MQnRkTGFycGJnWHIrUkdPVStBd29xREk1WjljRDBDdUFsCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+kind: Secret
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: hubble-ca-secret
+  namespace: kube-system
+---
+apiVersion: v1
+data:
+  ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURGRENDQWZ5Z0F3SUJBZ0lSQUovaGJJNElCcHNmMUtKWSswMGc4Vmd3RFFZSktvWklodmNOQVFFTEJRQXcKRkRFU01CQUdBMVVFQXhNSlEybHNhWFZ0SUVOQk1CNFhEVEl6TURRek1EQXhOVEF3TkZvWERUSTJNRFF5T1RBeApOVEF3TkZvd0ZERVNNQkFHQTFVRUF4TUpRMmxzYVhWdElFTkJNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DCkFROEFNSUlCQ2dLQ0FRRUFwT0FuNnhISzNtb0VLTzN5SHMrbFovaFhpS0dqc0RnMTNTUFA0eE4xeFBsTFFDeXAKdzdUaGdrQWErbVVoYjE2VDk4NEVXdUJTdDB6alI0TCtRR3pFYmVJQWRENy82T2lQak9WQUU4Y0RvTTh1dHM2TwpLNnJDWGM5eVRhdFNodGluTit1Q1NvamdyQys3WlMvWGp4cmVkQVJqMUF6Vm83RE4xTGdXSzBkK3lTaFhXWlFxCjRDTWRNaktFbTJydE50ZDdyL1p4dXdXQjJhaSsvQnk5c3h2ek9qbVlnRFpFK1Z6NUxCS2hLWjdac2lkelJUNlkKL0wwdjRlVlp1VEJ2TE9iMlh3ZmhHL2c0b0YyYU9MTXVhZTZPM0NLY1ZDSU5JRDhSd3pRSmpOdzF6OHdMMGM0aApTMjM5cGRITDBtYUdZdG02cWVndHkxTDA1WmgvMUF6OStFUWNjUUlEQVFBQm8yRXdYekFPQmdOVkhROEJBZjhFCkJBTUNBcVF3SFFZRFZSMGxCQll3RkFZSUt3WUJCUVVIQXdFR0NDc0dBUVVGQndNQ01BOEdBMVVkRXdFQi93UUYKTUFNQkFmOHdIUVlEVlIwT0JCWUVGSFByMkVuTEZUQlEvZVZKajdzRUtaNnNxYW96TUEwR0NTcUdTSWIzRFFFQgpDd1VBQTRJQkFRQ0xMdThmZmQxK1A1RG9sL2NVSC8zSlRldkdmZHdFNFVoVUhWbWJCRG8zeUVwRmw3SXhmZVB3CjRPVUdlV0xybzVJcmFnSHJDL0lhUVZVRTBqQ2c3QTVvWlY2Q3VLZWZFRkxPV0JSQ2pWSmRrUE9OdmJIUEM3VFQKTFU1NWZpYjdIanZWRmlGYVJQbXl3U2plWEl5eUNNOHFZWlk3WFlacFRTbldueDl2RWxYakhGeXNtVXdPeVNPagpoS3loemtQenpmZkZBY2EvV1FoQjc2S0I0SUhTcE1EVjNvbmxFSEVVOUx2akpsbnNRYjl6WXgzVERNU2NKTS82Cmt1ZUt6cVoxaDdmRjFmVmdDb3kwZXNMV1NSY1dyL05pK2FJejN1YmRiYXdoa2hZN25iSFc0R3hIa1NYdkg1SE0KNGRiNys0Mm5WNDVrTEwxdkZHV2VtektnY1gweEpsTXkKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURTRENDQWpDZ0F3SUJBZ0lRWkF0V0lvYjVwUnlJSCs5RHJSNnBsREFOQmdrcWhraUc5dzBCQVFzRkFEQVUKTVJJd0VBWURWUVFERXdsRGFXeHBkVzBnUTBFd0hoY05Nak13TkRNd01ERTFNREExV2hjTk1qWXdOREk1TURFMQpNREExV2pBak1TRXdId1lEVlFRRERCZ3FMbWgxWW1Kc1pTMXlaV3hoZVM1amFXeHBkVzB1YVc4d2dnRWlNQTBHCkNTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCQVFEZkowR2hRdmJRSXY3Yi9WWEtsdXZISnBUMTVCRFcKR25ScC9RS2dKOUJPb2kzR3pmZ0JMWGU4K1prVnJReEIzMEVmdHlJczFkMWZJbmpkeFBVSkx6SHVUYUlDa0VSVApDZ2V1b0tUVkpRSENnVG5od0NySUwvanEyVVNhWmpjTXNQVzlxUmRLQkkxSFJmSVRlOS9NS3Z0U3FYamNFdEc3CmZNb2hEWHk4dHlzeE1pdTA2bEUycGk0WmpyU1NOVEM0N1dWZTArT3oyS1BNeHFZYSt2QU04RGpUTFVxeWFiQTMKcW84VFhGVVdMVXFvenFiSWpLcjI4b3BGVnNyb3E5UzZmeEhpODZKMnZUYzFqNllxdWtqZVhpbWRSSFFuWTVxQQpuekwwRW5ZSWg1RGl0MWl6YlZWdXhsZ0VZUmJsYi9YdXJJdDRWWVZlakFVa0t6cjlzS0xBQVpSN0FnTUJBQUdqCmdZWXdnWU13RGdZRFZSMFBBUUgvQkFRREFnV2dNQjBHQTFVZEpRUVdNQlFHQ0NzR0FRVUZCd01CQmdnckJnRUYKQlFjREFqQU1CZ05WSFJNQkFmOEVBakFBTUI4R0ExVWRJd1FZTUJhQUZIUHIyRW5MRlRCUS9lVkpqN3NFS1o2cwpxYW96TUNNR0ExVWRFUVFjTUJxQ0dDb3VhSFZpWW14bExYSmxiR0Y1TG1OcGJHbDFiUzVwYnpBTkJna3Foa2lHCjl3MEJBUXNGQUFPQ0FRRUFmRitIV2NJU1dvQ2E5Y1NkZXBmbXhVQkFUVSsvUnI5a2pFK2M5bHlQUEZUVmFBOVAKY2lndWJScmJadnFWYzRtenpaQlFZQTV2YUFIa28rMlhlQktXeHFaOUt4UzdJalpuMStjRjFnd045eEZETlBHRQpCMkZHUmFWYk1MZVplbXJMTGZuM3ZTd3h4cXpkZzlRTW1VdGFMeDdsNEMrQlpLT1gyK3dNUko2a3BSTjlZTnh1CnFkTFUxM1BmSWU5ZUNaMlRsMmVxS3EvK3FLQ09sd0RjR050MHNrRGJqbEt6VzJrRCsyNitvMm9sZUR0aW5oOXkKV281TVBJK0E5VzBVSUVpb3k5NXA0emJISHdhZTA2VHFtUHJZa3RTcDRyU3ZsUTJmcGI4bTVMdWNpYXVyNkhSUApCRmYxLzRFeTQyYjJzQVdtZU9IenU5RFc1Mm14TFdvNHI3dXREQT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcFFJQkFBS0NBUUVBM3lkQm9VTDIwQ0wrMi8xVnlwYnJ4eWFVOWVRUTFocDBhZjBDb0NmUVRxSXR4czM0CkFTMTN2UG1aRmEwTVFkOUJIN2NpTE5YZFh5SjQzY1QxQ1M4eDdrMmlBcEJFVXdvSHJxQ2sxU1VCd29FNTRjQXEKeUMvNDZ0bEVtbVkzRExEMXZha1hTZ1NOUjBYeUUzdmZ6Q3I3VXFsNDNCTFJ1M3pLSVExOHZMY3JNVElydE9wUgpOcVl1R1k2MGtqVXd1TzFsWHRQanM5aWp6TWFtR3Zyd0RQQTQweTFLc21td042cVBFMXhWRmkxS3FNNm15SXlxCjl2S0tSVmJLNkt2VXVuOFI0dk9pZHIwM05ZK21LcnBJM2w0cG5VUjBKMk9hZ0o4eTlCSjJDSWVRNHJkWXMyMVYKYnNaWUJHRVc1Vy8xN3F5TGVGV0ZYb3dGSkNzNi9iQ2l3QUdVZXdJREFRQUJBb0lCQVFDdjNqNXBHMTl0RmNlSwpGUlJCLzhOK1JyZnJPbnpTWURNVFBPV08xeEhpaHdwUXZnOFF6b2FwbG9UQmdvcEFkL1RaUy9sUklKUEE0R2dsClQ0NVdXSzJmUSt2RTNYSWJoN0lhUEZ6cjVxaUdaRlg3eHZsd24rNHJHR1JxMHRmYjFyTTFjRWY4ZTYza1dBbTYKdFV2aG1wWkx4V2lNK1AvMkpSa2dCNE1oTDdLSXA2cndFREhPUFNraUhidGttQ09xN0c3a2ZBSEx2elo5NTk4agp2ZHB0QVFUME04YS9ZOURTOUJCTjhNK1N2bmtZcWJtVzNrRlFReHpJVEJYY05ZQTNGZXNtMmFXWjAxWDFnNFoyClJuTTJjblNmQjJpenhLRTdnVXR1WElmcW5Gcmt2MzVPK1VWUGtBMGhsOU1SQVB5RlVrTWJ5QWZQY0g3SjdUUnMKMEVMUFlRa2hBb0dCQU8zNGNyRWs0cDZkSmErZUsvRzZlSExOOVplaWhzaVJWSGxBVERrQ25DNVNXeHNJWS85RgpPSVFieGF2MW4wYW5zb2NMWXQvZEdUU2wraDViT3NDNVJwbXZraCtxR0t5Q2hnUE5NaW45eVFVR0ZZVVlIbWdsCldsQW5vbmZKaGIwT0t0NS9sek5XOUZIbFcvMWNaYk4xTjJSblRWTDhSWXFDeGhSSUpRWk1XU3JKQW9HQkFQQVAKYkNxb3ZmdVBTanQrQnBGNzBJWUpBZ2diTUI4bVVlSkFlUTVIZ040RW9RRHk2ekZxQXBzaFM5N1QwYWJvS2owWgpFUGg2dzlrY0hIbzd1Ujl3K2tqdXE3bjFEWW8vdzJ2bEpTN0lja1lvZWVmKzcrdlRaQVNEay9tNjZDVko3MkgrCk1LZjQ0cThiazA1OFhIcTZmZnVidDZnZktlT2dJdDg2TWpCZm5XTWpBb0dCQU4vemJKeGhSaFJYZDl2cVV4ak8Ka0FRYTZBR29Kb2dpblFqdkJjeXhOQ0l6eHlHTnArM1lTdk9vMzBLUmlTK0pLbTRFdlN4SWV5d2M5MklTSVJ5MgpRRWJwLys1a3VZdS8yamRCcU8venNuWlQzM1M5MmYvUkIwbGZ3M3BQNE5pbXVKbGtJZnRpM2RNa3NvbWhwdVJZCmI2VEJ3dmRTQ20vcjJsWEQvM1FKN2ZCaEFvR0JBSmd4WHVVb3Q5R2RoWFYwTDV2YWdGZ0pxL1VScjQrQUR0ZS8KQWtCd1NwMzNGMC92c2ZaUS9EZjNndzlSQVJDdERlSlFXdmI5ZGQ3V09LT3g2MnFvaUxUbVE0OFFjalljdUx0Vgp1aDRQeklyNExGbE53ak9qZ0R4d1lzY25uUGZQQ09uNmFrU0R3TXM5VTBXbUNFZHlwbDUyMlpmSHNobnlzMGtNCnJ6Y0YxMVU3QW9HQUZNVHlwTzRTbXFZZEJlR3oybUtBMmUrZGFtNENwRGQwYlA3Y1h3eGRneVVqNTZ3d0VDQSsKL1RUZkYwdklvUHpDcm8zOXkrWHdPV0ZFSzEzZ0N3V2xxQmRqU0k4WDkyOVI1Y0dKUGVGSEx3dElKL002Tk5aaQowZW1TSW03Y3hVSVdpZlg2RGxLNUFnSWlVNXg0MmxaWkFlaUpPbkU0WWJITU42VS9SSnJ2N2UwPQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+kind: Secret
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: hubble-relay-client-certs
+  namespace: kube-system
+type: kubernetes.io/tls
+---
+apiVersion: v1
+data:
+  ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURGRENDQWZ5Z0F3SUJBZ0lSQUovaGJJNElCcHNmMUtKWSswMGc4Vmd3RFFZSktvWklodmNOQVFFTEJRQXcKRkRFU01CQUdBMVVFQXhNSlEybHNhWFZ0SUVOQk1CNFhEVEl6TURRek1EQXhOVEF3TkZvWERUSTJNRFF5T1RBeApOVEF3TkZvd0ZERVNNQkFHQTFVRUF4TUpRMmxzYVhWdElFTkJNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DCkFROEFNSUlCQ2dLQ0FRRUFwT0FuNnhISzNtb0VLTzN5SHMrbFovaFhpS0dqc0RnMTNTUFA0eE4xeFBsTFFDeXAKdzdUaGdrQWErbVVoYjE2VDk4NEVXdUJTdDB6alI0TCtRR3pFYmVJQWRENy82T2lQak9WQUU4Y0RvTTh1dHM2TwpLNnJDWGM5eVRhdFNodGluTit1Q1NvamdyQys3WlMvWGp4cmVkQVJqMUF6Vm83RE4xTGdXSzBkK3lTaFhXWlFxCjRDTWRNaktFbTJydE50ZDdyL1p4dXdXQjJhaSsvQnk5c3h2ek9qbVlnRFpFK1Z6NUxCS2hLWjdac2lkelJUNlkKL0wwdjRlVlp1VEJ2TE9iMlh3ZmhHL2c0b0YyYU9MTXVhZTZPM0NLY1ZDSU5JRDhSd3pRSmpOdzF6OHdMMGM0aApTMjM5cGRITDBtYUdZdG02cWVndHkxTDA1WmgvMUF6OStFUWNjUUlEQVFBQm8yRXdYekFPQmdOVkhROEJBZjhFCkJBTUNBcVF3SFFZRFZSMGxCQll3RkFZSUt3WUJCUVVIQXdFR0NDc0dBUVVGQndNQ01BOEdBMVVkRXdFQi93UUYKTUFNQkFmOHdIUVlEVlIwT0JCWUVGSFByMkVuTEZUQlEvZVZKajdzRUtaNnNxYW96TUEwR0NTcUdTSWIzRFFFQgpDd1VBQTRJQkFRQ0xMdThmZmQxK1A1RG9sL2NVSC8zSlRldkdmZHdFNFVoVUhWbWJCRG8zeUVwRmw3SXhmZVB3CjRPVUdlV0xybzVJcmFnSHJDL0lhUVZVRTBqQ2c3QTVvWlY2Q3VLZWZFRkxPV0JSQ2pWSmRrUE9OdmJIUEM3VFQKTFU1NWZpYjdIanZWRmlGYVJQbXl3U2plWEl5eUNNOHFZWlk3WFlacFRTbldueDl2RWxYakhGeXNtVXdPeVNPagpoS3loemtQenpmZkZBY2EvV1FoQjc2S0I0SUhTcE1EVjNvbmxFSEVVOUx2akpsbnNRYjl6WXgzVERNU2NKTS82Cmt1ZUt6cVoxaDdmRjFmVmdDb3kwZXNMV1NSY1dyL05pK2FJejN1YmRiYXdoa2hZN25iSFc0R3hIa1NYdkg1SE0KNGRiNys0Mm5WNDVrTEwxdkZHV2VtektnY1gweEpsTXkKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURYVENDQWtXZ0F3SUJBZ0lSQUpuT0tNbkZYenNIQ2xPM24wZ3I5bU13RFFZSktvWklodmNOQVFFTEJRQXcKRkRFU01CQUdBMVVFQXhNSlEybHNhWFZ0SUVOQk1CNFhEVEl6TURRek1EQXhOVEF3TkZvWERUSTJNRFF5T1RBeApOVEF3TkZvd0xURXJNQ2tHQTFVRUF3d2lLaTV6YUMxaVpYSnlhV1Z6TG1oMVltSnNaUzFuY25CakxtTnBiR2wxCmJTNXBiekNDQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFOdmoxNHBaZzIxTjRYdlAKa0gwdkhWZWhsdHBvM21hTlBKS3dQZklNWHBMaEhtRkhKZmtYSlI0MHFIa3MyV1dQUlJ3RDZHdnNaQXVDbFZiaQp0S0hkS3BEeGszWDJkcTF0Mlpxa3pXd0l5bVdBdU9hQzc0dlZNcmFoaDRaWXlhcXoyT1krSU8wazRBSFJoL0txClN0TmxLUUhWZVlXK1lxQXh6b0MrcklLdTAxVldhdmJyTE1NN0NrbENiMnJyZkp5VmFvTUNvVWZ6U0pmdHRWcVAKUlFqazkyQUJIeVFpd01ySGhkK29WMDFHMllrRXFYanJoMXJ2Ry9GQ0poNzVWRC81Ty9qcVRGc1pxKzlJVVlxdQpXMGhMWndIUWtpK1pNV0FUSFNYcktmV0lueFpyTFNYUDdjOUhDckxPK2FhSEhFVGJNVVFFMS90dENxanVZYWdICmJiUHN3UDhDQXdFQUFhT0JrRENCalRBT0JnTlZIUThCQWY4RUJBTUNCYUF3SFFZRFZSMGxCQll3RkFZSUt3WUIKQlFVSEF3RUdDQ3NHQVFVRkJ3TUNNQXdHQTFVZEV3RUIvd1FDTUFBd0h3WURWUjBqQkJnd0ZvQVVjK3ZZU2NzVgpNRkQ5NVVtUHV3UXBucXlwcWpNd0xRWURWUjBSQkNZd0pJSWlLaTV6YUMxaVpYSnlhV1Z6TG1oMVltSnNaUzFuCmNuQmpMbU5wYkdsMWJTNXBiekFOQmdrcWhraUc5dzBCQVFzRkFBT0NBUUVBT1cxcnpCMmJRbVpqaXQ2bDk2R2IKWnBTbXMxa1Yzd3VVTVB0bUpDTzRsZERPVEdabFZvemlUeXlkZ1ZFdXVVQURBeXAycEthYkExUnpDbHlEWTBnaQpMMjlEZ1dpM0F2MGdiOTlLYytMU3h0MHRBWE9RMmhHZWliQXI0Qk9CSHo0VG1LdzN2RlJYbFpPclJldEtyTEhBCkZVOVhOQmwxQXVTQlkxbEk3VU4xRUFYSDMvOXlNa0pIcFFkbEd5TXJuN1pSbnphaUluS3k4VmUxTzRXRzJWM0QKOWNPWDZMWTBxY29qUWx4VmUrQm9oSTJ1YVlWRUs0cXNmWCtWTHFHb08weWY3cVpKaGF1cEJoZ0kwaWlsM0RHaAo3QUpTSFdJaFNEb1Bid2NpV0FSa3RMd0pVa2x3eVBYSmNjcEpPSXNqSFFkVHZKZlRFYTJVczc1K0VEdVAwazhEClVRPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBMitQWGlsbURiVTNoZTgrUWZTOGRWNkdXMm1qZVpvMDhrckE5OGd4ZWt1RWVZVWNsCitSY2xIalNvZVN6WlpZOUZIQVBvYSt4a0M0S1ZWdUswb2QwcWtQR1RkZloyclczWm1xVE5iQWpLWllDNDVvTHYKaTlVeXRxR0hobGpKcXJQWTVqNGc3U1RnQWRHSDhxcEswMlVwQWRWNWhiNWlvREhPZ0w2c2dxN1RWVlpxOXVzcwp3enNLU1VKdmF1dDhuSlZxZ3dLaFIvTklsKzIxV285RkNPVDNZQUVmSkNMQXlzZUYzNmhYVFViWmlRU3BlT3VICld1OGI4VUltSHZsVVAvazcrT3BNV3htcjcwaFJpcTViU0V0bkFkQ1NMNWt4WUJNZEplc3A5WWlmRm1zdEpjL3QKejBjS3NzNzVwb2NjUk5zeFJBVFgrMjBLcU81aHFBZHRzK3pBL3dJREFRQUJBb0lCQVFDT2w4TFhlZExMbC95SAo4SU12V3RVNVZaVmd6eTZoN0NjQ3JQMk9zRXpJRE9wSmhQenYrZjFkQ0NMVWFhd1V1d0xDOXhuS21zSUo0TVY5ClVZaDNpdGVtcExIT2htUlJkUEh1NGI1QXQ3YWdlZ2Z0bTYxQnphQ1VaRTFoWnNSb1NUWjNvSVJ6cEQwTGtOZ0wKR2pscHVxa01BbVpLdjdwdlRiMHZLZmJ1eS9aSjJJc2NxWEQyQTg5NTBVVGU1Uld0UW5HWmdHUW80cTNKaEZDdApRRStrWkpYVURDSlZpRTdadHZ0THdrb2N3TDQ0aUpIWEJxbmlWVlBpa01FREF1SXdCWW9WUldCOVlUV0pZNGxGCk9uT2t6ME9EbzBWZTIxVWZ3U0NTRmI5Z3hpWmxwZGFIQjRNRHVsNG1BTjZpc0hJdmZNYm1GRGVNSzJVTzVzbWEKUlZLYjlmSUJBb0dCQVAzSVlkSmNDYUNXMzg5UVQxaHRGejF1d2FLR2hVYmhET1d2UUhmRXFoR2M2MVRrQUlkTgo4TDhXMVdVVkFmTHVpN0lySjVwM0xTNzJEMXllZGZGOFJkdWZkRjNpMDd3bHZ3S3ovMlZqdFNtTHdpS2Fmam80CjZ3UXFJT1lJUEZJRW8vZ0dnTGh3eXhaQzI1eExYMVlsb0VSbFVFS3BzWlBuYllRd0gyMVljKzMvQW9HQkFOM1AKcDRRVUFHQ1N2UWxjVDNUaDcvaFpKWXdjaFVpOUFPMmlMcG1VUlhBR2pPcjZxS2lXamhhN2NTRG90WmtLZStRcgpROFcwcWNhRzJuVmpqVkxiUkZYYmZDQVRndE1PaC9MYnl3NUIwTmVwWmI0dlB6RWhXU29aL3pSZ2IvWE11amFoCkIyZnl5bXQvdTRpUGZSQlhEVUJnZ0xXdEZPUFRINkRDOEFON1hTMEJBb0dBUDd3eWJRMDJVY0Z5WmZOcWFlL0QKMVdiYWRJSEtPUG5PTG1Uc0VPZ3dPZ29weEFFYTdPQXpKUnFMN3ozdVpsOW9jQStNZTZ1UWltbTdnK3c3L0xEVQpMb3NHUTRueTJSNjFzTzBacUJINWJueXQvZGpFK01SUXFaUVcvUTUyYjdiQW8wcW15eXR3cForVzNkTEVGN09OClkzLzZQek8wNkV0SDR0bmZHcXdMT1dzQ2dZQXZ4M3c1R2luZW81MHV1QUN4bDcyZVRHMm5HYm1vS25aWnVkYTUKNUZOMHh5Unh0VjdCT2ZVUGRuN3U3Tkc1VHFYVFIzS0kwdHJEVmVjVzVFUGI5amxwR1NkS3JZay90MkNYY3JyeApya0d6UXQwVXM0NjBJWS9ZWHRNM1VCS3Q2dFN0MGRBTGx5UDlOZjJLZEFZbmoramQxaXZEZHE0S1NUOEYzUmZnCldDR0JBUUtCZ1FEdFFHbHVWWnBHRzV2a1VrQ1IwdGw3azZCTzVwdmd2bXJaQmlNM1JoWWFEaW54T3pQRXJlTGUKVDlOOHU5RUQrZjROend0WVpNTitDdFl5YVdVWVRoWUJ3L0Q4azVzUVlHOUEwaStRNHV5dVJCQ09vUFVCb0FaUgpyM1R3NWlUMXFoM3JnM1g1eUVaaHhXTENRQkx5L2I4ZXRLbXAxN1pTbkMwYnd3T2JZRTh2Z2c9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+kind: Secret
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: hubble-server-certs
+  namespace: kube-system
+type: kubernetes.io/tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+    prometheus.io/port: '9965'
+    prometheus.io/scrape: 'true'
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: hubble
+    app.kubernetes.io/part-of: cilium
+    k8s-app: hubble
+  name: hubble-metrics
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: hubble-metrics
+      port: 9965
+      protocol: TCP
+      targetPort: hubble-metrics
+  selector:
+    k8s-app: cilium
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: hubble-peer
+    app.kubernetes.io/part-of: cilium
+    k8s-app: cilium
+  name: hubble-peer
+  namespace: kube-system
+spec:
+  internalTrafficPolicy: Local
+  ports:
+    - name: peer-service
+      port: 443
+      protocol: TCP
+      targetPort: 4244
+  selector:
+    k8s-app: cilium
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: hubble-relay
+    app.kubernetes.io/part-of: cilium
+    k8s-app: hubble-relay
+  name: hubble-relay
+  namespace: kube-system
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 4245
+  selector:
+    k8s-app: hubble-relay
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: hubble-ui
+    app.kubernetes.io/part-of: cilium
+    k8s-app: hubble-ui
+  name: hubble-ui
+  namespace: kube-system
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8081
+  selector:
+    k8s-app: hubble-ui
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cilium-operator
+    app.kubernetes.io/part-of: cilium
+    io.cilium/app: operator
+    name: cilium-operator
+  name: cilium-operator
+  namespace: kube-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      io.cilium/app: operator
+      name: cilium-operator
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        cilium.io/cilium-configmap-checksum: da089012b406af72b3450a094131b43b1f18920557afa800649ab1e1d81787e2
+      labels:
+        app.kubernetes.io/name: cilium-operator
+        app.kubernetes.io/part-of: cilium
+        io.cilium/app: operator
+        name: cilium-operator
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  io.cilium/app: operator
+              topologyKey: kubernetes.io/hostname
+      automountServiceAccountToken: true
+      containers:
+        - args:
+            - --config-dir=/tmp/cilium/config-map
+            - --debug=$(CILIUM_DEBUG)
+          command:
+            - cilium-operator-generic
+          env:
+            - name: K8S_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: CILIUM_K8S_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: CILIUM_DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  key: debug
+                  name: cilium-config
+                  optional: true
+            - name: KUBERNETES_SERVICE_HOST
+              value: 172.16.30.100
+            - name: KUBERNETES_SERVICE_PORT
+              value: '6443'
+          image: quay.io/cilium/operator-generic:v1.13.2@sha256:a1982c0a22297aaac3563e428c330e17668305a41865a842dec53d241c5490ab
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              host: 127.0.0.1
+              path: /healthz
+              port: 9234
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 3
+          name: cilium-operator
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+            - mountPath: /tmp/cilium/config-map
+              name: cilium-config-path
+              readOnly: true
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      priorityClassName: system-cluster-critical
+      restartPolicy: Always
+      serviceAccount: cilium-operator
+      serviceAccountName: cilium-operator
+      tolerations:
+        - operator: Exists
+      volumes:
+        - configMap:
+            name: cilium-config
+          name: cilium-config-path
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: hubble-relay
+    app.kubernetes.io/part-of: cilium
+    k8s-app: hubble-relay
+  name: hubble-relay
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: hubble-relay
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        cilium.io/hubble-relay-configmap-checksum: 78982fc0fadac36f26e031f4438c794caca63e0ea9b0b14a7d9b5535bfc2cdd7
+      labels:
+        app.kubernetes.io/name: hubble-relay
+        app.kubernetes.io/part-of: cilium
+        k8s-app: hubble-relay
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  k8s-app: cilium
+              topologyKey: kubernetes.io/hostname
+      automountServiceAccountToken: false
+      containers:
+        - args:
+            - serve
+          command:
+            - hubble-relay
+          image: quay.io/cilium/hubble-relay:v1.13.2@sha256:51b772cab0724511583c3da3286439791dc67d7c35077fa30eaba3b5d555f8f4
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            tcpSocket:
+              port: grpc
+          name: hubble-relay
+          ports:
+            - containerPort: 4245
+              name: grpc
+          readinessProbe:
+            tcpSocket:
+              port: grpc
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+            - mountPath: /etc/hubble-relay
+              name: config
+              readOnly: true
+            - mountPath: /var/lib/hubble-relay/tls
+              name: tls
+              readOnly: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      priorityClassName:
+      restartPolicy: Always
+      serviceAccount: hubble-relay
+      serviceAccountName: hubble-relay
+      terminationGracePeriodSeconds: 1
+      volumes:
+        - configMap:
+            items:
+              - key: config.yaml
+                path: config.yaml
+            name: hubble-relay-config
+          name: config
+        - name: tls
+          projected:
+            defaultMode: 256
+            sources:
+              - secret:
+                  items:
+                    - key: ca.crt
+                      path: hubble-server-ca.crt
+                    - key: tls.crt
+                      path: client.crt
+                    - key: tls.key
+                      path: client.key
+                  name: hubble-relay-client-certs
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: hubble-ui
+    app.kubernetes.io/part-of: cilium
+    k8s-app: hubble-ui
+  name: hubble-ui
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: hubble-ui
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        cilium.io/hubble-ui-nginx-configmap-checksum: 02d6b04b131029fae39270192dcff10fa3a64af9d1d4d0049f1efbc3f5526a34
+      labels:
+        app.kubernetes.io/name: hubble-ui
+        app.kubernetes.io/part-of: cilium
+        k8s-app: hubble-ui
+    spec:
+      automountServiceAccountToken: true
+      containers:
+        - image: quay.io/cilium/hubble-ui:v0.11.0@sha256:bcb369c47cada2d4257d63d3749f7f87c91dde32e010b223597306de95d1ecc8
+          imagePullPolicy: IfNotPresent
+          name: frontend
+          ports:
+            - containerPort: 8081
+              name: http
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d/default.conf
+              name: hubble-ui-nginx-conf
+              subPath: nginx.conf
+            - mountPath: /tmp
+              name: tmp-dir
+        - env:
+            - name: EVENTS_SERVER_PORT
+              value: '8090'
+            - name: FLOWS_API_ADDR
+              value: hubble-relay:80
+          image: quay.io/cilium/hubble-ui-backend:v0.11.0@sha256:14c04d11f78da5c363f88592abae8d2ecee3cbe009f443ef11df6ac5f692d839
+          imagePullPolicy: IfNotPresent
+          name: backend
+          ports:
+            - containerPort: 8090
+              name: grpc
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+      nodeSelector:
+        kubernetes.io/os: linux
+      priorityClassName:
+      securityContext:
+        fsGroup: 1001
+        runAsGroup: 1001
+        runAsUser: 1001
+      serviceAccount: hubble-ui
+      serviceAccountName: hubble-ui
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: hubble-ui-nginx
+          name: hubble-ui-nginx-conf
+        - emptyDir: {}
+          name: tmp-dir
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cilium-agent
+    app.kubernetes.io/part-of: cilium
+    k8s-app: cilium
+  name: cilium
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      k8s-app: cilium
+  template:
+    metadata:
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/cilium-agent: unconfined
+        container.apparmor.security.beta.kubernetes.io/clean-cilium-state: unconfined
+      labels:
+        app.kubernetes.io/name: cilium-agent
+        app.kubernetes.io/part-of: cilium
+        k8s-app: cilium
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  k8s-app: cilium
+              topologyKey: kubernetes.io/hostname
+      automountServiceAccountToken: true
+      containers:
+        - args:
+            - --config-dir=/tmp/cilium/config-map
+          command:
+            - cilium-agent
+          env:
+            - name: K8S_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: CILIUM_K8S_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: CILIUM_CLUSTERMESH_CONFIG
+              value: /var/lib/cilium/clustermesh/
+            - name: CILIUM_CNI_CHAINING_MODE
+              valueFrom:
+                configMapKeyRef:
+                  key: cni-chaining-mode
+                  name: cilium-config
+                  optional: true
+            - name: CILIUM_CUSTOM_CNI_CONF
+              valueFrom:
+                configMapKeyRef:
+                  key: custom-cni-conf
+                  name: cilium-config
+                  optional: true
+            - name: KUBERNETES_SERVICE_HOST
+              value: 172.16.30.100
+            - name: KUBERNETES_SERVICE_PORT
+              value: '6443'
+          image: quay.io/cilium/cilium:v1.13.2@sha256:85708b11d45647c35b9288e0de0706d24a5ce8a378166cadc700f756cc1a38d6
+          imagePullPolicy: IfNotPresent
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - bash
+                  - -c
+                  - |
+                    /cni-install.sh --enable-debug=false --cni-exclusive=true --log-file=/var/run/cilium/cilium-cni.log
+            preStop:
+              exec:
+                command:
+                  - /cni-uninstall.sh
+          livenessProbe:
+            failureThreshold: 10
+            httpGet:
+              host: 127.0.0.1
+              httpHeaders:
+                - name: brief
+                  value: 'true'
+              path: /healthz
+              port: 9879
+              scheme: HTTP
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: cilium-agent
+          ports:
+            - containerPort: 4244
+              hostPort: 4244
+              name: peer-service
+              protocol: TCP
+            - containerPort: 9965
+              hostPort: 9965
+              name: hubble-metrics
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              host: 127.0.0.1
+              httpHeaders:
+                - name: brief
+                  value: 'true'
+              path: /healthz
+              port: 9879
+              scheme: HTTP
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 5
+          securityContext:
+            capabilities:
+              add:
+                - CHOWN
+                - KILL
+                - NET_ADMIN
+                - NET_RAW
+                - IPC_LOCK
+                - SYS_ADMIN
+                - SYS_RESOURCE
+                - DAC_OVERRIDE
+                - FOWNER
+                - SETGID
+                - SETUID
+              drop:
+                - ALL
+            seLinuxOptions:
+              level: s0
+              type: spc_t
+          startupProbe:
+            failureThreshold: 105
+            httpGet:
+              host: 127.0.0.1
+              httpHeaders:
+                - name: brief
+                  value: 'true'
+              path: /healthz
+              port: 9879
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+            - mountPath: /host/proc/sys/net
+              name: host-proc-sys-net
+            - mountPath: /host/proc/sys/kernel
+              name: host-proc-sys-kernel
+            - mountPath: /sys/fs/bpf
+              mountPropagation: HostToContainer
+              name: bpf-maps
+            - mountPath: /sys/fs/cgroup
+              name: cilium-cgroup
+            - mountPath: /var/run/cilium
+              name: cilium-run
+            - mountPath: /host/etc/cni/net.d
+              name: etc-cni-netd
+            - mountPath: /var/lib/cilium/clustermesh
+              name: clustermesh-secrets
+              readOnly: true
+            - mountPath: /lib/modules
+              name: lib-modules
+              readOnly: true
+            - mountPath: /run/xtables.lock
+              name: xtables-lock
+            - mountPath: /var/lib/cilium/tls/hubble
+              name: hubble-tls
+              readOnly: true
+            - mountPath: /tmp
+              name: tmp
+      hostNetwork: true
+      initContainers:
+        - command:
+            - cilium
+            - build-config
+          env:
+            - name: K8S_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: CILIUM_K8S_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: KUBERNETES_SERVICE_HOST
+              value: 172.16.30.100
+            - name: KUBERNETES_SERVICE_PORT
+              value: '6443'
+          image: quay.io/cilium/cilium:v1.13.2@sha256:85708b11d45647c35b9288e0de0706d24a5ce8a378166cadc700f756cc1a38d6
+          imagePullPolicy: IfNotPresent
+          name: config
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp
+        - args:
+            - mount | grep "/sys/fs/bpf type bpf" || mount -t bpf bpf /sys/fs/bpf
+          command:
+            - /bin/bash
+            - -c
+            - --
+          image: quay.io/cilium/cilium:v1.13.2@sha256:85708b11d45647c35b9288e0de0706d24a5ce8a378166cadc700f756cc1a38d6
+          imagePullPolicy: IfNotPresent
+          name: mount-bpf-fs
+          securityContext:
+            privileged: true
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+            - mountPath: /sys/fs/bpf
+              mountPropagation: Bidirectional
+              name: bpf-maps
+        - command:
+            - /init-container.sh
+          env:
+            - name: CILIUM_ALL_STATE
+              valueFrom:
+                configMapKeyRef:
+                  key: clean-cilium-state
+                  name: cilium-config
+                  optional: true
+            - name: CILIUM_BPF_STATE
+              valueFrom:
+                configMapKeyRef:
+                  key: clean-cilium-bpf-state
+                  name: cilium-config
+                  optional: true
+            - name: KUBERNETES_SERVICE_HOST
+              value: 172.16.30.100
+            - name: KUBERNETES_SERVICE_PORT
+              value: '6443'
+          image: quay.io/cilium/cilium:v1.13.2@sha256:85708b11d45647c35b9288e0de0706d24a5ce8a378166cadc700f756cc1a38d6
+          imagePullPolicy: IfNotPresent
+          name: clean-cilium-state
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+                - SYS_ADMIN
+                - SYS_RESOURCE
+              drop:
+                - ALL
+            seLinuxOptions:
+              level: s0
+              type: spc_t
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+            - mountPath: /sys/fs/bpf
+              name: bpf-maps
+            - mountPath: /sys/fs/cgroup
+              mountPropagation: HostToContainer
+              name: cilium-cgroup
+            - mountPath: /var/run/cilium
+              name: cilium-run
+        - command:
+            - /install-plugin.sh
+          image: quay.io/cilium/cilium:v1.13.2@sha256:85708b11d45647c35b9288e0de0706d24a5ce8a378166cadc700f756cc1a38d6
+          imagePullPolicy: IfNotPresent
+          name: install-cni-binaries
+          resources:
+            requests:
+              cpu: 100m
+              memory: 10Mi
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            seLinuxOptions:
+              level: s0
+              type: spc_t
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+            - mountPath: /host/opt/cni/bin
+              name: cni-path
+      nodeSelector:
+        kubernetes.io/os: linux
+      priorityClassName: system-node-critical
+      restartPolicy: Always
+      serviceAccount: cilium
+      serviceAccountName: cilium
+      terminationGracePeriodSeconds: 1
+      tolerations:
+        - operator: Exists
+      volumes:
+        - emptyDir: {}
+          name: tmp
+        - hostPath:
+            path: /var/run/cilium
+            type: DirectoryOrCreate
+          name: cilium-run
+        - hostPath:
+            path: /sys/fs/bpf
+            type: DirectoryOrCreate
+          name: bpf-maps
+        - hostPath:
+            path: /sys/fs/cgroup
+            type: DirectoryOrCreate
+          name: cilium-cgroup
+        - hostPath:
+            path: /opt/cni/bin
+            type: DirectoryOrCreate
+          name: cni-path
+        - hostPath:
+            path: /etc/cni/net.d
+            type: DirectoryOrCreate
+          name: etc-cni-netd
+        - hostPath:
+            path: /lib/modules
+          name: lib-modules
+        - hostPath:
+            path: /run/xtables.lock
+            type: FileOrCreate
+          name: xtables-lock
+        - name: clustermesh-secrets
+          secret:
+            defaultMode: 256
+            optional: true
+            secretName: cilium-clustermesh
+        - hostPath:
+            path: /proc/sys/net
+            type: Directory
+          name: host-proc-sys-net
+        - hostPath:
+            path: /proc/sys/kernel
+            type: Directory
+          name: host-proc-sys-kernel
+        - name: hubble-tls
+          projected:
+            defaultMode: 256
+            sources:
+              - secret:
+                  items:
+                    - key: ca.crt
+                      path: client-ca.crt
+                    - key: tls.crt
+                      path: server.crt
+                    - key: tls.key
+                      path: server.key
+                  name: hubble-server-certs
+                  optional: true
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 2
+    type: RollingUpdate

@@ -31,6 +31,7 @@ repos:
     rev: v2.0.3
     hooks:
       - id: forbid-secrets
+        exclude: bootstrap/
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.26.3
     hooks:
