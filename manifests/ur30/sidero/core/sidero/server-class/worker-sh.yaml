@@ -14,6 +14,26 @@ spec:
         interfaces:
           - interface: eth0
             dhcp: true
+            vlans:
+              - vlanId: 10
+                dhcp: false
+    - op: add
+      path: /machine/files
+      value:
+        - op: create
+          content: |
+            [metrics]
+              address = "0.0.0.0:11234"
+            [plugins]
+              [plugins."io.containerd.grpc.v1.cri"]
+                enable_unprivileged_ports = true
+                enable_unprivileged_icmp = true
+          path: /etc/cri/conf.d/20-customization.part
+    - op: add
+      path: /machine/kubelet/extraArgs
+      value:
+        rotate-server-certificates: true
+        feature-gates: GracefulNodeShutdown=true
   selector:
     matchLabels:
       worker-node: 'true'

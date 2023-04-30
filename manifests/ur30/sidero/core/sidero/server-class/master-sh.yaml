@@ -16,6 +16,38 @@ spec:
             dhcp: true
             vip:
               ip: ${CP_SH_IP}
+    - op: add
+      path: /machine/kubelet/extraArgs
+      value:
+        rotate-server-certificates: true
+        feature-gates: GracefulNodeShutdown=true
+    - op: add
+      path: /cluster/apiServer/extraArgs
+      value:
+        feature-gates: MixedProtocolLBService=true,GracefulNodeShutdown=true
+    - op: replace
+      path: /cluster/proxy/disabled
+      value: true
+    - op: add
+      path: /machine/files
+      value:
+        - content: |
+            [metrics]
+              address = "0.0.0.0:11234"
+          path: /etc/cri/conf.d/20-customization.part
+          op: create
+    - op: remove
+      path: /cluster/apiServer/admissionControl
+    - op: add
+      path: /cluster/network/cni
+      value:
+        name: custom
+        urls:
+          - https://raw.githubusercontent.com/MGlants/gitops/main/manifests/sh/berries/core/kube-system/cilium/bootstrap/manifest.yaml
+    - op: add
+      path: /cluster/extraManifests
+      value:
+        - https://raw.githubusercontent.com/MGlants/gitops/main/manifests/sh/berries/core/kube-system/kubelet-csr-approver/bootstrap/manifest.yaml
   selector:
     matchLabels:
       master-node: 'true'

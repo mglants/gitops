@@ -46,3 +46,5 @@ resources:
   - itzg-charts.yaml
   - angelnu-charts.yaml
   - weaveworks-gitops-charts.yaml
+  - cilium-charts.yaml
+  - postfinance-charts.yaml
