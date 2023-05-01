@@ -16,6 +16,9 @@ spec:
     spec:
       containers:
         - name: bind9
+          env:
+            - name: BIND9_USER
+              value: root
           image: ubuntu/bind9:9.18-22.04_beta
           imagePullPolicy: Always
           resources:
@@ -34,13 +37,16 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: bind-config
-              mountPath: /etc/bind
+              mountPath: /etc/bind/named.conf
+              subPath: named.conf
             - name: bind-data
               mountPath: /var/cache/bind/
       volumes:
         - name: bind-config
           configMap:
             name: bind-config
-            defaultMode: 420
+            items:
+              - key: named.conf
+                path: named.conf
         - name: bind-data
           emptyDir: {}

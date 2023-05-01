@@ -16,4 +16,5 @@ spec:
       port: 53
       protocol: TCP
       targetPort: dns-tcp
-  clusterIP: 10.104.31.200
+  type: LoadBalancer
+  loadBalancerIP: 172.16.32.2
