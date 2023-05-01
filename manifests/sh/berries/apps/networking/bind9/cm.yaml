@@ -17,7 +17,19 @@ data:
     };
     zone "home.arpa" {
         type master;
-        file "/etc/bind/home.arpa.db";
+        file "/etc/bind/db.empty";
+    };
+    zone "16.172.in-addr.arpa" {
+        type master;
+        file "/etc/bind/db.empty";
+    };
+    zone "168.192.in-addr.arpa" {
+        type master;
+        file "/etc/bind/db.empty";
+    };
+    zone "home.arpa" {
+        type master;
+        file "/etc/bind/db.empty";
     };
     zone "home" {
         type master;

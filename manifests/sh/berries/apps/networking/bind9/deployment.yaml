@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app: bind9
+      annotations:
+        configmap.reloader.stakater.com/reload: bind-config
     spec:
       containers:
         - name: bind9
