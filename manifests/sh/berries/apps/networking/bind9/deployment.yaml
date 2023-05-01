@@ -39,6 +39,12 @@ spec:
             - name: bind-config
               mountPath: /etc/bind/named.conf
               subPath: named.conf
+            - name: bind-config
+              mountPath: /etc/bind/home.db
+              subPath: db_lowttl.empty
+            - name: bind-config
+              mountPath: /etc/bind/home.arpa.db
+              subPath: db_lowttl.empty
             - name: bind-data
               mountPath: /var/cache/bind/
       volumes:
@@ -48,5 +54,7 @@ spec:
             items:
               - key: named.conf
                 path: named.conf
+              - key: db_lowttl.empty
+                path: db_lowttl.empty
         - name: bind-data
           emptyDir: {}
