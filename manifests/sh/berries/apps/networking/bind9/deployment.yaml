@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: bind9
-          image: internetsystemsconsortium/bind9:9.19
+          image: ubuntu/bind9:9.18-22.04_beta
           imagePullPolicy: Always
           resources:
             requests:
