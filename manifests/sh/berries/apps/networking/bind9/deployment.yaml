@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bind9
+  namespace: networking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bind9
+  template:
+    metadata:
+      labels:
+        app: bind9
+    spec:
+      containers:
+        - name: bind9
+          image: internetsystemsconsortium/bind9:9.19
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          ports:
+            - containerPort: 53
+              name: dns
+              protocol: UDP
+            - containerPort: 53
+              name: dns-tcp
+              protocol: TCP
+          volumeMounts:
+            - name: bind-config
+              mountPath: /etc/bind
+            - name: bind-data
+              mountPath: /var/cache/bind/
+      volumes:
+        - name: bind-config
+          configMap:
+            name: bind-config
+            defaultMode: 420
+        - name: bind-data
+          emptyDir: {}

@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bind-config
+  namespace: networking
+data:
+  named.conf: |
+    options {
+        directory "/var/cache/bind";
+        listen-on { any; };
+        allow-query { any; };
+        recursion yes;
+        allow-update { any; };
+    };
+    zone "home.arpa" {
+        type primary;
+        file "/etc/bind/db.home.arpa";
+    };
+    zone "16.172.in-addr.arpa" {
+        type primary;
+        file "/etc/bind/db.16.172.in-addr.arpa";
+    };
+    zone "168.192.in-addr.arpa" {
+        type primary;
+        file "/etc/bind/db.168.192.in-addr.arpa";
+    };
+  db.home.arpa: |
+    $TTL 300
+    @       IN      SOA     home.arpa. hostmaster.home.arpa. (
+                            2022010101      ; serial
+                            3600            ; refresh
+                            1800            ; retry
+                            604800          ; expire
+                            300 )           ; ttl
+    @       IN      NS      ns.home.arpa.
+  db.16.172.in-addr.arpa: |
+    $TTL 300
+    @       IN      SOA     16.172.in-addr.arpa. hostmaster.16.172.in-addr.arpa. (
+                            2022010101      ; serial
+                            3600            ; refresh
+                            1800            ; retry
+                            604800          ; expire
+                            300 )           ; ttl
+    @       IN      NS      ns.16.172.in-addr.arpa.
+  db.168.192.in-addr.arpa: |-
+    $TTL 300
+    @       IN      SOA     168.192.in-addr.arpa. hostmaster.168.192.in-addr.arpa. (
+                            2022010101      ; serial
+                            3600            ; refresh
+                            1800            ; retry
+                            604800          ; expire
+                            300 )           ; ttl
+    @       IN      NS      ns.168.192.in-addr.arpa.
