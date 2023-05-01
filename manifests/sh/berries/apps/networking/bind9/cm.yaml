@@ -12,6 +12,7 @@ data:
         allow-query { any; };
         recursion yes;
         allow-update { any; };
+        max-cache-size 64M;
     };
     zone "home.arpa" {
         type primary;
