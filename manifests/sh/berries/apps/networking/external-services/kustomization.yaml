@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - asterisk.yaml
   - nas.yaml
+  - s3.yaml

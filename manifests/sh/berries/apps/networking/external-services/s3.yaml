@@ -1,0 +1,11 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: s3-service
+  namespace: networking
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: s3.home
+spec:
+  type: ExternalName
+  externalName: 172.16.30.200
