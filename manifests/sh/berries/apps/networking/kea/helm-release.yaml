@@ -104,17 +104,16 @@ spec:
       enabled: false
     metrics:
       enabled: true
-affinity:
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-            - key: app.kubernetes.io/name
-              operator: In
-              values:
-                - kea-dhcp
-        topologyKey: kubernetes.io/hostname
-
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - kea-dhcp
+            topologyKey: kubernetes.io/hostname
   valuesFrom:
     - kind: Secret
       name: kea-helm-values
