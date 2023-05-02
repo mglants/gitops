@@ -50,6 +50,8 @@ spec:
         containerPort: 1514
         protocol: TCP
         service:
+          annotations:
+            external-dns.alpha.kubernetes.io/hostname: syslog.home
           type: LoadBalancer
           port: 1514
           loadBalancerIP: 172.16.32.10

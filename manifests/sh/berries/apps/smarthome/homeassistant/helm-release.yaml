@@ -38,6 +38,8 @@ spec:
     dnsPolicy: ClusterFirstWithHostNet
     service:
       main:
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: home-assistant.home
         type: LoadBalancer
         loadBalancerIP: 172.16.32.200
     ingress:
