@@ -105,6 +105,9 @@ spec:
         memory: 1000Mi
         cpu: 500m
     config: |-
+      customDNS:
+        mapping:
+          ha.glants.xyz: 172.16.32.1
       bootstrapDns: tcp+udp:1.1.1.1
       upstream:
         default:
