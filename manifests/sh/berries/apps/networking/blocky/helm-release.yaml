@@ -118,7 +118,6 @@ spec:
       conditional:
       # optional: replace domain in the query with other domain before resolver lookup in the mapping
         mapping:
-          glants.xyz: 172.16.32.2
           home: 172.16.32.2
           home.arpa: 172.16.32.2
           168.192.in-addr.arpa: 172.16.32.2
