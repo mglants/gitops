@@ -1,0 +1,11 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nas-service
+  namespace: networking
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: nas.home
+spec:
+  type: ExternalName
+  externalName: 172.16.30.200
