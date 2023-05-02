@@ -108,6 +108,7 @@ spec:
       customDNS:
         mapping:
           ha.glants.xyz: 172.16.32.1
+          asterisk.home: 172.16.30.250
       bootstrapDns: tcp+udp:1.1.1.1
       upstream:
         default:
