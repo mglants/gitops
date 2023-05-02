@@ -20,7 +20,7 @@ spec:
     image:
       repository: smailkoz/kea-dhcp
       tag: 2.1.2
-    replicaCount: 2
+    replicaCount: 1
     env:
       TZ: Europe/Moscow
     service:
