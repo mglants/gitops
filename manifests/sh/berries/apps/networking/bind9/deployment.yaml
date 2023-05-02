@@ -16,6 +16,30 @@ spec:
       annotations:
         configmap.reloader.stakater.com/reload: bind-config
     spec:
+      initContainers:
+        - name: init-bind
+          image: alpine:latest
+          command:
+            - sh
+            - -c
+            - |
+              set -ex
+              cp /mnt/config-map/*.db /mnt/bind/
+          volumeMounts:
+            - name: bind-zones
+              mountPath: /mnt/bind
+            - name: bind-config
+              mountPath: /mnt/config-map/home.db
+              subPath: db_lowttl.empty
+            - name: bind-config
+              mountPath: /mnt/config-map/home.arpa.db
+              subPath: db_normalttl.empty
+            - name: bind-config
+              mountPath: /mnt/config-map/16.172.in-addr.arpa.db
+              subPath: db_normalttl.empty
+            - name: bind-config
+              mountPath: /mnt/config-map/168.192.in-addr.arpa.db
+              subPath: db_normalttl.empty
       containers:
         - name: bind9
           env:
@@ -41,20 +65,10 @@ spec:
             - name: bind-config
               mountPath: /etc/bind/named.conf
               subPath: named.conf
-            - name: bind-config
-              mountPath: /etc/bind/zones/home.db
-              subPath: db_lowttl.empty
-            - name: bind-config
-              mountPath: /etc/bind/zones/home.arpa.db
-              subPath: db_normalttl.empty
-            - name: bind-config
-              mountPath: /etc/bind/zones/16.172.in-addr.arpa.db
-              subPath: db_normalttl.empty
-            - name: bind-config
-              mountPath: /etc/bind/zones/168.192.in-addr.arpa.db
-              subPath: db_normalttl.empty
             - name: bind-data
               mountPath: /var/cache/bind/
+            - name: bind-zones
+              mountPath: /etc/bind/zones/
       volumes:
         - name: bind-config
           configMap:
@@ -67,4 +81,6 @@ spec:
               - key: db_normalttl.empty
                 path: db_normalttl.empty
         - name: bind-data
+          emptyDir: {}
+        - name: bind-zones
           emptyDir: {}
