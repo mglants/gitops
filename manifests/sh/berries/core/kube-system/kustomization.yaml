@@ -4,5 +4,6 @@ kind: Kustomization
 resources:
   - node-feature-discovery
   - cilium
+  - multus
   - kubelet-csr-approver
   - metrics-server

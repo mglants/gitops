@@ -7,13 +7,14 @@ metadata:
 spec:
   chart:
     spec:
+      # renovate: registryUrl=https://helm.cilium.io
       chart: cilium
+      version: 1.13.2
       interval: 30m
       sourceRef:
         kind: HelmRepository
         name: cilium-charts
         namespace: flux-system
-      version: 1.13.2
   interval: 30m
 
   valuesFrom:
