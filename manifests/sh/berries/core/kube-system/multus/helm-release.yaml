@@ -23,7 +23,7 @@ spec:
       tag: 3.9.3
     hostCNIBinDir: /opt/cni/bin
     hostCNINetDir: /etc/cni/net.d
-    CNIVersion: 0.3.0
+    CNIVersion: 0.3.1
     resources:
       requests:
         cpu: 5m
