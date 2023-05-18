@@ -34,7 +34,6 @@ spec:
       tag: 2023.3.4
     env:
       TZ: Europe/Moscow
-    hostNetwork: true
     dnsPolicy: ClusterFirstWithHostNet
     service:
       main:
