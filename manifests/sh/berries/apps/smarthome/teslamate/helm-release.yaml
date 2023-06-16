@@ -29,6 +29,9 @@ spec:
     initContainers:
       init-db:
         image: ghcr.io/onedr0p/postgres-initdb:14.8
+        envFrom:
+          - secretRef:
+              name: teslamate-secret
     image:
       repository: teslamate/teslamate
       tag: 1.27.3
