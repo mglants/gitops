@@ -50,3 +50,4 @@ resources:
   - postfinance-charts.yaml
   - kubernetes-metrics-server-charts.yaml
   - kubernetes-sigs-external-dns-charts.yaml
+  - cloudnative-pg-charts.yaml

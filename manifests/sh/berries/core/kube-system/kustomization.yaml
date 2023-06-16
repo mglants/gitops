@@ -7,3 +7,4 @@ resources:
   - multus
   - kubelet-csr-approver
   - metrics-server
+  - cloudnative-pg
