@@ -17,6 +17,8 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
+    envFromSecrets:
+      - name: grafana-secret
     deploymentStrategy:
       type: Recreate
     podAnnotations:
@@ -53,6 +55,15 @@ spec:
             allowUiUpdates: true
             options:
               path: /var/lib/grafana/dashboards/default
+          - name: teslamate
+            orgId: 1
+            folder: Teslamate
+            type: file
+            disableDeletion: false
+            # updateIntervalSeconds: -1
+            allowUiUpdates: true
+            options:
+              path: /var/lib/grafana/dashboards/teslamate
     dashboards:
       default:
         1-node-exporter:
@@ -124,6 +135,62 @@ spec:
         windows-node:
           url: https://raw.githubusercontent.com/billimek/k8s-gitops/master/monitoring/grafana/dashboards/windows_node.json
           datasource: Prometheus
+      teslamate:
+        charge-level:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/charge-level.json
+          # datasource: TeslaMate
+        charges:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/charges.json
+          # datasource: TeslaMate
+        charging-stats:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/charging-stats.json
+          # datasource: TeslaMate
+        drive-stats:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/drive-stats.json
+          # datasource: TeslaMate
+        drives:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/drives.json
+          # datasource: TeslaMate
+        efficiency:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/efficiency.json
+          # datasource: TeslaMate
+        locations:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/locations.json
+          # datasource: TeslaMate
+        mileage:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/mileage.json
+          # datasource: TeslaMate
+        overview:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/overview.json
+          # datasource: TeslaMate
+        projected-range:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/projected-range.json
+          # datasource: TeslaMate
+        states:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/states.json
+          # datasource: TeslaMate
+        statistics:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/statistics.json
+          # datasource: TeslaMate
+        timeline:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/timeline.json
+          # datasource: TeslaMate
+        trip:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/trip.json
+          # datasource: TeslaMate
+        updates:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/updates.json
+          datasource: TeslaMate
+        vampire-drain:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/vampire-drain.json
+          # datasource: TeslaMate
+        visited:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/visited.json
+          # datasource: TeslaMate
+        charge-details:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/internal/charge-details.json
+        drive-details:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/internal/drive-details.json
     sidecar:
       datasources:
         enabled: true
@@ -149,6 +216,17 @@ spec:
             type: loki
             access: proxy
             url: http://loki-gateway:80
+          - name: TeslaMate
+            type: postgres
+            access: proxy
+            url: postgres-v15-rw.apps.svc.cluster.local:5432
+            database: teslamate
+            user: teslamate
+            secureJsonData:
+              password: $TESLAMATE_DB_PASSWORD
+            jsonData:
+              postgresVersion: 1000
+              sslmode: disable
     grafana.ini:
       server:
         root_url: http://grafana.home

@@ -5,3 +5,4 @@ resources:
   - helm-release.yaml
   - secret.enc.yaml
   - pvc.yaml
+  - env-secret.env.yaml
