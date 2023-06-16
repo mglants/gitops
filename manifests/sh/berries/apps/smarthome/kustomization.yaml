@@ -8,3 +8,4 @@ resources:
   - node-red
   - zigbee2mqtt
   - frigate
+  - teslamate
