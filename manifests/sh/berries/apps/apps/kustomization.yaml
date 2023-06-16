@@ -5,3 +5,4 @@ resources:
   - authentik-remote-cluster
   - torrserver
   - youtubedl
+  - cloudnative-pg-cluster
