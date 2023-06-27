@@ -20,7 +20,7 @@ spec:
   values:
     image:
       repository: nextcloud
-      tag: 25.0.4-fpm-alpine
+      tag: 27.0.0-fpm-alpine
       pullPolicy: IfNotPresent
     replicaCount: 1
     podAnnotations:
