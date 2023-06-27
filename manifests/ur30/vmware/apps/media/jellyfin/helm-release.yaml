@@ -11,7 +11,7 @@ spec:
     spec:
       # renovate: registryUrl=https://loeken.github.io/helm-charts
       chart: jellyfin
-      version: 10.8.9
+      version: 10.8.10
       sourceRef:
         kind: HelmRepository
         name: loeken-at-home-charts
