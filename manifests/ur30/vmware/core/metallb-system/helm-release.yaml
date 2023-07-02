@@ -30,3 +30,7 @@ spec:
       image:
         repository: quay.io/metallb/speaker
         tag: v0.13.10
+      frr:
+        image:
+          repository: quay.io/frrouting/frr
+          tag: 8.5.2
