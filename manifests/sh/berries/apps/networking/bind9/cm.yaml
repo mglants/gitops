@@ -41,6 +41,8 @@ data:
                                     60         ; minimum (1 minute)
                                     )
     @       IN      NS      localhost.
+
+
   db_normalttl.empty: |-
     $TTL    86400
     @    IN    SOA    localhost. root.localhost. (
