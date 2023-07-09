@@ -11,7 +11,7 @@ spec:
     spec:
       # renovate: registryUrl=https://helm.gitops.weave.works
       chart: weave-gitops
-      version: 4.0.24
+      version: 4.0.25
       sourceRef:
         kind: HelmRepository
         name: weaveworks-gitops-charts
