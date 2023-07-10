@@ -385,7 +385,7 @@ spec:
       # logLevel: WARNING
       image:
         repository: ghcr.io/mailu/radicale
-        tag: 1.9.50
+        tag: 2.0.16
       startupProbe:
         periodSeconds: 10
         failureThreshold: 30
