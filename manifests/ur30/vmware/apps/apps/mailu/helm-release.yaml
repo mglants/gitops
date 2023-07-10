@@ -315,7 +315,7 @@ spec:
       image:
         repository: ghcr.io/mailu/clamav
         # tag defaults to mailuVersion
-        tag: 1.9.50
+        tag: 2.0.16
       persistence:
         size: 2Gi
         storageClass: ''
