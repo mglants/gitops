@@ -6,3 +6,4 @@ resources:
   - pvc-2.yaml
   - secret.enc.yaml
   - helm-release.yaml
+  - cm-clamav.yaml

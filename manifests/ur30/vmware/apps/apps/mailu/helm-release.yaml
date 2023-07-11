@@ -311,8 +311,6 @@ spec:
         size: 2Gi
       ## @param clamav.logLevel Override default log level
       logLevel: ''
-      podAnnotations:
-        setGateway: 'true'
       ## Pod image
       ## @param clamav.image.repository Pod image repository
       ## @param clamav.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
@@ -329,6 +327,16 @@ spec:
         limits:
           memory: 2Gi
           cpu: 1000m
+      extraVolumeMounts:
+        - name: clamav-config-volume
+          mountPath: /etc/clamav/freshclam.conf
+          subPath: freshclam.conf
+
+      ## @param rspamd.extraVolumes Optionally specify extra list of additional volumes for the pod(s)
+      extraVolumes:
+        - name: clamav-config-volume
+          configMap:
+            name: clamav-config
     ## @section webmail parameters
     webmail:
       ## @param webmail.enabled Enable deployment of Roundcube webmail
