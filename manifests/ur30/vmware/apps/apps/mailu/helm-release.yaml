@@ -11,106 +11,183 @@ spec:
     spec:
       # renovate: registryUrl=https://mailu.github.io/helm-charts/
       chart: mailu
-      version: 0.3.3
+      version: 1.2.0
       sourceRef:
         kind: HelmRepository
         name: mailu-charts
         namespace: flux-system
       interval: 5m
   values:
-    # Default values for mailu.
-    # A list of mail hostnames is required. The first will be used as primary mail hostname
+    global:
+      database:
+        roundcube:
+          database: roundcube
     hostnames:
       - mail.ur30.ru
       - webmail.ur30.ru
-
-    # The mail domain is required. See https://github.com/Mailu/Mailu/blob/master/docs/faq.rst#what-is-the-difference-between-domain-and-hostnames
     domain: mail.ur30.ru
+    timezone: Europe/Moscow
 
-    # The secret key is required for protecting authentication cookies and must be set individually for each deployment
-    # secretKey: in secret
+    initialAccount:
+      enabled: true
+      mode: ifmissing
 
-    database:
-      # type of the database for mailu (sqlite or mysql)
-      # default database is an embedded sqlite
-      # for mysql, see settings below
-      type: mysql
-
-      # type of the database for roundcube (sqlite or mysql)
-      # default database is an embedded sqlite
-      # for mysql, see settings below
-      roundcubeType: mysql
-
-      # For mysql/mariadb use the following config:
-      # Set the host to use an external database.
-      # If not host is set, a database instance is created by this chart.
-      #   type: mysql
-      mysql:
-        # root password for mysql database
-        # rootPassword: in secret
-
-        # settings for mailu (required if mailu database type is "mysql")
-        database: mailu
-        # user: in secret
-        # password: in secret
-        roundcubeDatabase: roundcube
-        # roundcubeUser: in secret
-        # roundcubePassword: in secret
-    persistence:
-      # Setings for a single volume for all apps
-      # set single_pvc: false to use a per app volume and set the properties in <app>.persistence (ex. admin.persistence)
-      single_pvc: true
-      existingClaim: mailu-data-v1
-
-    # Change this if you're using different address ranges for pods
+    ## @param subnet Change this if you're using different address ranges for pods (IPv4)
     subnet: 10.244.0.0/16
 
-    # default log level. can be overridden globally or per service
+    ## @param logLevel default log level. can be overridden globally or per service
     logLevel: WARNING
 
-    # local part of the postmaster email address (Mailu will use @$DOMAIN as domain part)
+    ## @param postmaster local part of the postmaster email address (Mailu will use @$DOMAIN as domain part)
     postmaster: postmaster
 
-    mail:
+    ## @param recipientDelimiter The delimiter used to separate local part from extension in recipient addresses
+    recipientDelimiter: +
+
+    ## @param dmarc.rua Local part of the DMARC report email address (Mailu will use @$DOMAIN as domain part)
+    ## @param dmarc.ruf Local part of the DMARC failure report email address (Mailu will use @$DOMAIN as domain part)
+    dmarc:
+      rua: ''
+      ruf: ''
+
+    limits:
+      ## @param limits.messageSizeLimitInMegabytes Maximum size of an email in megabytes
       messageSizeLimitInMegabytes: 50
 
-      # Configuration to prevent brute-force attacks. See the documentation for further information: https://mailu.io/master/configuration.html
-      authRatelimitIP: 60/hour
-      authRatelimitIPv4Mask: 24
-      authRatelimitIPv6Mask: 56
-      authRatelimitUser: 100/day
-      authRatelimitExemtionLength: 86400
-      # authRatelimitExemtion:
+      ## Configuration to prevent brute-force attacks. See the documentation for further information: https://mailu.io/master/configuration.html
+      authRatelimit:
+        ip: 60/hour
+        ipv4Mask: 24
+        ipv6Mask: 56
+        user: 100/day
+        exemptionLength: 86400
+        exemption: ''
 
-      # Configuration to reduce outgoing spam in case of an compromised account. See the documentation for further information: https://mailu.io/1.9/configuration.html?highlight=MESSAGE_RATELIMIT
-      messageRatelimit: 200/day
-      # messageRatelimitExemption:
+      # Configuration to reduce outgoing spam in case of a compromised account. See the documentation for further information: https://mailu.io/1.9/configuration.html?highlight=MESSAGE_RATELIMIT
+      messageRatelimit:
+        value: 200/day
+        exemption: ''
 
-    # certmanager settings
-    certmanager:
+    customization:
+      siteName: Mailu
+      website: https://webmail.ur30.ru
+      logoUrl: ''
+      logoBackground: ''
+
+    welcomeMessage:
+      enabled: false
+      subject: Welcome to Mailu
+      body: Welcome to Mailu, your new email service. Please change your password and update your profile.
+
+    ## @param wildcardSenders List of user emails that can send emails from any address
+    wildcardSenders: []
+
+    tls:
+      outboundLevel: ''
+      deferOnError: ''
+      inboundEnforce: ''
+
+    ## MariaDB chart configuration
+    ## for more options see https://github.com/bitnami/charts/tree/master/bitnami/mariadb
+    mariadb:
+      ## @param mariadb.enabled Enable MariaDB deployment
       enabled: true
-      issuerType: ClusterIssuer
-      issuerName: letsencrypt-prod
-      apiVersion: cert-manager.io/v1
 
-    # Set ingress and loadbalancer config
+      ## @param mariadb.architecture MariaDB architecture. Allowed values: standalone or replication
+      architecture: standalone
+
+      auth:
+        database: mailu
+
+      primary:
+        persistence:
+          enabled: true
+          accessMode: ReadWriteOnce
+          size: 10Gi
+
+    ## @param persistence.single_pvc Setings for a single volume for all apps.
+    ## Set single_pvc: false to use a per app volume and set the properties in <app>.persistence (ex. admin.persistence)
+    persistence:
+      single_pvc: true
+      existingClaim: mailu-data-v2
+
+    ## @section Ingress settings
+
+    ## Set external ingress config
     ingress:
-      externalIngress: true
-      tlsFlavor: cert
-      className: nginx
+      ## @param ingress.enabled Enable external ingress
+      enabled: true
+      ingressClassName: nginx
+
       annotations:
         nginx.ingress.kubernetes.io/proxy-body-size: '0'
         external-dns.alpha.kubernetes.io/target: dd.ur30.ru
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        kubernetes.io/tls-acme: 'true'
+      tls: true
+
+      ## @param ingress.realIpHeader Sets the value of `REAL_IP_HEADER` environment variable in the `front` pod
       realIpHeader: X-Forwarded-For
+
+      ## @param ingress.realIpFrom Sets the value of `REAL_IP_FROM` environment variable in the `front` pod
       realIpFrom: 0.0.0.0/0
 
-    # Frontend load balancer for non-HTTP(s) services
+    ## @section Proxy auth configuration
+    ## ref: https://mailu.io/master/configuration.html#header-authentication-using-an-external-proxy
+    proxyAuth:
+      ## @param proxyAuth.whitelist Comma separated list of CIDRs of proxies to trust for authentication
+      whitelist: ''
+
+      ## @param proxyAuth.header HTTP header containing the email address of the user to authenticate
+      header: X-Auth-Email
+
+      ## @param proxyAuth.create Whether non-existing accounts should be auto-created
+      create: 'false'
+
+    ## @section Frontend load balancer for non-HTTP(s) services
     front:
-      # logLevel: WARNING
+      ## @param front.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param front.image.repository Pod image repository
+      ## @param front.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param front.image.pullPolicy Pod image pull policy
       image:
-        repository: ghcr.io/mailu/nginx
-        # tag defaults to mailuVersion
-        tag: 1.9.50
+        repository: mailu/nginx
+        tag: ''
+        pullPolicy: IfNotPresent
+
+      ## front.controller.kind Deployment only supported for now
+      # controller:
+      #   kind: Deployment
+
+      ## @param front.hostPort.enabled Expose front mail ports via hostPort
+      hostPort:
+        enabled: false
+
+      externalService:
+        enabled: true
+        type: LoadBalancer
+        ## Example for LoadBalancer:
+        ## type: LoadBalancer
+        loadBalancerIP: 192.168.40.9
+        externalTrafficPolicy: Local
+        ports:
+          pop3: false
+          pop3s: true
+          imap: false
+          imaps: true
+          smtp: true
+          smtps: true
+          submission: true
+
+      ## @param front.kind Kind of resource to create for the front (`Deployment` or `DaemonSet`)
+      kind: Deployment
+
+      ## @param front.replicaCount Number of front replicas to deploy (only for `Deployment` kind)
+      replicaCount: 1
+
       resources:
         requests:
           memory: 100Mi
@@ -118,52 +195,26 @@ spec:
         limits:
           memory: 200Mi
           cpu: 200m
-      startupProbe:
-        periodSeconds: 10
-        failureThreshold: 30
-        timeoutSeconds: 5
-      livenessProbe:
-        periodSeconds: 10
-        failureThreshold: 3
-        timeoutSeconds: 5
-      readinessProbe:
-        periodSeconds: 10
-        failureThreshold: 1
-        timeoutSeconds: 5
-      # Deployment or DaemonSet
-      controller:
-        kind: Deployment
-      nodeSelector: {}
 
-      # Expose front mail ports via hostPort
-      hostPort:
-        enabled: false
-
-      # Expose front mail ports via external service (ClusterIP or LoadBalancer)
-      externalService:
-        enabled: true
-        # LoadBalancer
-        type: LoadBalancer
-        # loadBalancerIP:
-        externalTrafficPolicy: Local
-        annotations: {}
-        pop3:
-          pop3: false
-          pop3s: true
-        imap:
-          imap: false
-          imaps: true
-        smtp:
-          smtp: true
-          smtps: true
-          submission: true
-
+    ## @section Admin parameters
     admin:
-      # logLevel: WARNING
+      ## @param admin.enabled Enable access to the admin interface
+      enabled: true
+
+      ## @param admin.uri URI to access the admin interface
+      uri: /admin
+
+      ## @param admin.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param admin.image.repository Pod image repository
+      ## @param admin.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param admin.image.pullPolicy Pod image pull policy
       image:
-        repository: ghcr.io/mailu/admin
-        # tag defaults to mailuVersion
-        tag: 1.9.50
+        repository: mailu/admin
+        tag: ''
+        pullPolicy: IfNotPresent
 
       resources:
         requests:
@@ -172,25 +223,24 @@ spec:
         limits:
           memory: 500Mi
           cpu: 500m
-      podAnnotations: {}
-      startupProbe:
-        periodSeconds: 10
-        failureThreshold: 30
-        timeoutSeconds: 5
-      livenessProbe:
-        periodSeconds: 10
-        failureThreshold: 3
-        timeoutSeconds: 5
-      readinessProbe:
-        periodSeconds: 10
-        failureThreshold: 1
-        timeoutSeconds: 5
-
 
     redis:
+      enabled: true
+
+    ## @section Postfix parameters
+    postfix:
+      ## @param postfix.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param postfix.image.repository Pod image repository
+      ## @param postfix.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param postfix.image.pullPolicy Pod image pull policy
       image:
-        repository: redis
-        tag: 7-alpine
+        repository: mailu/postfix
+        tag: ''
+        pullPolicy: IfNotPresent
+
       resources:
         requests:
           memory: 200Mi
@@ -198,62 +248,24 @@ spec:
         limits:
           memory: 300Mi
           cpu: 200m
-      startupProbe:
-        periodSeconds: 10
-        failureThreshold: 30
-        timeoutSeconds: 5
-      livenessProbe:
-        periodSeconds: 10
-        failureThreshold: 3
-        timeoutSeconds: 5
-      readinessProbe:
-        periodSeconds: 10
-        failureThreshold: 1
-        timeoutSeconds: 5
 
-    postfix:
-      # logLevel: WARNING
-      image:
-        repository: ghcr.io/mailu/postfix
-        # tag defaults to mailuVersion
-        tag: 1.9.50
-      containerSecurityContext: {}
-      #    CRI-O users will need to add the following:
-      #    capabilities:
-      #      add:
-      #        - SYS_CHROOT
-      resources:
-        requests:
-          memory: 2Gi
-          cpu: 500m
-        limits:
-          memory: 2Gi
-          cpu: 500m
-      startupProbe:
-        periodSeconds: 10
-        failureThreshold: 30
-        timeoutSeconds: 5
-      livenessProbe:
-        periodSeconds: 10
-        failureThreshold: 3
-        timeoutSeconds: 5
-      readinessProbe:
-        periodSeconds: 10
-        failureThreshold: 1
-        timeoutSeconds: 5
-
+    ## @section Dovecot parameters
     dovecot:
+      ## @param dovecot.enabled Enable dovecot
       enabled: true
-      # logLevel: WARNING
+
+      ## @param dovecot.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param dovecot.image.repository Pod image repository
+      ## @param dovecot.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param dovecot.image.pullPolicy Pod image pull policy
       image:
-        repository: ghcr.io/mailu/dovecot
-        # tag defaults to mailuVersion
-        tag: 1.9.50
-      containerSecurityContext: {}
-      #    CRI-O users will need to add the following:
-      #    capabilities:
-      #      add:
-      #        - SYS_CHROOT
+        repository: mailu/dovecot
+        tag: ''
+        pullPolicy: IfNotPresent
+
       resources:
         requests:
           memory: 500Mi
@@ -261,34 +273,24 @@ spec:
         limits:
           memory: 500Mi
           cpu: 500m
-      startupProbe:
-        periodSeconds: 10
-        failureThreshold: 30
-        timeoutSeconds: 5
-      livenessProbe:
-        periodSeconds: 10
-        failureThreshold: 3
-        timeoutSeconds: 5
-      readinessProbe:
-        periodSeconds: 10
-        failureThreshold: 1
-        timeoutSeconds: 5
-      # enable dovecot overrides
-      # overrides:
-      #   dovecot.conf: |
-      #     # More info here: https://mailu.io/1.8/kubernetes/mailu/index.html#dovecot
-      #     mail_nfs_index = yes
-      #     mail_nfs_storage = yes
-      #     mail_fsync = always
-      #     mmap_disable = yes
-      #     mail_max_userip_connections=100
 
+    ## @section rspamd parameters
     rspamd:
-      # logLevel: WARNING
+      ## @param rspamd.antivirusAction Action to take when an virus is detected. Possible values: `reject` or `discard`
+      antivirusAction: discard
+
+      ## @param rspamd.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param rspamd.image.repository Pod image repository
+      ## @param rspamd.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param rspamd.image.pullPolicy Pod image pull policy
       image:
-        repository: ghcr.io/mailu/rspamd
-        # tag defaults to mailuVersion
-        tag: 1.9.50
+        repository: mailu/rspamd
+        tag: ''
+        pullPolicy: IfNotPresent
+
       resources:
         requests:
           memory: 100Mi
@@ -296,33 +298,24 @@ spec:
         limits:
           memory: 1Gi
           cpu: 1000m
-      startupProbe: # give it 15 minutes for initial rule compilation
-        periodSeconds: 10
-        failureThreshold: 90
-        timeoutSeconds: 5
-      livenessProbe:
-        periodSeconds: 10
-        failureThreshold: 3
-        timeoutSeconds: 5
-      readinessProbe:
-        periodSeconds: 10
-        failureThreshold: 1
-        timeoutSeconds: 5
 
+    ## @section clamav parameters
     clamav:
+      ## @param clamav.enabled Enable ClamAV
       enabled: true
-      # logLevel: WARNING
+
+      ## @param clamav.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param clamav.image.repository Pod image repository
+      ## @param clamav.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param clamav.image.pullPolicy Pod image pull policy
       image:
-        repository: ghcr.io/mailu/clamav
-        # tag defaults to mailuVersion
-        tag: 1.9.50
-      persistence:
-        size: 2Gi
-        storageClass: ''
-        accessMode: ReadWriteOnce
-        claimNameOverride: ''
-        # annotations:
-        #  "helm.sh/resource-policy": keep
+        repository: mailu/clamav
+        tag: ''
+        pullPolicy: IfNotPresent
+
       resources:
         requests:
           memory: 1Gi
@@ -330,18 +323,6 @@ spec:
         limits:
           memory: 2Gi
           cpu: 1000m
-      startupProbe: # give it 10 minutes for initial freshclam update
-        periodSeconds: 10
-        failureThreshold: 60
-        timeoutSeconds: 5
-      livenessProbe:
-        periodSeconds: 10
-        failureThreshold: 3
-        timeoutSeconds: 5
-      readinessProbe:
-        periodSeconds: 10
-        failureThreshold: 1
-        timeoutSeconds: 5
       affinity:
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -352,14 +333,39 @@ spec:
                     values:
                       - rspamd
               topologyKey: kubernetes.io/hostname
-
-    roundcube:
+    ## @section webmail parameters
+    webmail:
+      ## @param webmail.enabled Enable deployment of Roundcube webmail
       enabled: true
-      # logLevel: WARNING
+
+      ## @param webmail.uri URI to access Roundcube webmail
+      uri: /webmail
+
+      ## @param webmail.type Type of webmail to deploy (`roundcube` or `snappymail`)
+      type: roundcube
+
+      ## @param webmail.roundcubePlugins List of Roundcube plugins to enable
+      roundcubePlugins:
+        - archive
+        - zipdownload
+        - markasjunk
+        - managesieve
+        - enigma
+        - carddav
+        - mailu
+
+      ## @param webmail.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param webmail.image.repository Pod image repository
+      ## @param webmail.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param webmail.image.pullPolicy Pod image pull policy
       image:
-        repository: ghcr.io/mailu/roundcube
-        tag: 1.9.50
-      uri: /roundcube
+        repository: mailu/webmail
+        tag: ''
+        pullPolicy: IfNotPresent
+
       resources:
         requests:
           memory: 100Mi
@@ -367,77 +373,31 @@ spec:
         limits:
           memory: 1024Mi
           cpu: 1000m
-      startupProbe:
-        periodSeconds: 10
-        failureThreshold: 30
-        timeoutSeconds: 5
-      livenessProbe:
-        periodSeconds: 10
-        failureThreshold: 3
-        timeoutSeconds: 5
-      readinessProbe:
-        periodSeconds: 10
-        failureThreshold: 1
-        timeoutSeconds: 5
 
-    webdav:
-      enabled: false
-      # logLevel: WARNING
-      image:
-        repository: ghcr.io/mailu/radicale
-        tag: 1.9.50
-      startupProbe:
-        periodSeconds: 10
-        failureThreshold: 30
-        timeoutSeconds: 5
-      livenessProbe:
-        periodSeconds: 10
-        failureThreshold: 3
-        timeoutSeconds: 5
-      readinessProbe:
-        periodSeconds: 10
-        failureThreshold: 1
-        timeoutSeconds: 5
-
-    mysql:
-      image:
-        repository: library/mariadb
-        tag: 10.9.4
-      resources:
-        requests:
-          memory: 256Mi
-          cpu: 100m
-        limits:
-          memory: 512Mi
-          cpu: 200m
-      startupProbe:
-        periodSeconds: 10
-        failureThreshold: 30
-        timeoutSeconds: 5
-      livenessProbe:
-        periodSeconds: 10
-        failureThreshold: 3
-        timeoutSeconds: 5
-      readinessProbe:
-        periodSeconds: 10
-        failureThreshold: 1
-        timeoutSeconds: 5
-
-    fetchmail:
+    ## @section OLETools parameters
+    oletools:
+      ## @param oletools.enabled Enable OLETools
       enabled: true
-      # logLevel: WARNING
+
+      ## @param oletools.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param oletools.image.repository Pod image repository
+      ## @param oletools.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param oletools.image.pullPolicy Pod image pull policy
       image:
-        repository: ghcr.io/mailu/fetchmail
-        # tag defaults to mailuVersion
-        tag: 1.9.50
+        repository: mailu/oletools
+        tag: ''
+        pullPolicy: IfNotPresent
+
       resources:
-        requests:
-          memory: 100Mi
-          cpu: 100m
         limits:
-          memory: 200Mi
-          cpu: 200m
-      delay: 600
+          cpu: 500m
+          memory: 500Mi
+        requests:
+          cpu: 25m
+          memory: 25Mi
   valuesFrom:
     - kind: Secret
       name: mailu-helm-values
