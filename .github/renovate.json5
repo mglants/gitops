@@ -165,7 +165,7 @@
     },
     {
       "matchDatasources": ["docker"],
-      "matchPackagePatterns": ["^mailu.*"],
+      "matchPackagePatterns": ["^mailu/.*"],
       "groupName": "mailu",
       "additionalBranchPrefix": "",
       "separateMinorPatch": false

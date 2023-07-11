@@ -154,7 +154,7 @@ spec:
       ## @param front.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/nginx
-        tag: ''
+        tag: 2.0.16
         pullPolicy: IfNotPresent
 
       ## front.controller.kind Deployment only supported for now
@@ -212,7 +212,7 @@ spec:
       ## @param admin.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/admin
-        tag: ''
+        tag: 2.0.16
         pullPolicy: IfNotPresent
 
       resources:
@@ -237,7 +237,7 @@ spec:
       ## @param postfix.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/postfix
-        tag: ''
+        tag: 2.0.16
         pullPolicy: IfNotPresent
 
       resources:
@@ -262,7 +262,7 @@ spec:
       ## @param dovecot.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/dovecot
-        tag: ''
+        tag: 2.0.16
         pullPolicy: IfNotPresent
 
       resources:
@@ -287,7 +287,7 @@ spec:
       ## @param rspamd.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/rspamd
-        tag: ''
+        tag: 2.0.16
         pullPolicy: IfNotPresent
 
       resources:
@@ -316,7 +316,7 @@ spec:
       ## @param clamav.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/clamav
-        tag: ''
+        tag: 2.0.16
         pullPolicy: IfNotPresent
 
       resources:
@@ -366,7 +366,7 @@ spec:
       ## @param webmail.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/webmail
-        tag: ''
+        tag: 2.0.16
         pullPolicy: IfNotPresent
 
       resources:
@@ -391,7 +391,7 @@ spec:
       ## @param oletools.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/oletools
-        tag: ''
+        tag: 2.0.16
         pullPolicy: IfNotPresent
 
       resources:
