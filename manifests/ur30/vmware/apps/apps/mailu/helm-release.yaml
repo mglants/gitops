@@ -120,7 +120,6 @@ spec:
       ingressClassName: nginx
 
       annotations:
-        nginx.ingress.kubernetes.io/proxy-body-size: '0'
         external-dns.alpha.kubernetes.io/target: dd.ur30.ru
         cert-manager.io/cluster-issuer: letsencrypt-prod
         kubernetes.io/tls-acme: 'true'
