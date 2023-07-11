@@ -303,7 +303,12 @@ spec:
     clamav:
       ## @param clamav.enabled Enable ClamAV
       enabled: true
+      persistence:
+        ## @param clamav.persistence.enabled Enable persistence using PVC
+        enabled: true
 
+        ## @param clamav.persistence.size Pod pvc size
+        size: 2Gi
       ## @param clamav.logLevel Override default log level
       logLevel: ''
 
@@ -323,16 +328,6 @@ spec:
         limits:
           memory: 2Gi
           cpu: 1000m
-      affinity:
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: component
-                    operator: In
-                    values:
-                      - rspamd
-              topologyKey: kubernetes.io/hostname
     ## @section webmail parameters
     webmail:
       ## @param webmail.enabled Enable deployment of Roundcube webmail
