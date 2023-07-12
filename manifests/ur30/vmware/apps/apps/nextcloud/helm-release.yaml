@@ -20,7 +20,7 @@ spec:
   values:
     image:
       repository: nextcloud
-      tag: 26.0.3-fpm-alpine
+      tag: 25.0.8-fpm-alpine
       pullPolicy: IfNotPresent
     replicaCount: 1
     podAnnotations:
@@ -35,7 +35,7 @@ spec:
         domain: gearage.ru
       defaultConfigs:
         .htaccess: true
-        redis.config.php: false
+        redis.config.php: true
         apache-pretty-urls.config.php: true
         apcu.config.php: true
         apps.config.php: true
@@ -60,18 +60,6 @@ spec:
             'loglevel' => '2',
             'overweitehost' => 'cloud.gearage.ru',
             'overwriteprotocol' => 'https',
-
-          );
-        redis.config.php: |-
-          <?php
-          $CONFIG = array (
-            'memcache.distributed' => '\OC\Memcache\Redis',
-            'memcache.locking' => '\OC\Memcache\Redis',
-            'redis' => array(
-              'host' => getenv('REDIS_HOST'),
-              'port' => getenv('REDIS_HOST_PORT') ?: 6379,
-              'password' => getenv('REDIS_HOST_PASSWORD')
-            )
           );
       phpConfigs:
         phpadditional.conf: |-
