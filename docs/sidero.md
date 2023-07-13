@@ -168,3 +168,10 @@ SIDERO_CONTROLLER_MANAGER_API_ENDPOINT=${SIDERO_ENDPOINT} \
 SIDERO_CONTROLLER_MANAGER_SIDEROLINK_ENDPOINT=${SIDERO_ENDPOINT} \
 clusterctl upgrade plan
 ```
+
+## Delete broken machine
+1. Delete machine from fluxcd
+2. Pause cluster with edit cluster -- spec.paused: true
+3. k --context ur30-sidero delete serverbindings.infrastructure.cluster.x-k8s.io cfd0cace-72ea-f33c-b735-d9d8aa4abeb5
+4. k --context ur30-sidero delete machines.cluster.x-k8s.io vmware-cp-6sdwc
+5. k --context ur30-sidero delete metalmachines.infrastructure.cluster.x-k8s.io vmware-cp-6dqpl
