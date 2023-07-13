@@ -4,7 +4,7 @@ kind: Server
 metadata:
   labels:
     master-node: 'true'
-  name: cfd0cace-72ea-f33c-b735-d9d8aa4abeb5
+  name: 21ea978a-ce50-1831-9665-8c01eda2f5aa
 spec:
   configPatches:
     - op: replace
