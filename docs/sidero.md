@@ -170,6 +170,10 @@ clusterctl upgrade plan
 ```
 
 ## Delete broken machine
+### Machine is still running
+https://www.sidero.dev/v0.5/guides/decommissioning/
+
+### Machine is not running
 1. Delete machine from fluxcd
 2. Pause cluster with edit cluster -- spec.paused: true
 3. k --context ur30-sidero delete serverbindings.infrastructure.cluster.x-k8s.io cfd0cace-72ea-f33c-b735-d9d8aa4abeb5
