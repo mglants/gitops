@@ -52,6 +52,7 @@ spec:
       path: /machine/features
       value:
         stableHostname: true
+        rbac: true
         kubernetesTalosAPIAccess:
           enabled: true
           allowedRoles:
