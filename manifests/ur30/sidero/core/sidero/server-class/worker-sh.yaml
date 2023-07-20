@@ -34,6 +34,16 @@ spec:
       value:
         rotate-server-certificates: true
         feature-gates: GracefulNodeShutdown=true
+    - op: add
+      path: /machine/features
+      value:
+        stableHostname: true
+        kubernetesTalosAPIAccess:
+          enabled: true
+          allowedRoles:
+            - os:etcd:backup
+          allowedKubernetesNamespaces:
+            - backup
   selector:
     matchLabels:
       worker-node: 'true'
