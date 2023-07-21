@@ -7,3 +7,4 @@ spec:
   qualifiers:
     cpu:
       - manufacturer: GenuineIntel
+      - manufacturer: QEMU
