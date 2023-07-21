@@ -48,17 +48,6 @@ spec:
       path: /cluster/extraManifests
       value:
         - https://raw.githubusercontent.com/MGlants/gitops/main/manifests/sh/berries/core/kube-system/kubelet-csr-approver/bootstrap/manifest.yaml
-    - op: add
-      path: /machine/features
-      value:
-        stableHostname: true
-        rbac: true
-        kubernetesTalosAPIAccess:
-          enabled: true
-          allowedRoles:
-            - os:etcd:backup
-          allowedKubernetesNamespaces:
-            - backup
   selector:
     matchLabels:
       master-node: 'true'
