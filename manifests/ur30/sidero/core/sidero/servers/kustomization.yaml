@@ -8,6 +8,7 @@ resources:
   - vmware-worker-0.yaml
   - vmware-worker-1.yaml
   - berries-control-plane-1.yaml
+  - berries-control-plane-12.yaml
   - berries-worker-1.yaml
   - berries-worker-2.yaml
   - berries-worker-3.yaml
