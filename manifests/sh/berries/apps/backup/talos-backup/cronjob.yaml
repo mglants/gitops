@@ -69,5 +69,3 @@ metadata:
 spec:
   roles:
     - os:etcd:backup
----
-...
