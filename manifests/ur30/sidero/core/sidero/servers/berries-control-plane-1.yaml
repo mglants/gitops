@@ -5,7 +5,7 @@ metadata:
   labels:
     master-node: 'true'
     region: sh
-  name: fd7ce2f2-76f3-41ca-b22e-d88250bddd60
+  name: 7f966449-6392-4821-a307-9ac122fcd3d0
 spec:
   pxeBootAlways: false
   accepted: true
