@@ -180,3 +180,6 @@ https://www.sidero.dev/v0.5/guides/decommissioning/
 3. k --context ur30-sidero delete serverbindings.infrastructure.cluster.x-k8s.io cfd0cace-72ea-f33c-b735-d9d8aa4abeb5
 4. k --context ur30-sidero delete machines.cluster.x-k8s.io vmware-cp-6sdwc
 5. k --context ur30-sidero delete metalmachines.infrastructure.cluster.x-k8s.io vmware-cp-6dqpl
+
+### Problems occured
+1. aescbcEncryptionSecret wasn't present from sidero machineconfig
