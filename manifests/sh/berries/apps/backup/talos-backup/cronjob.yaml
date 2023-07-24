@@ -48,6 +48,12 @@ spec:
                 - mountPath: /var/run/secrets/talos.dev
                   name: talos-secrets
           restartPolicy: OnFailure
+          nodeSelector:
+            beta.kubernetes.io/arch: amd64
+          tolerations:
+            - key: node-role.kubernetes.io/master
+              operator: Exists
+              effect: NoSchedule
           volumes:
             - emptyDir: {}
               name: tmp
