@@ -15,7 +15,7 @@ spec:
   cpu:
     manufacturer: Broadcom
     version: BCM2711 (ARM Cortex-A72)
-  hostname: berries-worker-3
+  hostname: berries-control-plane-3
   system:
     family: Raspberry Pi
     manufacturer: Raspberry Pi Foundation
