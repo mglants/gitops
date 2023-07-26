@@ -19,7 +19,7 @@ metadata:
   namespace: flux-system
 spec:
   version: ${K8s_SH_VERSION}
-  replicas: 2
+  replicas: 3
   rolloutStrategy:
     rollingUpdate:
       maxSurge: 0

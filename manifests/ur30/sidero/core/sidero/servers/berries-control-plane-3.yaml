@@ -3,7 +3,7 @@ apiVersion: metal.sidero.dev/v1alpha1
 kind: Server
 metadata:
   labels:
-    worker-node: 'true'
+    master-node: 'true'
     region: sh
   name: 00d03114-0000-0000-0000-e45f01358531
 spec:
