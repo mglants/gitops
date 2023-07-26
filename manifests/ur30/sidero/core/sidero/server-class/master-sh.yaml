@@ -48,6 +48,10 @@ spec:
       path: /cluster/extraManifests
       value:
         - https://raw.githubusercontent.com/MGlants/gitops/main/manifests/sh/berries/core/kube-system/kubelet-csr-approver/bootstrap/manifest.yaml
+    - op: add
+      path: /cluster/aescbcEncryptionSecret
+      value:
+        - ${aescbcEncryptionSecret_SH}
   selector:
     matchLabels:
       master-node: 'true'

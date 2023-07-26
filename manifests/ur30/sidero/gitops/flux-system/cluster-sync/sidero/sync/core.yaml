@@ -19,8 +19,8 @@ spec:
   postBuild:
     substitute: {}
     substituteFrom:
-      # - kind: Secret
-      #   name: cluster-secrets-sidero
+      - kind: Secret
+        name: cluster-secrets-sidero
       - kind: ConfigMap
         name: cluster-settings-sidero
   decryption:

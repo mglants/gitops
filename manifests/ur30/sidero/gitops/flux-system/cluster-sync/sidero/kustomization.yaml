@@ -6,3 +6,4 @@ resources:
   - capi-sync.yaml
   - capi-sync-sh.yaml
   - cluster-settings.yaml
+  - cluster-secrets.enc.yaml
