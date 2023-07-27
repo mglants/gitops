@@ -17,7 +17,7 @@ metadata:
   namespace: flux-system
 spec:
   clusterName: berries
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
   strategy:
