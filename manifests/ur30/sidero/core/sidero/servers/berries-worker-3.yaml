@@ -1,0 +1,25 @@
+---
+apiVersion: metal.sidero.dev/v1alpha1
+kind: Server
+metadata:
+  labels:
+    worker-node: 'true'
+    region: sh
+  name: 317f9f38-6a30-49fe-a07c-b76178735a0a
+spec:
+  pxeBootAlways: false
+  accepted: true
+  environmentRef:
+    namespace: default
+    name: sh-amd64
+  cpu:
+    manufacturer: QEMU
+    version: pc-i440fx-5.2
+  hostname: berries-worker-3
+  system:
+    family: Unknown
+    manufacturer: QEMU
+    productName: Standard PC (i440FX + PIIX, 1996)
+    serialNumber: Unknown
+    skuNumber: Unknown
+    version: pc-i440fx-5.2
