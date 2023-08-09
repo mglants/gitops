@@ -87,7 +87,6 @@ spec:
     routed_namespaces:
       - vpn
       - media
-      - apps
     settings:
       # -- If using a VPN, interface name created by it
       VPN_INTERFACE: wg0
