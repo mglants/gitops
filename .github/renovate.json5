@@ -3,6 +3,7 @@
   "timezone": "Europe/Moscow",
   "semanticCommits": "enabled",
   "dependencyDashboard": true,
+  "prHourlyLimit": 0,
   "dependencyDashboardTitle": "Renovate Dashboard",
   "commitBody": "Signed-off-by: Mark Glants <mglants@users.noreply.github.com>",
   // Do not notify on closed unmerged PRs
