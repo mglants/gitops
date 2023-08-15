@@ -145,6 +145,13 @@
     // group packages
     {
       "matchDatasources": ["helm", "docker"],
+      "matchPackagePatterns": ["^cilium|quay.io/cilium/.*"],
+      "groupName": "cilium",
+      "additionalBranchPrefix": "",
+      "separateMinorPatch": false
+    },
+    {
+      "matchDatasources": ["helm", "docker"],
       "matchPackagePatterns": ["^kube-prometheus-stack|.*prometheus-operator"],
       "groupName": "prometheus-stack",
       "additionalBranchPrefix": "",
