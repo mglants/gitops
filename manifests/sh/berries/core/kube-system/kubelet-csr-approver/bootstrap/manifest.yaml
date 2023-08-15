@@ -131,7 +131,7 @@ spec:
               value: 'true'
             - name: ALLOWED_DNS_NAMES
               value: '1'
-          image: ghcr.io/postfinance/kubelet-csr-approver:v1.0.1
+          image: ghcr.io/postfinance/kubelet-csr-approver:v1.0.4
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
