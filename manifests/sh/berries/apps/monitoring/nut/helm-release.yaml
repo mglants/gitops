@@ -32,21 +32,21 @@ spec:
       TZ: Europe/Moscow
     strategy:
       type: Recreate
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - {key: feature.node.kubernetes.io/custom-ups, operator: In, values: ['true']}
-    persistence:
-      usb:
-        enabled: true
-        type: hostPath
-        mountPath: /dev/bus/usb/001
-        hostPath: /dev/bus/usb/001
-        hostPathType: Directory
-    securityContext:
-      privileged: true
+    # affinity:
+    #   nodeAffinity:
+    #     requiredDuringSchedulingIgnoredDuringExecution:
+    #       nodeSelectorTerms:
+    #         - matchExpressions:
+    #             - {key: feature.node.kubernetes.io/custom-ups, operator: In, values: ['true']}
+    # persistence:
+    #   usb:
+    #     enabled: true
+    #     type: hostPath
+    #     mountPath: /dev/bus/usb/001
+    #     hostPath: /dev/bus/usb/001
+    #     hostPathType: Directory
+    # securityContext:
+    #   privileged: true
     podAnnotations:
       configmap.reloader.stakater.com/reload: nut-network-ups-tools-config
     # -- Configures service settings for the chart.
@@ -80,12 +80,10 @@ spec:
         upsd.conf: |
           LISTEN 0.0.0.0
         ups.conf: |
-          [liebert]
-            driver = usbhid-ups
-            port = auto
-            desc = "LIEBERT PSI 1000VA"
-            vendorid = 10af
-            productid = 0001
+          [ups]
+            driver = dummy-ups
+            port = ups@172.16.30.20
+            desc = "Crown CMUOA-300X-1.5K"
     metrics:
       # -- Enable and configure prometheus-nut-exporter sidecar and Prometheus serviceMonitor.
       # @default -- See values.yaml
@@ -105,13 +103,18 @@ spec:
       exporter:
         image:
           # -- image repository
-          repository: mcfio/prometheus-nut-exporter
+          repository: hon95/prometheus-nut-exporter
           # -- image tag
-          tag: 1.1.1
+          tag: 1.2.1
           # -- image pull policy
           pullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 10m
+            memory: 16Mi
+          requests:
+            cpu: 1m
+            memory: 8Mi
         env:
           # -- metrics port
-          port: 9995
-          # -- log level [info|debug|trace]
-          logLevel: info
+          HTTP_PORT: 9995
