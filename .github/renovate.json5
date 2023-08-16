@@ -129,7 +129,7 @@
     // pin package versions
     {
       "matchDatasources": ["github-releases"],
-      "allowedVersions": "<1.24.0",
+      "allowedVersions": "<1.26.0",
       "matchPackageNames": [
         "kubernetes/kubernetes"
       ]

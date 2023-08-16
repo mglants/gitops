@@ -18,6 +18,7 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
+    imageRegistry: ghcr.io
     global:
       database:
         roundcube:
