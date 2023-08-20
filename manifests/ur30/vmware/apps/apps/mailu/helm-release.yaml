@@ -240,14 +240,15 @@ spec:
         repository: mailu/postfix
         tag: 2.0.18
         pullPolicy: IfNotPresent
-
+      updateStrategy:
+        type: Recreate
       resources:
         requests:
           memory: 200Mi
           cpu: 100m
         limits:
-          memory: 512Mi
-          cpu: 500m
+          memory: 1024Mi
+          cpu: 1000m
       livenessProbe:
         enabled: false
         failureThreshold: 3
