@@ -5,4 +5,4 @@ bases:
   - ../../../_base/crds/
 resources:
   - multus.yaml
-  - external-secrets.yaml
+  - external-secrets
