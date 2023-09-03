@@ -42,7 +42,7 @@ spec:
       enabled: true
     executors:
       kubectl-read-only:
-        kubectl:
+        botkube/kubectl:
           enabled: true
     actions:
       describe-created-resource:
