@@ -1,5 +1,5 @@
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: sidero-gitops
@@ -13,7 +13,6 @@ spec:
     namespace: flux-system
   path: ./manifests/ur30/sidero/gitops
   prune: true
-  validation: client
   decryption:
     provider: sops
     secretRef:

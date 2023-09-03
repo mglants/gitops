@@ -64,8 +64,8 @@ spec:
           resources:
             - name: helm.toolkit.fluxcd.io/v2beta1/helmreleases
             - name: source.toolkit.fluxcd.io/v1beta2/helmcharts
-            - name: kustomize.toolkit.fluxcd.io/v1beta2/kustomizations
-            - name: notification.toolkit.fluxcd.io/v1beta1/alerts
+            - name: kustomize.toolkit.fluxcd.io/v1/kustomizations
+            - name: notification.toolkit.fluxcd.io/v1/alerts
             - name: monitoring.coreos.com/v1/podmonitors
             - name: monitoring.coreos.com/v1/servicemonitors
       k8s-recommendation-events:
