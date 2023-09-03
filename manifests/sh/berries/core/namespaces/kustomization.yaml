@@ -12,3 +12,4 @@ resources:
   - metallb-system.yaml
   - networking.yaml
   - smarthome.yaml
+  - security.yaml

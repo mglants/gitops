@@ -11,4 +11,4 @@ resources:
   - ingress-nginx
   - democratic-csi
   - metallb-system
-  - external-secrets
+  - security
