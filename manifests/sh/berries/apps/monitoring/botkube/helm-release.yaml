@@ -54,6 +54,13 @@ spec:
         displayName: CRDS
         botkube/kubernetes:
           enabled: true
+          context:
+            rbac:
+              group:
+                type: Static
+                prefix: ''
+                static:
+                  values: botkube-plugins-default
           namespaces:
             include:
               - all
