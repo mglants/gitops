@@ -17,8 +17,6 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
-    envFromSecrets:
-      - name: grafana-secret
     deploymentStrategy:
       type: Recreate
     podAnnotations:
@@ -227,6 +225,7 @@ spec:
             jsonData:
               postgresVersion: 1000
               sslmode: disable
+    envFromSecret: grafana-secret
     grafana.ini:
       server:
         root_url: http://grafana.home
@@ -237,12 +236,27 @@ spec:
         provisioning: /etc/grafana/provisioning
       analytics:
         check_for_updates: false
+        check_for_plugin_updates: false
+        reporting_enabled: false
+      auth:
+        oauth_auto_login: true
+        oauth_allow_insecure_email_lookup: true
+      auth.generic_oauth:
+        enabled: true
+        name: Authentik
+        icon: signin
+        scopes: openid email profile
+        empty_scopes: false
+        client_id: # Set by env vars
+        client_secret: # Set by env vars
+        auth_url: https://authentik.gearage.ru/application/o/authorize/
+        token_url: https://authentik.gearage.ru/application/o/token/
+        api_url: https://authentik.gearage.ru/application/o/userinfo/
+        role_attribute_path: contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
       log:
         mode: console
       grafana_net:
         url: https://grafana.net
       auth.basic:
+        enabled: false
         disable_login_form: false
-  valuesFrom:
-    - kind: Secret
-      name: grafana-helm-values
