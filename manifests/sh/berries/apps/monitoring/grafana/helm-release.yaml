@@ -71,10 +71,13 @@ spec:
           url: https://raw.githubusercontent.com/0xERR0R/blocky/v0.13/docs/blocky-grafana.json
           datasource: Prometheus
         flux-cluster:
-          url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/grafana/dashboards/cluster.json
+          url: https://github.com/fluxcd/flux2-monitoring-example/raw/main/monitoring/configs/dashboards/cluster.json
           datasource: Prometheus
         flux-control-plane:
-          url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/grafana/dashboards/control-plane.json
+          url: https://github.com/fluxcd/flux2-monitoring-example/raw/main/monitoring/configs/dashboards/control-plane.json
+          datasource: Prometheus
+        flux-logs:
+          url: https://github.com/fluxcd/flux2-monitoring-example/raw/main/monitoring/configs/dashboards/logs.json
           datasource: Prometheus
         home-assistant:
           url: https://raw.githubusercontent.com/billimek/k8s-gitops/master/monitoring/grafana/dashboards/home_assistant.json
