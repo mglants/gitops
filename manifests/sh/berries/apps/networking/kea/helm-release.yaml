@@ -21,6 +21,13 @@ spec:
       repository: smailkoz/kea-dhcp
       tag: 2.1.2
     replicaCount: 1
+    resources:
+      limits:
+        cpu: 300m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
     env:
       TZ: Europe/Moscow
     service:
