@@ -1,0 +1,62 @@
+---
+receivers:
+  - name: 'null'
+  - name: telegram
+    telegram_configs:
+      - html: true
+        bot_token_file: /etc/secrets/telegram_api_token
+        send_resolved: true
+        chat_id: -732200871
+        message: |-
+          {{- $emoji := "" }}
+          {{- if eq .Status "firing" }}
+          {{- $emoji = "🔥" }}
+          {{- end }}
+          {{- if eq .Status "resolved" }}
+          {{- $emoji = "✅" }}
+          {{- end }}
+          <b>Status</b>: <b>{{.Status | toUpper}} {{$emoji}}</b> <code>{{ .CommonLabels.alertname }}</code> for job <code>{{ .CommonLabels.job }}</code>
+          {{- range .Alerts }}
+            {{- if ne .Labels.severity "" }}
+              <b>Severity</b>: {{ .Labels.severity }}{{ if eq .Labels.severity "warning" }} ⚠️{{ else if eq .Labels.severity "critical" }} 🚨{{ end }}
+            {{- else }}
+              <b>Severity:</b> <i>N/A</i>
+            {{- end }}
+            {{- if ne .Annotations.description "" }}
+              <b>Description:</b> <i>{{ .Annotations.description }}</i>
+            {{- else if ne .Annotations.summary "" }}
+              <b>Summary:</b> <i>{{ .Annotations.summary }}</i>
+            {{- else if ne .Annotations.message "" }}
+              <b>Message:</b> <i>{{ .Annotations.message }}</i>
+            {{- else }}
+              <b>Description:</b> <i>N/A</i>
+            {{- end }}
+            {{- if gt (len .Labels.SortedPairs) 0 }}
+              <b>Details</b>:
+              {{- range .Labels.SortedPairs }}
+                - <b>{{ .Name }}</b>: <code>{{ .Value }}</code>
+              {{- end }}
+            {{- end }}
+          {{- end }}
+
+route:
+  group_by: [alertname, job]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 6h
+  receiver: telegram
+  routes:
+    - receiver: 'null'
+      matchers:
+        - alertname =~ "InfoInhibitor|Watchdog"
+    - receiver: telegram
+      matchers:
+        - severity = critical
+      continue: true
+
+inhibit_rules:
+  - source_matchers:
+      - severity = "critical"
+    target_matchers:
+      - severity = "warning"
+    equal: [alertname, namespace]
