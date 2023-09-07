@@ -3,7 +3,7 @@ receivers:
   - name: 'null'
   - name: telegram
     telegram_configs:
-      - html: true
+      - parse_mode: HTML
         bot_token_file: /etc/secrets/telegram_api_token
         send_resolved: true
         chat_id: -732200871
