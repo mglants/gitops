@@ -10,6 +10,6 @@ helmCharts:
     includeCRDs: true
     namespace: kube-system
     valuesFile: ../values.yaml
-
+    skipTests: true
 transformers:
   - transformers.yaml
