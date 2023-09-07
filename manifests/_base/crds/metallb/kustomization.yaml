@@ -5,4 +5,21 @@ namespace: metallb-system
 
 resources:
   # renovate: registryUrl=https://metallb.github.io/metallb chart=metallb
-  - github.com/metallb/metallb/config/crd?ref=v0.13.10
+  - https://github.com/metallb/metallb/raw/v0.13.10/config/crd/bases/metallb.io_addresspools.yaml
+  # renovate: registryUrl=https://metallb.github.io/metallb chart=metallb
+  - https://github.com/metallb/metallb/raw/v0.13.10/config/crd/bases/metallb.io_bfdprofiles.yaml
+  # renovate: registryUrl=https://metallb.github.io/metallb chart=metallb
+  - https://github.com/metallb/metallb/raw/v0.13.10/config/crd/bases/metallb.io_bgpadvertisements.yaml
+  # renovate: registryUrl=https://metallb.github.io/metallb chart=metallb
+  - https://github.com/metallb/metallb/raw/v0.13.10/config/crd/bases/metallb.io_bgppeers.yaml
+  # renovate: registryUrl=https://metallb.github.io/metallb chart=metallb
+  - https://github.com/metallb/metallb/raw/v0.13.10/config/crd/bases/metallb.io_communities.yaml
+  # renovate: registryUrl=https://metallb.github.io/metallb chart=metallb
+  - https://github.com/metallb/metallb/raw/v0.13.10/config/crd/bases/metallb.io_ipaddresspools.yaml
+  # renovate: registryUrl=https://metallb.github.io/metallb chart=metallb
+  - https://github.com/metallb/metallb/raw/v0.13.10/config/crd/bases/metallb.io_l2advertisements.yaml
+commonAnnotations:
+  meta.helm.sh/release-name: metallb
+  meta.helm.sh/release-namespace: metallb-system
+commonLabels:
+  app.kubernetes.io/managed-by: Helm

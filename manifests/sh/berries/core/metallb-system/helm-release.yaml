@@ -16,9 +16,9 @@ spec:
         name: metallb-charts
         namespace: flux-system
   install:
-    crds: Skip
+    crds: CreateReplace
   upgrade:
-    crds: Skip
+    crds: CreateReplace
   values:
     crds:
       enabled: false
