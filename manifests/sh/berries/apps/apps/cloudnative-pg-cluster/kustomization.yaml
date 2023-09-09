@@ -6,4 +6,4 @@ resources:
   - prometheusrule.yaml
   - scheduledbackup.yaml
   - svc.yaml
-  - secret.enc.yaml
+  - externalsecret.yaml
