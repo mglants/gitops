@@ -182,5 +182,11 @@ spec:
       enabled: false
 
   valuesFrom:
-    - kind: Secret
-      name: loki-helm-values
+    - targetPath: loki.structuredConfig.common.storage.s3.access_key_id
+      kind: Secret
+      name: loki-secret
+      valuesKey: AWS_ACCESS_KEY_ID
+    - targetPath: loki.structuredConfig.common.storage.s3.secret_access_key
+      kind: Secret
+      name: loki-secret
+      valuesKey: AWS_SECRET_ACCESS_KEY
