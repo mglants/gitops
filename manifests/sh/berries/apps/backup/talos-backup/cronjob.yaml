@@ -29,7 +29,7 @@ spec:
                   value: age1s3vxakzjchpekyzum36gsyxtwurt8vj4skvffgc68hv6vkl6e3lslkjfk0
               envFrom:
                 - secretRef:
-                    name: talos-backup-env
+                    name: talos-backup-secret
               securityContext:
                 runAsUser: 1000
                 runAsGroup: 1000
