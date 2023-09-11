@@ -31,6 +31,16 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+    service:
+      main:
+        ports:
+          http:
+            port: 5000
+          rtsp:
+            enabled: true
+            port: 8554
+            protocol: TCP
+            targetPort: 8554
     securityContext:
       privileged: false
     persistence:
@@ -98,17 +108,18 @@ spec:
               bounding_box: True
               crop: False
 
+            go2rtc:
+              streams:
+                frigate_intercom_hq: rtsp://admin:{FRIGATE_RTSP_PASSWORD}@172.16.11.10:554/ISAPI/Streaming/Channels/101
+                frigate_intercom_lq: rtsp://admin:{FRIGATE_RTSP_PASSWORD}@172.16.11.10:554/ISAPI/Streaming/Channels/102
             cameras:
               hallway:
                 ffmpeg:
                   inputs:
-                    - path: rtsp://admin:{FRIGATE_RTSP_PASSWORD}@172.16.11.10:554/ISAPI/Streaming/Channels/102
-                      roles:
-                        - detect
-                    - path: rtsp://admin:{FRIGATE_RTSP_PASSWORD}@172.16.11.10:554/ISAPI/Streaming/Channels/101
-                      roles:
-                        - rtmp
-                        - record
+                    - path: rtsp://localhost:8554/frigate_intercom_lq
+                      roles: ["detect"]
+                    - path: rtsp://localhost:8554/frigate_intercom_hq
+                      roles: ["record"]
                 detect:
                   height: 576
                   width: 704
