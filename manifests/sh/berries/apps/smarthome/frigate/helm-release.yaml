@@ -18,8 +18,8 @@ spec:
       interval: 5m
   values:
     image:
-      repository: blakeblackshear/frigate
-      tag: 0.10.1-aarch64
+      repository: ghcr.io/blakeblackshear/frigate
+      tag: 0.12.1
     ingress:
       main:
         enabled: true
