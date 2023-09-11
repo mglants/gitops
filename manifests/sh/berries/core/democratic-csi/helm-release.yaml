@@ -87,7 +87,7 @@ spec:
           shareMapallUser: ''
           shareMapallGroup: ''
   valuesFrom:
-    - kind: Secret
-      name: democratic-csi-values
-      valuesKey: values.yaml
-      optional: false
+    - targetPath: driver.config.httpConnection.apiKey
+      kind: Secret
+      name: democratic-csi-secret
+      valuesKey: API_KEY
