@@ -58,6 +58,12 @@ spec:
         medium: Memory
         sizeLimit: 512Mi
         mountPath: /tmp/cache
+      config:
+        enabled: true
+        type: secret
+        name: frigate-secret
+        mountPath: /config/config.yml
+        subPath: config.yml
     podAnnotations:
       backup.velero.io/backup-volumes: data
     resources:
@@ -70,7 +76,7 @@ spec:
       TZ: Europe/Moscow
     configmap:
       config:
-        enabled: true
+        enabled: false
   valuesFrom:
     - targetPath: configmap.config.data
       kind: Secret
