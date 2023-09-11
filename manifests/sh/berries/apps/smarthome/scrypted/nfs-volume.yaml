@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-scrypted-pv
+  namespace: smarthome
+spec:
+  storageClassName: scrypted
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 172.16.30.200
+    path: /mnt/bulky/scrypted
+  mountOptions:
+    - noatime
+    - nfsvers=4
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-scrypted-pvc
+  namespace: smarthome
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: scrypted
+  resources:
+    requests:
+      storage: 1Mi
