@@ -58,6 +58,9 @@ spec:
         memory: 2000Mi
     env:
       TZ: Europe/Moscow
+    envFrom:
+      - secretRef:
+          name: frigate-secret
     configmap:
       config:
         enabled: true
