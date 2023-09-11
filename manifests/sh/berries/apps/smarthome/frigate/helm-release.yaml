@@ -120,7 +120,3 @@ spec:
                       max_area: 100000
                       threshold: 0.75
                       min_score: 0.60
-  valuesFrom:
-    - kind: Secret
-      name: frigate-helm-values
-      optional: false
