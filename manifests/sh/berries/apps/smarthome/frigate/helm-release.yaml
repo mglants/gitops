@@ -74,5 +74,5 @@ spec:
   valuesFrom:
     - targetPath: configmap.config.data
       kind: Secret
-      name: emqx-secret
+      name: frigate-secret
       valuesKey: config.yml
