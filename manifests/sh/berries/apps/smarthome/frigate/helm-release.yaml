@@ -68,66 +68,11 @@ spec:
         memory: 2000Mi
     env:
       TZ: Europe/Moscow
-    envFrom:
-      - secretRef:
-          name: frigate-secret
     configmap:
       config:
         enabled: true
-        data:
-          config.yml: |
-            mqtt:
-              host: emqx
-              topic_prefix: frigate
-              user: mqtt
-              password: '{FRIGATE_MQTT_PASSWORD}'
-
-            database:
-              path: /data/frigate.db
-
-            objects:
-              track:
-                - person
-              filters:
-                person:
-                  min_area: 2500
-                  max_area: 100000
-                  threshold: 0.75
-
-            record:
-              enabled: true
-              retain:
-                days: 7
-              events:
-                retain:
-                  default: 14
-
-            snapshots:
-              enabled: True
-              timestamp: False
-              bounding_box: True
-              crop: False
-
-            go2rtc:
-              streams:
-                frigate_intercom_hq: rtsp://admin:{FRIGATE_RTSP_PASSWORD}@172.16.11.10:554/ISAPI/Streaming/Channels/101
-                frigate_intercom_lq: rtsp://admin:{FRIGATE_RTSP_PASSWORD}@172.16.11.10:554/ISAPI/Streaming/Channels/102
-            cameras:
-              hallway:
-                ffmpeg:
-                  inputs:
-                    - path: rtsp://localhost:8554/frigate_intercom_lq
-                      roles: ["detect"]
-                    - path: rtsp://localhost:8554/frigate_intercom_hq
-                      roles: ["record"]
-                detect:
-                  height: 576
-                  width: 704
-                  fps: 5
-                objects:
-                  filters:
-                    person:
-                      min_area: 1500
-                      max_area: 100000
-                      threshold: 0.75
-                      min_score: 0.60
+  valuesFrom:
+    - targetPath: configmap.config.data
+      kind: Secret
+      name: emqx-secret
+      valuesKey: config.yml
