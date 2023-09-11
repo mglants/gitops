@@ -9,4 +9,3 @@ resources:
   - zigbee2mqtt
   - frigate
   - teslamate
-  - scrypted
