@@ -178,7 +178,15 @@ spec:
         '0x00158d0003f0f1e8':
           occupancy_timeout: 600
   valuesFrom:
-    - kind: Secret
-      name: zigbee2mqtt-helm-values
-      valuesKey: values.yaml
-      optional: false
+    - targetPath: config.mqtt.user
+      kind: Secret
+      name: zigbee2mqtt-secret
+      valuesKey: MQTT_USERNAME
+    - targetPath: config.mqtt.password
+      kind: Secret
+      name: zigbee2mqtt-secret
+      valuesKey: MQTT_PASSWORD
+    - targetPath: config.advanced.network_key
+      kind: Secret
+      name: zigbee2mqtt-secret
+      valuesKey: NETWORK_KEY
