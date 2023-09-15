@@ -28,7 +28,7 @@ spec:
       repository: prometheuscommunity/smartctl-exporter-linux-arm64
       tag: master
     args:
-      - --smartctl.device=/dev/sda
+      - --smartctl.device=/dev/sda;;sat
     service:
       main:
         ports:
