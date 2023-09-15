@@ -8,3 +8,4 @@ resources:
   # - ipmi-exporter
   - mikrotik-exporter
   - mqtt-exporter
+  - smartctl-exporter
