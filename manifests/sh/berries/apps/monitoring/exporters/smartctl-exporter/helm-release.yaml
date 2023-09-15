@@ -45,3 +45,10 @@ spec:
 
     securityContext:
       privileged: true
+      runAsUser: 0
+
+    persistence:
+      config:
+        enabled: true
+        type: hostPath
+        hostPath: /dev
