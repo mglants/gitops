@@ -18,10 +18,12 @@ spec:
   values:
     nodeSelector:
       kubernetes.io/arch: arm64
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
     controller:
       type: daemonset
-      strategy: RollingUpdate
-
     image:
       repository: prometheuscommunity/smartctl-exporter-linux-arm64
       tag: master
@@ -30,6 +32,9 @@ spec:
         ports:
           http:
             port: 9633
+    serviceMonitor:
+      main:
+        enabled: true
     resources:
       requests:
         cpu: 5m
