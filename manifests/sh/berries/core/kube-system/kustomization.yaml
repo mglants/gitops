@@ -8,3 +8,4 @@ resources:
   - kubelet-csr-approver
   - metrics-server
   - cloudnative-pg
+  - volsync
