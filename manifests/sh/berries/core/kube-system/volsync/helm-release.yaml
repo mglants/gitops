@@ -18,5 +18,7 @@ spec:
       interval: 30m
   values:
     manageCRDs: true
+    image:
+      repository: zimbres/volsync
     metrics:
       disableAuth: true
