@@ -48,10 +48,7 @@ spec:
     volumeSnapshotClasses:
       - name: freenas-nfs-csi
         annotations:
-          k10.kasten.io/is-snapshot-class: 'true'
           snapshot.storage.kubernetes.io/is-default-class: 'true'
-        labels:
-          velero.io/csi-volumesnapshot-class: 'true'
         parameters:
           detachedSnapshots: 'false'
         secrets:

@@ -64,8 +64,6 @@ spec:
         name: frigate-secret
         mountPath: /config/config.yml
         subPath: config.yml
-    podAnnotations:
-      backup.velero.io/backup-volumes: data
     resources:
       requests:
         memory: 1000Mi
