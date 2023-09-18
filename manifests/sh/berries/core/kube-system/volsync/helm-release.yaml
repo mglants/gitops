@@ -17,8 +17,18 @@ spec:
         namespace: flux-system
       interval: 30m
   values:
-    manageCRDs: true
     image:
       repository: zimbres/volsync
+    rclone:
+      repository: zimbres/volsync
+    restic:
+      repository: zimbres/volsync
+    rsync:
+      repository: zimbres/volsync
+    rsync-tls:
+      repository: zimbres/volsync
+    syncthing:
+      repository: zimbres/volsync
+    manageCRDs: true
     metrics:
       disableAuth: true
