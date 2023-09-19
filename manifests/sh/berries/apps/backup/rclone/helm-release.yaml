@@ -1,0 +1,72 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: rclone
+  namespace: backup
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    image:
+      repository: rclone/rclone
+      tag: 1.64.0
+    controller:
+      type: cronjob
+      cronjob:
+        schedule: 0 0 * * *
+    args:
+      - sync
+      - 's3:'
+      - gdrive,shared_with_me:BACKUP/sh/s3
+      - -v
+      - --s3-no-check-bucket
+      - --fast-list
+      - --rc
+      - --rc-enable-metrics
+      - --rc-no-auth
+      - --rc-addr=:5572
+      - --checksum
+    persistence:
+      config:
+        enabled: true
+        type: secret
+        name: rclone-secret
+        mountPath: /config/rclone/rclone.conf
+        subPath: rclone.conf
+      gdrive-sa:
+        enabled: true
+        type: secret
+        name: rclone-secret
+        mountPath: /config/rclone/gdrive.json
+        subPath: gdrive.json
+    service:
+      main:
+        ports:
+          http:
+            port: 5572
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - port: http
+            interval: 10s
