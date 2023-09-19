@@ -46,6 +46,7 @@ spec:
       - --rc-no-auth
       - --rc-addr=:5572
       - --checksum
+      - --exclude-from=/config/rclone/exclustion.txt
     persistence:
       config:
         enabled: true
@@ -53,6 +54,21 @@ spec:
         name: rclone-secret
         mountPath: /config/rclone/rclone.conf
         subPath: rclone.conf
+      exclusion:
+        enabled: true
+        type: configMap
+        name: rclone-exclusion
+        mountPath: /config/rclone/exclustion.txt
+        subPath: exclustion.txt
+        readOnly: true
+    configMaps:
+      exclusion:
+        # -- Enables or disables the configMap
+        enabled: true
+        # -- configMap data content. Helm template enabled.
+        data:
+          exclustion.txt: |
+            */wals/**
     service:
       main:
         ports:
