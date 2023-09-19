@@ -37,7 +37,7 @@ spec:
     args:
       - sync
       - 's3:'
-      - gdrive,shared_with_me:BACKUP/sh/s3
+      - gdrive:BACKUP/sh/s3
       - -v
       - --s3-no-check-bucket
       - --fast-list
@@ -53,12 +53,6 @@ spec:
         name: rclone-secret
         mountPath: /config/rclone/rclone.conf
         subPath: rclone.conf
-      gdrive-sa:
-        enabled: true
-        type: secret
-        name: rclone-secret
-        mountPath: /config/rclone/gdrive.json
-        subPath: gdrive.json
     service:
       main:
         ports:
