@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://charts.bitnami.com/bitnami
       chart: multus-cni
-      version: 0.2.2
+      version: 1.1.2
       sourceRef:
         kind: HelmRepository
         name: bitnami-charts
