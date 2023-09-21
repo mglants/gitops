@@ -21,7 +21,7 @@ spec:
     crds: CreateReplace
   values:
     crds:
-      enabled: false
+      enabled: true
     controller:
       image:
         repository: quay.io/metallb/controller
