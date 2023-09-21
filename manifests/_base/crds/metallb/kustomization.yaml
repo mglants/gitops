@@ -23,3 +23,12 @@ commonAnnotations:
   meta.helm.sh/release-namespace: metallb-system
 commonLabels:
   app.kubernetes.io/managed-by: Helm
+patches:
+  - path: patches/crd-conversion-patch-addresspools.yaml
+    target:
+      kind: CustomResourceDefinition
+      name: addresspools.metallb.io
+  - path: patches/crd-conversion-patch-bgppeers.yaml
+    target:
+      kind: CustomResourceDefinition
+      name: bgppeers.metallb.io
