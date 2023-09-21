@@ -143,7 +143,7 @@ spec:
       enabled: true
       image:
         repository: arm64v8/postgres
-        tag: 14.3
+        tag: 14.9
       volumePermissions:
         enabled: true
         image:
