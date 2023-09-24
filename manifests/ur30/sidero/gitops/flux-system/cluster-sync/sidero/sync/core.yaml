@@ -7,8 +7,6 @@ metadata:
 spec:
   timeout: 5m0s
   interval: 10m0s
-  dependsOn:
-    - name: sidero-crds
   sourceRef:
     kind: GitRepository
     name: flux-system
