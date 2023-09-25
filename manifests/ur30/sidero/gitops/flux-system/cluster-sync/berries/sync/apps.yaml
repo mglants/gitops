@@ -30,3 +30,26 @@ spec:
     provider: sops
     secretRef:
       name: sops-age
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2beta1
+        kind: HelmRelease
+        metadata:
+          name: not-used
+          namespace: not-used
+        spec:
+          interval: 30m
+          timeout: 5m
+          install:
+            createNamespace: true
+            crds: CreateReplace
+            remediation:
+              retries: 5
+          upgrade:
+            crds: CreateReplace
+            remediation:
+              retries: 5
+      target:
+        kind: HelmRelease
+        group: helm.toolkit.fluxcd.io
+        labelSelector: helmdefault.flux.home.arpa/disabled notin (true)
