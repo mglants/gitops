@@ -25,7 +25,7 @@ spec:
     bgp:
       enabled: false
     bgpControlPlane:
-      enabled: false
+      enabled: true
     hubble:
       metrics:
         serviceMonitor:
