@@ -52,4 +52,4 @@ spec:
       target:
         kind: HelmRelease
         group: helm.toolkit.fluxcd.io
-        labelSelector: helmPatching.flux.home.arpa/disabled notin (true)
+        labelSelector: helmdefault.flux.home.arpa/disabled notin (true)
