@@ -10,5 +10,4 @@ resources:
   - kube-system
   - ingress-nginx
   - democratic-csi
-  - metallb-system
   - security

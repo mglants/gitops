@@ -9,7 +9,6 @@ resources:
   - cert-manager.yaml
   - democratic-csi.yaml
   - ingress-nginx.yaml
-  - metallb-system.yaml
   - networking.yaml
   - smarthome.yaml
   - security.yaml
