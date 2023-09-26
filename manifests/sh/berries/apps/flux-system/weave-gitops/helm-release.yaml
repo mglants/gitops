@@ -44,7 +44,7 @@ spec:
             - path: /
               pathType: Prefix
     networkPolicy:
-      create: false
+      create: true
     metrics:
       enabled: true
     rbac:
