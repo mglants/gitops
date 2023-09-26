@@ -33,7 +33,7 @@ spec:
         ports:
           http:
             port: 4000
-      dns-tcp:
+      dns:
         enabled: true
         type: LoadBalancer
         loadBalancerIP: 172.16.32.254
@@ -43,15 +43,6 @@ spec:
             port: 53
             protocol: TCP
             targetPort: 53
-        externalTrafficPolicy: Local
-        annotations:
-          metallb.universe.tf/allow-shared-ip: dns
-          external-dns.alpha.kubernetes.io/hostname: blocky.home
-      dns-udp:
-        enabled: true
-        type: LoadBalancer
-        loadBalancerIP: 172.16.32.254
-        ports:
           dns-udp:
             enabled: true
             port: 53
@@ -60,6 +51,7 @@ spec:
         externalTrafficPolicy: Local
         annotations:
           metallb.universe.tf/allow-shared-ip: dns
+          external-dns.alpha.kubernetes.io/hostname: blocky.home
     metrics:
       # -- Enable and configure a Prometheus serviceMonitor for the chart under this key.
       # @default -- See values.yaml
