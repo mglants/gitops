@@ -5,4 +5,3 @@ resources:
   - apps.yaml
   - core.yaml
   - crds.yaml
-  - cluster-apps.yaml
