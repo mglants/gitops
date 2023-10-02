@@ -138,7 +138,7 @@ spec:
           ads:
           - https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt
           - https://raw.githubusercontent.com/billimek/k8s-gitops/master/default/blocky/whitelist.txt
-          - https://raw.githubusercontent.com/MGlants/gitops/main/manifests/sh/berries/apps/networking/blocky/whitelist.txt
+          - https://raw.githubusercontent.com/MGlants/gitops/main/kubernetes/berries/apps/networking/blocky/app/whitelist.txt
         clientGroupsBlock:
           default:
             - ads
