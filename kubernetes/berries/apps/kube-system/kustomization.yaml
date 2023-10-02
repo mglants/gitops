@@ -5,6 +5,12 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
-  - ./reloader/ks.yaml
+  - ./cilium/ks.yaml
+  - ./cloudnative-pg/ks.yaml
   - ./descheduler/ks.yaml
+  - ./kubelet-csr-approver/ks.yaml
+  - ./metrics-server/ks.yaml
+  # - ./multus/ks.yaml
+  - ./node-feature-discovery/ks.yaml
+  - ./reloader/ks.yaml
   - ./snapshot-controller/ks.yaml
