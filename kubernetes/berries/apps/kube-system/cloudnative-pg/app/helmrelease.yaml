@@ -19,12 +19,14 @@ spec:
     createNamespace: true
     remediation:
       retries: 3
+    crds: CreateReplace
   upgrade:
     cleanupOnFail: true
     remediation:
       retries: 3
+    crds: CreateReplace
   uninstall:
     keepHistory: false
   values:
     crds:
-      create: false
+      create: true
