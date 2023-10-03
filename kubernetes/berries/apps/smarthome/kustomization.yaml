@@ -1,0 +1,14 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # Pre Flux-Kustomizations
+  - ./namespace.yaml
+  # Flux-Kustomizations
+  - ./emqx/ks.yaml
+  - ./esphome/ks.yaml
+  - ./frigate/ks.yaml
+  - ./homeassistant/ks.yaml
+  - ./node-red/ks.yaml
+  - ./teslamate/ks.yaml
+  - ./zigbee2mqtt/ks.yaml
