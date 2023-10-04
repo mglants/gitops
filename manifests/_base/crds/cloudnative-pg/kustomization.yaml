@@ -10,3 +10,8 @@ resources:
   - https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v1.20.1/config/crd/bases/postgresql.cnpg.io_poolers.yaml
   # renovate: image=ghcr.io/cloudnative-pg/cloudnative-pg type=docker
   - https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v1.20.1/config/crd/bases/postgresql.cnpg.io_scheduledbackups.yaml
+commonAnnotations:
+  meta.helm.sh/release-name: cloudnative-pg
+  meta.helm.sh/release-namespace: kube-system
+commonLabels:
+  app.kubernetes.io/managed-by: Helm
