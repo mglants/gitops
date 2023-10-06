@@ -40,6 +40,12 @@ spec:
                 enable_unprivileged_icmp = true
           path: /etc/cri/conf.d/20-customization.part
     - op: add
+      path: /machine/sysctls
+      value:
+        fs.inotify.max_user_watches: '1048576'
+        fs.inotify.max_user_instances: '8192'
+        vm.max_map_count: '524288'
+    - op: add
       path: /machine/kubelet/extraArgs
       value:
         rotate-server-certificates: true

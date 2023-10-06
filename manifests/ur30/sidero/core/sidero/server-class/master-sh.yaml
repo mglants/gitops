@@ -25,6 +25,15 @@ spec:
       path: /cluster/apiServer/extraArgs
       value:
         feature-gates: MixedProtocolLBService=true,GracefulNodeShutdown=true
+    - op: add
+      path: /cluster/etcd/advertisedSubnets
+      value:
+        - 172.16.30.0/24
+    - op: add
+      path: /cluster/etcd/extraArgs
+      value:
+        election-timeout: '20000'
+        listen-metrics-urls: http://0.0.0.0:2381
     - op: replace
       path: /cluster/proxy/disabled
       value: true
@@ -34,8 +43,18 @@ spec:
         - content: |
             [metrics]
               address = "0.0.0.0:11234"
+            [plugins]
+              [plugins."io.containerd.grpc.v1.cri"]
+                enable_unprivileged_ports = true
+                enable_unprivileged_icmp = true
           path: /etc/cri/conf.d/20-customization.part
           op: create
+    - op: add
+      path: /machine/sysctls
+      value:
+        fs.inotify.max_user_watches: '1048576'
+        fs.inotify.max_user_instances: '8192'
+        vm.max_map_count: '524288'
     # - op: remove
     #   path: /cluster/apiServer/admissionControl
     - op: add
