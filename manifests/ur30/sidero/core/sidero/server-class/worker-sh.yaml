@@ -16,10 +16,7 @@ spec:
             dhcp: true
             vlans:
               - vlanId: 10
-                dhcp: true
-                dhcpOptions:
-                  routeMetric: 4096
-
+                dhcp: false
     - op: add
       path: /machine/kubelet/extraMounts
       value:
