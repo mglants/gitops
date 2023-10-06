@@ -62,11 +62,11 @@ spec:
       value:
         name: custom
         urls:
-          - https://raw.githubusercontent.com/MGlants/gitops/main/manifests/sh/berries/core/kube-system/cilium/bootstrap/manifest.yaml
+          - https://raw.githubusercontent.com/MGlants/gitops/main/kubernetes/berries/apps/kube-system/cilium/app/bootstrap/manifest.yaml
     - op: add
       path: /cluster/extraManifests
       value:
-        - https://raw.githubusercontent.com/MGlants/gitops/main/manifests/sh/berries/core/kube-system/kubelet-csr-approver/bootstrap/manifest.yaml
+        - https://raw.githubusercontent.com/MGlants/gitops/main/kubernetes/berries/apps/kube-system/kubelet-csr-approver/app/bootstrap/manifest.yaml
     - op: add
       path: /cluster/aescbcEncryptionSecret
       value: ${aescbcEncryptionSecret_SH}
