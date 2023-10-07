@@ -7,7 +7,7 @@ metadata:
     region: sh
   name: 7f966449-6392-4821-a307-9ac122fcd3d0
 spec:
-  pxeBootAlways: false
+  pxeBootAlways: true
   accepted: true
   environmentRef:
     namespace: default
