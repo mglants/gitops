@@ -25,7 +25,7 @@ spec:
     cmdOptions:
       v: 3
     deschedulerPolicy:
-      evictLocalStoragePods: true
+      evictLocalStoragePods: false
       strategies:
         RemoveDuplicates:
           enabled: true
@@ -45,7 +45,7 @@ spec:
           params:
             nodeFit: true
         LowNodeUtilization:
-          enabled: false
+          enabled: true
         RemoveFailedPods:
           enabled: true
           params:
