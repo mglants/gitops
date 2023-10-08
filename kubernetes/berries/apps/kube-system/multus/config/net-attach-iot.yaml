@@ -18,7 +18,7 @@ spec:
             "ips": true
           },
           "ipam": {
-           "type": "dhcp",
+            "type": "static",
             "subnet": "172.16.10.0/24",
             "routes": [
               { "dst": "0.0.0.0/0", "gw": "172.16.10.1" }
