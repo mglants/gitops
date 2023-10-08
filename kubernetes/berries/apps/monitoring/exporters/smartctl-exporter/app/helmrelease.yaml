@@ -26,7 +26,7 @@ spec:
       type: daemonset
     image:
       repository: ghcr.io/mglants/smartctl-exporter
-      tag: :0.11.0
+      tag: 0.11.0
     service:
       main:
         ports:
