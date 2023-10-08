@@ -71,7 +71,11 @@ spec:
     kubeScheduler:
       enabled: false
     kubeEtcd:
-      enabled: false
+      enabled: true
+      service:
+        enabled: true
+        port: 2381
+        targetPort: 2381
     kubeProxy:
       enabled: false
     kubelet:
