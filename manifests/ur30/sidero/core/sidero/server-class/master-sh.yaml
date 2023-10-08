@@ -22,6 +22,11 @@ spec:
         rotate-server-certificates: true
         feature-gates: GracefulNodeShutdown=true
     - op: add
+      path: /machine/kubelet/nodeIP
+      value:
+        validSubnets:
+          - 172.16.30.0/24
+    - op: add
       path: /cluster/apiServer/extraArgs
       value:
         feature-gates: MixedProtocolLBService=true,GracefulNodeShutdown=true
