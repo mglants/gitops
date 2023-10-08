@@ -25,10 +25,8 @@ spec:
     controller:
       type: daemonset
     image:
-      repository: prometheuscommunity/smartctl-exporter-linux-arm64
-      tag: master
-    args:
-      - --smartctl.device=/dev/sda;sat
+      repository: ghcr.io/mglants/smartctl-exporter
+      tag: :0.11.0
     service:
       main:
         ports:
