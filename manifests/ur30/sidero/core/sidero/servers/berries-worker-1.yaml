@@ -9,6 +9,10 @@ metadata:
 spec:
   pxeBootAlways: true
   accepted: true
+  configPatches:
+    - op: add
+      path: /machine/network/hostname
+      value: talos-pl6-gwt
   environmentRef:
     namespace: default
     name: default-arm64

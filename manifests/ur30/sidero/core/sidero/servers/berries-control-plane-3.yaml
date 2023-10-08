@@ -9,6 +9,10 @@ metadata:
 spec:
   pxeBootAlways: true
   accepted: true
+  configPatches:
+    - op: add
+      path: /machine/network/hostname
+      value: berries-cp3
   environmentRef:
     namespace: default
     name: default-arm64

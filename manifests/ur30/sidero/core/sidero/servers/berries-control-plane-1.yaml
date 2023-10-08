@@ -8,6 +8,10 @@ metadata:
   name: 7f966449-6392-4821-a307-9ac122fcd3d0
 spec:
   pxeBootAlways: true
+  configPatches:
+    - op: add
+      path: /machine/network/hostname
+      value: talos-h83-2r0
   accepted: true
   environmentRef:
     namespace: default

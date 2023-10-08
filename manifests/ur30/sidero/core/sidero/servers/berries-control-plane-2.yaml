@@ -8,6 +8,10 @@ metadata:
   name: 00c03112-0000-0000-0000-dca632805b9c
 spec:
   pxeBootAlways: true
+  configPatches:
+    - op: add
+      path: /machine/network/hostname
+      value: talos-zjb-sf2
   accepted: true
   environmentRef:
     namespace: default

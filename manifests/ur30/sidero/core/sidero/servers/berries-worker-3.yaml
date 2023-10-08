@@ -8,6 +8,10 @@ metadata:
   name: 00d03112-0000-0000-0000-dca632ae446e
 spec:
   pxeBootAlways: true
+  configPatches:
+    - op: add
+      path: /machine/network/hostname
+      value: berries-worker3
   accepted: true
   environmentRef:
     namespace: default
