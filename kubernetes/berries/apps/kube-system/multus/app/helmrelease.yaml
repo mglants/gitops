@@ -24,3 +24,16 @@ spec:
     CNIVersion: 0.3.1
     hostCNIBinDir: /opt/cni/bin
     hostCNINetDir: /etc/cni/net.d
+    # https://github.com/k8snetworkplumbingwg/multus-cni/issues/1089
+    initContainers:
+      - name: delete-multus-conf-workaround
+        image: alpine
+        command: [rm]
+        args: [/bitnami/multus-cni/host/etc/cni/net.d/00-multus.conf]
+        securityContext:
+          privileged: true
+          runAsNonRoot: false
+          runAsUser: 0
+        volumeMounts:
+          - mountPath: /bitnami/multus-cni/host/etc/cni/net.d
+            name: cni-net-dir
