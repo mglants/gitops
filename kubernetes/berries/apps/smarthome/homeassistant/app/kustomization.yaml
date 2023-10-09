@@ -6,3 +6,4 @@ resources:
   - pvc.yaml
   - secret.enc.yaml
   - volsync.yaml
+  - net-attach.yaml

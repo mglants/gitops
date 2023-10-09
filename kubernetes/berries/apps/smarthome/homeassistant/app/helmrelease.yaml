@@ -100,12 +100,7 @@ spec:
         enabled: true
         existingClaim: homeassistant-config-v1
     podAnnotations:
-      k8s.v1.cni.cncf.io/networks: |
-        [{
-          "name":"multus-iot",
-          "namespace": "kube-system",
-          "ips": ["172.16.10.5/24"]
-        }]
+      k8s.v1.cni.cncf.io/networks: homeassistant-iot
     addons:
       codeserver:
         enabled: true
