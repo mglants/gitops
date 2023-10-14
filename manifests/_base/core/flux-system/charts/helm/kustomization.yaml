@@ -39,7 +39,6 @@ resources:
   - nextcloud-charts.yaml
   - vernemq-charts.yaml
   - vmware-tanzu-charts.yaml
-  - weaveworks-kured-charts.yaml
   - timescale-charts.yaml
   - bjw-s-charts.yaml
   - loeken-at-home-charts.yaml
