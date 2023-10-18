@@ -16,12 +16,12 @@ spec:
         repo1-path: /home-assistant/repo1
         repo1-s3-uri-style: path
         repo1-storage-verify-tls: n
+        repo1-s3-port: 9000
       repo:
         name: repo1
         s3:
           bucket: crunchy-postgres
           endpoint: 172.16.30.200
-          port: 9000
           region: us-east-1
   patroni:
     dynamicConfiguration:
@@ -55,6 +55,7 @@ spec:
         repo1-path: /home-assistant/repo1
         repo1-s3-uri-style: path
         repo1-storage-verify-tls: n
+        repo1-s3-port: 9000
       manual:
         repoName: repo1
         options:
@@ -67,5 +68,4 @@ spec:
           s3:
             bucket: crunchy-postgres
             endpoint: 172.16.30.200
-            port: 9000
             region: us-east-1
