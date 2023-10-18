@@ -68,5 +68,4 @@ spec:
             bucket: crunchy-postgres
             endpoint: 172.16.30.200
             port: 9000
-            verify-tls: n
             region: us-east-1
