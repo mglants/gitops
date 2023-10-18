@@ -21,7 +21,7 @@ spec:
         name: repo1
         s3:
           bucket: crunchy-postgres
-          endpoint: 172.16.30.200
+          endpoint: nas.home
           region: us-east-1
   patroni:
     dynamicConfiguration:
@@ -67,5 +67,5 @@ spec:
             differential: 0 1 * * 1-6
           s3:
             bucket: crunchy-postgres
-            endpoint: 172.16.30.200
+            endpoint: nas.home
             region: us-east-1
