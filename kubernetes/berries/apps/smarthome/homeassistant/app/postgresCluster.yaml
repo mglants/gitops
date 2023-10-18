@@ -16,7 +16,7 @@ spec:
         repo1-path: /home-assistant/repo1
         repo1-s3-uri-style: path
         repo1-storage-verify-tls: n
-        repo1-storage-port: 9000
+        repo1-storage-port: '9000'
       repo:
         name: repo1
         s3:
@@ -55,7 +55,7 @@ spec:
         repo1-path: /home-assistant/repo1
         repo1-s3-uri-style: path
         repo1-storage-verify-tls: n
-        repo1-storage-port: 9000
+        repo1-storage-port: '9000'
       manual:
         repoName: repo1
         options:
