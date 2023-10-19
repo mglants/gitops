@@ -15,13 +15,12 @@ spec:
       global:
         repo1-path: /home-assistant/repo1
         repo1-s3-uri-style: path
-        repo1-storage-verify-tls: n
         repo1-storage-port: '9000'
       repo:
         name: repo1
         s3:
           bucket: crunchy-postgres
-          endpoint: nas.home
+          endpoint: nas.glants.xyz
           region: us-east-1
   patroni:
     dynamicConfiguration:
@@ -54,7 +53,6 @@ spec:
         repo1-retention-full-type: time
         repo1-path: /home-assistant/repo1
         repo1-s3-uri-style: path
-        repo1-storage-verify-tls: n
         repo1-storage-port: '9000'
       manual:
         repoName: repo1
@@ -67,5 +65,5 @@ spec:
             differential: 0 1 * * 1-6
           s3:
             bucket: crunchy-postgres
-            endpoint: nas.home
+            endpoint: nas.glants.xyz
             region: us-east-1
