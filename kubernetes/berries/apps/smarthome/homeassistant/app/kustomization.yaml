@@ -7,4 +7,3 @@ resources:
   - secret.enc.yaml
   - volsync.yaml
   - net-attach.yaml
-  - postgresCluster.yaml
