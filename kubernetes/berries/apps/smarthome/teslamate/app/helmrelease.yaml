@@ -26,12 +26,6 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    initContainers:
-      init-db:
-        image: ghcr.io/onedr0p/postgres-initdb:14.8
-        envFrom:
-          - secretRef:
-              name: teslamate-secret
     image:
       repository: teslamate/teslamate
       tag: 1.27.3
@@ -40,6 +34,26 @@ spec:
       DISABLE_MQTT: 'false'
       MQTT_HOST: emqx
       MQTT_USERNAME: mqtt
+      DATABASE_HOST:
+        valueFrom:
+          secretKeyRef:
+            name: smarthome-pgsql-pguser-teslamate
+            key: host
+      DATABASE_NAME:
+        valueFrom:
+          secretKeyRef:
+            name: smarthome-pgsql-pguser-teslamate
+            key: dbname
+      DATABASE_USER:
+        valueFrom:
+          secretKeyRef:
+            name: smarthome-pgsql-pguser-teslamate
+            key: user
+      DATABASE_PASS:
+        valueFrom:
+          secretKeyRef:
+            name: smarthome-pgsql-pguser-teslamate
+            key: password
     envFrom:
       - secretRef:
           name: teslamate-secret
