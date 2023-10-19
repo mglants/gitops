@@ -55,11 +55,9 @@ spec:
             s3:
               s3:
               bucketnames: loki
-              endpoint: 172.16.30.200:9000
+              endpoint: nas.glants.xyz:9000
               insecure: false
               s3forcepathstyle: true
-              http_config:
-                insecure_skip_verify: true
           ring:
             kvstore:
               store: memberlist
