@@ -34,6 +34,11 @@ spec:
       tag: 2023.9.2
     env:
       TZ: Europe/Moscow
+      SECRET_RECORDER_DB_URL:
+        valueFrom:
+          secretKeyRef:
+            name: home-assistant-pguser-home-assistant
+            key: uri
     service:
       main:
         annotations:
@@ -133,28 +138,7 @@ spec:
         cpu: 100m
         memory: 1000Mi
     postgresql:
-      enabled: true
-      image:
-        repository: arm64v8/postgres
-        tag: 14.3
-      volumePermissions:
-        enabled: true
-        image:
-          repository: arm64v8/alpine
-          tag: '3.18'
-      securityContext:
-        fsGroup: 999
-        runAsUser: 999
-      livenessProbe:
-        initialDelaySeconds: 60
-      readinessProbe:
-        initialDelaySeconds: 60
-      auth:
-        username: homeassistant
-        database: homeassistant
-      persistence:
-        primary:
-          enabled: true
+      enabled: false
   valuesFrom:
     - kind: Secret
       name: homeassistant-helm-values
