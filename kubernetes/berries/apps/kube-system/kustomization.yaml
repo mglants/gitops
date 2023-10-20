@@ -6,7 +6,6 @@ resources:
   - ./namespace.yaml
   # Flux-Kustomizations
   - ./cilium/ks.yaml
-  - ./cloudnative-pg/ks.yaml
   - ./descheduler/ks.yaml
   - ./kubelet-csr-approver/ks.yaml
   - ./metrics-server/ks.yaml

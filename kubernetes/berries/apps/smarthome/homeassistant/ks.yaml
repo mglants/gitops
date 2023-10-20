@@ -17,5 +17,4 @@ spec:
     - name: cluster-apps-external-secrets-stores
     - name: cluster-apps-democratic-csi
     - name: cluster-apps-multus
-    - name: cluster-apps-external-secrets-cluster-secrets
     - name: cluster-apps-smarthome-database
