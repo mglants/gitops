@@ -11,7 +11,7 @@ spec:
   configPatches:
     - op: add
       path: /machine/network/hostname
-      value: talos-h83-2r0
+      value: berries-cp1
   accepted: true
   environmentRef:
     namespace: default
