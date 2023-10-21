@@ -60,6 +60,14 @@ spec:
         fs.inotify.max_user_watches: '1048576'
         fs.inotify.max_user_instances: '8192'
         vm.max_map_count: '524288'
+    - op: replace
+      path: /machine/features/kubernetesTalosAPIAccess
+      value:
+        enabled: true
+        allowedRoles:
+          - os:etcd:backup
+        allowedKubernetesNamespaces:
+          - backup
     # - op: remove
     #   path: /cluster/apiServer/admissionControl
     - op: add
