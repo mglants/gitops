@@ -48,6 +48,6 @@ spec:
   template:
     spec:
       serverClassRef:
-        apiVersion: metal.sidero.dev/v1alpha1
+        apiVersion: metal.sidero.dev/v1alpha2
         kind: ServerClass
         name: worker-sh

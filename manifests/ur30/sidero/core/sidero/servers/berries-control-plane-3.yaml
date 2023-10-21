@@ -1,5 +1,5 @@
 ---
-apiVersion: metal.sidero.dev/v1alpha1
+apiVersion: metal.sidero.dev/v1alpha2
 kind: Server
 metadata:
   labels:
@@ -16,14 +16,16 @@ spec:
   environmentRef:
     namespace: default
     name: default-arm64
-  cpu:
-    manufacturer: Broadcom
-    version: BCM2711 (ARM Cortex-A72)
   hostname: berries-control-plane-3
-  system:
-    family: Raspberry Pi
-    manufacturer: Raspberry Pi Foundation
-    productName: Raspberry Pi 4 Model B
-    serialNumber: 0000E45F01358531
-    skuNumber: 0000000000D03114
-    version: D03114
+  hardware:
+    compute:
+      processors:
+        - manufacturer: Broadcom
+          productName: BCM2711 (ARM Cortex-A72)
+    system:
+      family: Raspberry Pi
+      manufacturer: Raspberry Pi Foundation
+      productName: Raspberry Pi 4 Model B
+      serialNumber: 0000E45F01358531
+      skuNumber: 0000000000D03114
+      version: D03114

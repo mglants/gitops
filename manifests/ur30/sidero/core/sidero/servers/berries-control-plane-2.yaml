@@ -1,5 +1,5 @@
 ---
-apiVersion: metal.sidero.dev/v1alpha1
+apiVersion: metal.sidero.dev/v1alpha2
 kind: Server
 metadata:
   labels:
@@ -13,17 +13,19 @@ spec:
       path: /machine/network/hostname
       value: talos-zjb-sf2
   accepted: true
+  hostname: berries-control-plane-2
   environmentRef:
     namespace: default
     name: default-arm64
-  cpu:
-    manufacturer: Broadcom
-    version: BCM2711 (ARM Cortex-A72)
-  hostname: berries-control-plane-2
-  system:
-    family: Raspberry Pi
-    manufacturer: Raspberry Pi Foundation
-    productName: Raspberry Pi 4 Model B
-    serialNumber: 0000DCA632805B9C
-    skuNumber: 0000000000C03112
-    version: C03112
+  hardware:
+    compute:
+      processors:
+        - manufacturer: Broadcom
+          productName: BCM2711 (ARM Cortex-A72)
+    system:
+      family: Raspberry Pi
+      manufacturer: Raspberry Pi Foundation
+      productName: Raspberry Pi 4 Model B
+      serialNumber: 0000DCA632805B9C
+      skuNumber: 0000000000C03112
+      version: C03112

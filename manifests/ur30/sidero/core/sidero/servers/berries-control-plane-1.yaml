@@ -1,5 +1,5 @@
 ---
-apiVersion: metal.sidero.dev/v1alpha1
+apiVersion: metal.sidero.dev/v1alpha2
 kind: Server
 metadata:
   labels:
@@ -16,14 +16,16 @@ spec:
   environmentRef:
     namespace: default
     name: default-amd64
-  cpu:
-    manufacturer: QEMU
-    version: pc-i440fx-5.2
   hostname: berries-control-plane-1
-  system:
-    family: Unknown
-    manufacturer: QEMU
-    productName: Standard PC (i440FX + PIIX, 1996)
-    serialNumber: Unknown
-    skuNumber: Unknown
-    version: pc-i440fx-5.2
+  hardware:
+    compute:
+      processors:
+        - manufacturer: QEMU
+          productName: pc-i440fx-5.2
+    system:
+      family: Unknown
+      manufacturer: QEMU
+      productName: Standard PC (i440FX + PIIX, 1996)
+      serialNumber: Unknown
+      skuNumber: Unknown
+      version: pc-i440fx-5.2

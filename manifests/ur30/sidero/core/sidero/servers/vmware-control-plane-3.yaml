@@ -1,5 +1,5 @@
 ---
-apiVersion: metal.sidero.dev/v1alpha1
+apiVersion: metal.sidero.dev/v1alpha2
 kind: Server
 metadata:
   labels:
@@ -15,11 +15,13 @@ spec:
   environmentRef:
     namespace: default
     name: default-amd64
-  cpu:
-    manufacturer: GenuineIntel
   hostname: vmware-control-plane-3
-  system:
-    productName: BHYVE
-    serialNumber: None
-    skuNumber: None
-    version: '1.0'
+  hardware:
+    compute:
+      processors:
+        - manufacturer: GenuineIntel
+    system:
+      productName: BHYVE
+      serialNumber: None
+      skuNumber: None
+      version: '1.0'

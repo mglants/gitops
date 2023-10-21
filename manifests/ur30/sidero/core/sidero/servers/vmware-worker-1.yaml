@@ -1,5 +1,5 @@
 ---
-apiVersion: metal.sidero.dev/v1alpha1
+apiVersion: metal.sidero.dev/v1alpha2
 kind: Server
 metadata:
   labels:
@@ -11,14 +11,16 @@ spec:
   environmentRef:
     namespace: default
     name: default-amd64
-  cpu:
-    manufacturer: GenuineIntel
-    version: Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz
   hostname: vmware-worker-1
-  system:
-    family: Unknown
-    manufacturer: VMware, Inc.
-    productName: VMware Virtual Platform
-    serialNumber: VMware-42 10 9d 8f 31 f3 fa b7-b6 3d 48 40 bf 39 72 30
-    skuNumber: Unknown
-    version: None
+  hardware:
+    compute:
+      processors:
+        - manufacturer: GenuineIntel
+          productName: Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz
+    system:
+      family: Unknown
+      manufacturer: VMware, Inc.
+      productName: VMware Virtual Platform
+      serialNumber: VMware-42 10 9d 8f 31 f3 fa b7-b6 3d 48 40 bf 39 72 30
+      skuNumber: Unknown
+      version: None
