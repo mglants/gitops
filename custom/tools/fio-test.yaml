@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: fio-disk-speed-test
+spec:
+  serviceName: fio-test-service
+  replicas: 6
+  selector:
+    matchLabels:
+      app: fio-disk-speed-test
+  template:
+    metadata:
+      labels:
+        app: fio-disk-speed-test
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - fio-disk-speed-test
+              topologyKey: kubernetes.io/hostname
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          effect: NoSchedule
+      containers:
+        - name: fio
+          image: itaygin/fio
+          command: [/bin/sh, -c]
+          args: [fio --name=randwrite --ioengine=sync --iodepth=1 --rw=randwrite --bs=4k --numjobs=1 --size=100m --runtime=10s --time_based --filename=/data/fio-testfile
+                && rm -f /data/fio-testfile && sleep 1000000]
+          volumeMounts:
+            - name: fio-test-volume
+              mountPath: /data
+      volumes:
+        - name: fio-test-volume
+          hostPath:
+            path: /var/fio-test
+            type: DirectoryOrCreate
