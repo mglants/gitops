@@ -23,6 +23,6 @@ spec:
       - random.trust_cpu=on
       - slab_nomerge=
       - talos.platform=metal
-      - talos.board=rpi_4
+      - talos.board=rpi_generic
   initrd:
     url: https://github.com/talos-systems/talos/releases/download/${TALOS_SH_VERSION}/initramfs-arm64.xz
