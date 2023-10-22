@@ -29,7 +29,9 @@ spec:
       - name: delete-multus-conf-workaround
         image: alpine
         command: [rm]
-        args: [/bitnami/multus-cni/host/etc/cni/net.d/00-multus.conf]
+        args:
+          - -f
+          - /bitnami/multus-cni/host/etc/cni/net.d/00-multus.conf
         securityContext:
           privileged: true
           runAsNonRoot: false
