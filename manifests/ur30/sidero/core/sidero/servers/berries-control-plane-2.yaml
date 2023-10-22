@@ -16,7 +16,7 @@ spec:
   hostname: berries-control-plane-2
   environmentRef:
     namespace: default
-    name: default-arm64
+    name: sh-amd64
   hardware:
     compute:
       processors:

@@ -15,7 +15,7 @@ spec:
   accepted: true
   environmentRef:
     namespace: default
-    name: default-amd64
+    name: sh-amd64
   hostname: berries-control-plane-1
   hardware:
     compute:

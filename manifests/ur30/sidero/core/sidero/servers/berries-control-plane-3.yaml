@@ -15,7 +15,7 @@ spec:
       value: berries-cp3
   environmentRef:
     namespace: default
-    name: default-arm64
+    name: sh-amd64
   hostname: berries-control-plane-3
   hardware:
     compute:
