@@ -12,7 +12,7 @@ spec:
   configPatches:
     - op: add
       path: /machine/network/hostname
-      value: talos-pl6-gwt
+      value: berries-worker1
   environmentRef:
     namespace: default
     name: default-arm64
