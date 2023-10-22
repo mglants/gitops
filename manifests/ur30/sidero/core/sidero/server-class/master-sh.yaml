@@ -29,7 +29,7 @@ spec:
     - op: add
       path: /cluster/apiServer/extraArgs
       value:
-        feature-gates: MixedProtocolLBService=true,GracefulNodeShutdown=true
+        feature-gates: GracefulNodeShutdown=true
     - op: add
       path: /cluster/etcd/advertisedSubnets
       value:
