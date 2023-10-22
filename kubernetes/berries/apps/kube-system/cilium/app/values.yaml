@@ -16,6 +16,9 @@ bgp:
     # -- Enable announcement of node pod CIDR
     podCIDR: false
 
+bgpControlPlane:
+  enabled: true
+
 # -- Configure cgroup related configuration
 cgroup:
   autoMount:
