@@ -1,5 +1,5 @@
 ---
 providerRegex: |
-  ^talos-.*$
+  ^talos-.*$|^berries-.*$
 
 bypassDnsResolution: true
