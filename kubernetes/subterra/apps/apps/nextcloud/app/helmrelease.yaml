@@ -28,7 +28,7 @@ spec:
     nextcloud:
       host: cloud.gearage.ru
       update: 0
-      datadir: /var/www/html/data
+      datadir: /nextcloud/data
       existingSecret:
         enabled: true
         secretName: &secret nextcloud-secret
@@ -69,19 +69,9 @@ spec:
         apache-pretty-urls.config.php: true
         apcu.config.php: true
         apps.config.php: true
-        autoconfig.php: false
+        autoconfig.php: true
         smtp.config.php: true
       configs:
-        database.config.php: |-
-          <?php
-          $CONFIG = array (
-            'dbtype' => 'pgsql',
-            'dbname' => getenv('POSTGRES_DB'),
-            'dbhost' => getenv('POSTGRES_HOST'),
-            'dbtableprefix' => 'oc_',
-            'dbuser' => getenv('POSTGRES_USER'),
-            'dbpassword' => getenv('POSTGRES_PASSWORD')
-          );
         migrate.config.php: |-
           <?php
           $CONFIG = array (
@@ -92,7 +82,6 @@ spec:
         custom.config.php: |-
           <?php
           $CONFIG = array (
-            'datadirectory' => '/nextcloud/data',
             'trusted_proxies'   => ['ingress-nginx-controller.ingress-nginx.svc.cluster.local'],
             'trusted_domains' =>
             array (
