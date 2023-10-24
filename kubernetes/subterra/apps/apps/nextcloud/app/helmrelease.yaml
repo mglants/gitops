@@ -63,11 +63,6 @@ spec:
             secretKeyRef:
               name: *secret
               key: ENCRYPTION_SECRET
-        - name: POSTGRES_HOST
-          valueFrom:
-            secretKeyRef:
-              name: *secret
-              key: POSTGRES_HOST
       defaultConfigs:
         .htaccess: true
         redis.config.php: false
