@@ -1,0 +1,90 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: democratic-csi
+  namespace: democratic-csi
+spec:
+  interval: 5m
+  timeout: 10m0s
+  chart:
+    spec:
+      # renovate: registryUrl=https://democratic-csi.github.io/charts
+      chart: democratic-csi
+      version: 0.14.1
+      sourceRef:
+        kind: HelmRepository
+        name: democratic-csi-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    csiDriver:
+      # should be globally unique for a given cluster
+      name: org.democratic-csi.nfs
+    node:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+    # add note here about volume expansion requirements
+    storageClasses:
+      - name: freenas-nfs-csi
+        defaultClass: true
+        reclaimPolicy: Delete
+        volumeBindingMode: Immediate
+        allowVolumeExpansion: true
+        parameters:
+          fsType: nfs
+
+        mountOptions:
+          - noatime
+          - nfsvers=4
+        secrets:
+          provisioner-secret:
+          controller-publish-secret:
+          node-stage-secret:
+          node-publish-secret:
+          controller-expand-secret:
+    volumeSnapshotClasses:
+      - name: freenas-nfs-csi
+        annotations:
+          snapshot.storage.kubernetes.io/is-default-class: 'true'
+        parameters:
+          detachedSnapshots: 'false'
+        secrets:
+          snapshotter-secret:
+
+    driver:
+      config:
+        driver: freenas-api-nfs
+        instance_id:
+        httpConnection:
+          protocol: http
+          host: 192.168.1.50
+          port: 80
+          username: root
+          allowInsecure: true
+        zfs:
+          cli:
+            sudoEnabled: true
+          datasetParentName: vmware/k8s/nfs
+          detachedSnapshotsDatasetParentName: vmware/k8s/snap
+          datasetEnableQuotas: true
+          datasetEnableReservation: false
+          datasetPermissionsMode: '0777'
+          datasetPermissionsUser: 0
+          datasetPermissionsGroup: 0
+        nfs:
+          shareHost: 192.168.1.50
+          shareAlldirs: false
+          shareAllowedHosts: []
+          shareAllowedNetworks: [192.168.48.0/24]
+          shareMaprootUser: root
+          shareMaprootGroup: wheel
+          shareMapallUser: ''
+          shareMapallGroup: ''
+  valuesFrom:
+    - targetPath: driver.config.httpConnection.apiKey
+      kind: Secret
+      name: democratic-csi-secret
+      valuesKey: API_KEY

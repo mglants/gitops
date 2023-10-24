@@ -1,0 +1,69 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: node-feature-discovery
+  namespace: kube-system
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://kubernetes-sigs.github.io/node-feature-discovery/charts
+      chart: node-feature-discovery
+      version: 0.14.1
+      sourceRef:
+        kind: HelmRepository
+        name: kubernetes-sigs-nfd-charts
+        namespace: flux-system
+      interval: 5m
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  values:
+    nodeFeatureRule:
+      createCRD: true
+    worker:
+      config:
+        core:
+          sources:
+            - custom
+            - usb
+        sources:
+          usb:
+            deviceClassWhitelist:
+              - '02'
+              - 0e
+              - '03'
+              - ef
+              - fe
+              - ff
+            deviceLabelFields:
+              - class
+              - vendor
+              - device
+          custom:
+            - name: zigbee
+              matchOn:
+                - usbId:
+                    class: [ff]
+                    vendor: [1a86]
+                    device: ['7523']
+            - name: modems
+              matchOn:
+                - usbId:
+                    vendor: [12d1]
+            - name: ups
+              matchOn:
+                - usbId:
+                    class: ['03']
+                    vendor: [10af]
+                    device: ['0001']
+      annotations:
+        configmap.reloader.stakater.com/reload: nfd-worker-conf
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+    master:
+      replicaCount: 1

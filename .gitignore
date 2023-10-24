@@ -28,3 +28,5 @@ auth
 talosconfig
 custom/*/*/controlplane.yaml
 vmtoolsd-secret.yaml
+daemonset-test.yaml
+daemonset-test1.yaml

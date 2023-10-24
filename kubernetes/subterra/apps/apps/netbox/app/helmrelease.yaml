@@ -1,0 +1,101 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: netbox
+  namespace: apps
+spec:
+  interval: 5m
+  timeout: 10m0s
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.boo.tc
+      chart: netbox
+      version: 4.1.1
+      sourceRef:
+        kind: HelmRepository
+        name: bootc-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      repository: netboxcommunity/netbox
+      pullPolicy: IfNotPresent
+      tag: v3.6.2
+    timeZone: Europe/Moscow
+    existingSecret: &secret netbox-secret
+    superuser:
+      name: mglants
+      email: reg@glants.xyz
+    postgresql:
+      enabled: false
+    email:
+      server: mail.ur30.ru
+      port: 465
+      username: noreply@gearage.ru
+      useSSL: true
+      useTLS: false
+      timeout: 10
+      from: noreply@gearage.ru
+    redis:
+      enabled: true
+      auth:
+        existingSecret: *secret
+        existingSecretPasswordKey: REDIS_PASSWORD
+
+    persistence:
+      enabled: true
+      existingClaim: netbox-config-v1
+    externalDatabase:
+      host: postgres-postgresql.infra.svc.cluster.local
+      port: 5432
+      database: netbox
+      username: netbox
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        kubernetes.io/tls-acme: 'true'
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        external-dns.alpha.kubernetes.io/target: dd.ur30.ru
+        nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16,77.37.244.212/32,94.141.170.143/32
+      hosts:
+        - host: netbox.gearage.ru
+          paths:
+            - /
+      tls:
+        - secretName: netbox-tls
+          hosts:
+            - netbox.gearage.ru
+    maxPageSize: 0
+    # remoteAuth:
+    #   enabled: false
+    #   backend: netbox.authentication.LDAPBackend
+    #   ldap:
+    #     serverUri: ldaps://ak-outpost-ldap-netbox.kube-system:636
+    #     bindDn: 'CN=ldap,OU=users,DC=ldap,DC=goauthentik,DC=io'
+    #     ignoreCertErrors: true
+    #     userDnTemplate:
+    #     userSearchBaseDn: OU=users,DC=ldap,DC=goauthentik,DC=io
+    #     userSearchAttr: sAMAccountName
+    #     groupSearchBaseDn: DC=ldap,DC=goauthentik,DC=io
+    #     groupSearchClass: group
+    #     groupType: GroupOfNamesType
+    #     findGroupPerms: true
+    #     mirrorGroups: true
+    #     mirrorGroupsExcept:
+    #     cacheTimeout: 3600
+    #     requireGroupDn: ''
+    #     isAdminDn: CN=Netbox Admins,OU=groups,DC=ldap,DC=goauthentik,DC=io
+    #     isSuperUserDn: CN=Netbox SuperUsers,OU=groups,DC=ldap,DC=goauthentik,DC=io
+    #     attrFirstName: givenName
+    #     attrLastName: sn
+    #     attrMail: mail
+remoteAuth:
+  ldap:
+    bindPassword: 92HQDPHh4hbUfi51GvhF0jWlCtnSGxVohI8zF8bAz0SFSujQL9RPcAgRi85UcsHdXp1imaqI1oFMYJ3HfHTqKwXtA3rMhfWJOmdqsBOkkidsCc9UBSXggWVpbPGXViPa
+  valuesFrom:
+    - kind: Secret
+      name: netbox-helm-values
+      valuesKey: values.yaml
+      optional: false

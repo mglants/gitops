@@ -1,0 +1,113 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &name mqtt-exporter
+  namespace: monitoring
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mqtt-exporter
+  template:
+    metadata:
+      annotations:
+        secret.reloader.stakater.com/reload: mqtt-exporter
+      labels:
+        app.kubernetes.io/name: mqtt-exporter
+    spec:
+      containers:
+        - name: mqtt-exporter
+          image: kpetrem/mqtt-exporter:1.3.0
+          imagePullPolicy: Always
+          env:
+            - name: MQTT_ADDRESS
+              value: emqx.smarthome.svc
+            - name: MQTT_TOPIC
+              value: zigbee2mqtt/#
+            - name: PROMETHEUS_PREFIX
+              value: sensor_
+            - name: TOPIC_LABEL
+              value: sensor
+            - name: ZIGBEE2MQTT_AVAILABILITY
+              value: 'True'
+          envFrom:
+            - secretRef:
+                name: *name
+          ports:
+            - name: prometheus
+              containerPort: 9000
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 50Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqtt-exporter
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: mqtt-exporter
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: mqtt-exporter
+  ports:
+    - name: prometheus
+      port: 9000
+      protocol: TCP
+      targetPort: prometheus
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mqtt-exporter
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mqtt-exporter
+  endpoints:
+    - port: prometheus
+      metricRelabelings:
+        - sourceLabels: [sensor]
+          regex: zigbee2mqtt_(.*)
+          replacement: $1
+          targetLabel: sensor
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: mqtt-exporter
+  namespace: monitoring
+spec:
+  groups:
+    - name: mqtt-exporter
+      rules:
+        - alert: MqttExporterAbsent
+          annotations:
+            description: Mqtt Exporter has disappeared from Prometheus target discovery.
+            summary: Mqtt Exporter is down.
+          expr: |
+            absent(up{job=~"mqtt-exporter"} == 1)
+          for: 5m
+          labels:
+            severity: critical
+            notifications: 'true'
+        - alert: ZigbeeDeviceDown
+          annotations:
+            description: Zigbee device {{ $labels.sensor }} is down.
+            summary: Zigbee device is not available.
+          expr: |
+            sensor_zigbee_availability{job=~"mqtt-exporter"} !=1
+          for: 15m
+          labels:
+            severity: warning
+            notifications: 'true'

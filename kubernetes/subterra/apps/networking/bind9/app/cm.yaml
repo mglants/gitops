@@ -1,0 +1,51 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bind-config
+  namespace: networking
+data:
+  named.conf: |
+    options {
+        directory "/var/cache/bind";
+        listen-on { any; };
+        allow-query { any; };
+        recursion no;
+        allow-update { any; };
+        allow-transfer { any; };
+        max-cache-size 64M;
+    };
+    zone "168.192.in-addr.arpa" {
+        type master;
+        file "/etc/bind/zones/168.192.in-addr.arpa.db";
+    };
+    zone "ur30.ru" {
+        type master;
+        file "/etc/bind/zones/ur30.ru.db";
+    };
+    zone "home.arpa" {
+        type master;
+        file "/etc/bind/zones/home.arpa.db";
+    };
+  db_lowttl.empty: |-
+    $TTL 60 ; 1 minute
+    @       IN      SOA     localhost. root.localhost. (
+                                    16         ; serial
+                                    60         ; refresh (1 minute)
+                                    60         ; retry (1 minute)
+                                    60         ; expire (1 minute)
+                                    60         ; minimum (1 minute)
+                                    )
+    @       IN      NS      localhost.
+
+
+  db_normalttl.empty: |-
+    $TTL    86400
+    @    IN    SOA    localhost. root.localhost. (
+                1        ; Serial
+          604800        ; Refresh
+            86400        ; Retry
+          2419200        ; Expire
+            86400 )    ; Negative Cache TTL
+    ;
+    @    IN    NS    localhost.

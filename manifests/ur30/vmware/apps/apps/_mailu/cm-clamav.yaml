@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: clamav-config
+  namespace: apps
+data:
+  freshclam.conf: |-
+    ###############
+    # General
+    ###############
+
+    DatabaseDirectory /data
+    UpdateLogFile /dev/stdout
+    LogTime yes
+    PidFile /run/freshclam.pid
+    DatabaseOwner root
+
+    ###############
+    # Updates
+    ###############
+
+    DatabaseMirror packages.microsoft.com/clamav/
+    ScriptedUpdates yes
+    NotifyClamd /etc/clamav/clamd.conf
+    Bytecode yes

@@ -1,0 +1,39 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: externaldns-external
+  namespace: kube-system
+spec:
+  interval: 5m
+  timeout: 10m0s
+  chart:
+    spec:
+      # renovate: registryUrlhttps://charts.bitnami.com/bitnami
+      chart: external-dns
+      version: 6.13.4
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    fullnameOverride: externaldns-external
+    # https://artifacthub.io/packages/helm/bitnami/external-dns?modal=values
+    image:
+      registry: docker.io
+      repository: bitnami/external-dns
+      tag: 0.13.2
+    sources:
+      # - crd
+      - service
+      - ingress
+    provider: cloudflare
+    annotationFilter: external-dns.alpha.kubernetes.io/target
+    cloudflare:
+      proxied: false
+  valuesFrom:
+    - targetPath: cloudflare.apiToken
+      kind: Secret
+      name: externaldns-external-secret
+      valuesKey: cloudflare

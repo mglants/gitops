@@ -1,0 +1,227 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: nextcloud
+  namespace: apps
+spec:
+  interval: 5m
+  timeout: 10m0s
+  chart:
+    spec:
+      # renovate: registryUrl=https://nextcloud.github.io/helm
+      chart: nextcloud
+      version: 3.1.2
+      sourceRef:
+        kind: HelmRepository
+        name: nextcloud-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      repository: nextcloud
+      tag: 26.0.3-fpm-alpine
+      pullPolicy: IfNotPresent
+    replicaCount: 1
+    podAnnotations:
+      backup.velero.io/backup-volumes: nextcloud-data
+    nextcloud:
+      host: cloud.gearage.ru
+      update: 0
+      datadir: /var/www/html/data
+      existingSecret:
+        enabled: true
+        secretName: &secret nextcloud-secret
+        usernameKey: ADMIN_USERNAME
+        passwordKey: ADMIN_PASSWORD
+        tokenKey: METRICS_TOKEN
+        smtpUsernameKey: SMTP_USERNAME
+        smtpPasswordKey: SMTP_PASSWORD
+        smtpHostKey: SMTP_HOST
+      mail:
+        enabled: true
+        fromAddress: noreply
+        domain: gearage.ru
+        smtp:
+          host: mail.ur30.ru
+          secure: ''
+          port: 25
+          authtype: LOGIN
+      extraEnv:
+        - name: INSTANCE_ID
+          valueFrom:
+            secretKeyRef:
+              name: *secret
+              key: INSTANCE_ID
+        - name: PASSWORD_SALT
+          valueFrom:
+            secretKeyRef:
+              name: *secret
+              key: PASSWORD_SALT
+        - name: ENCRYPTION_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: *secret
+              key: ENCRYPTION_SECRET
+      defaultConfigs:
+        .htaccess: true
+        redis.config.php: false
+        apache-pretty-urls.config.php: true
+        apcu.config.php: true
+        apps.config.php: true
+        autoconfig.php: false
+        smtp.config.php: true
+      configs:
+        database.config.php: |-
+          <?php
+          $CONFIG = array (
+            'dbtype' => 'pgsql',
+            'dbname' => getenv('POSTGRES_DB'),
+            'dbhost' => getenv('POSTGRES_HOST'),
+            'dbtableprefix' => 'oc_',
+            'dbuser' => getenv('POSTGRES_USER'),
+            'dbpassword' => getenv('POSTGRES_PASSWORD')
+          );
+        migrate.config.php: |-
+          <?php
+          $CONFIG = array (
+            'instanceid' => getenv('INSTANCE_ID'),
+            'passwordsalt' => getenv('PASSWORD_SALT'),
+            'secret' => getenv('ENCRYPTION_SECRET')
+          );
+        custom.config.php: |-
+          <?php
+          $CONFIG = array (
+            'datadirectory' => '/nextcloud/data',
+            'trusted_proxies'   => ['ingress-nginx-controller.ingress-nginx.svc.cluster.local'],
+            'trusted_domains' =>
+            array (
+                0 => 'cloud.gearage.ru',
+            ),
+            'encryption.legacy_format_support' => true,
+            'encryption.key_storage_migrated' => false,
+            'enable_previews' => true,
+            'filelocking.enabled' => 'true',
+            'installed' => true,
+            'overwrite.cli.url' => 'https://cloud.gearage.ru',
+            'loglevel' => '2',
+            'overweitehost' => 'cloud.gearage.ru',
+            'overwriteprotocol' => 'https',
+          );
+      phpConfigs:
+        uploadLimit.ini: |
+          upload_max_filesize = 16G
+          post_max_size = 16G
+          max_input_time = 3600
+          max_execution_time = 3600
+      extraVolumes:
+        - name: nfs
+          nfs:
+            server: 192.168.1.50
+            path: /mnt/Storinator/NextCloud
+        - name: public
+          nfs:
+            server: 192.168.1.50
+            path: /mnt/Storinator/Public
+        - name: zakko
+          nfs:
+            server: 192.168.1.50
+            path: /mnt/Storinator/zakko
+      extraVolumeMounts:
+        - name: nfs
+          mountPath: /nextcloud
+        - name: public
+          mountPath: /public
+        - name: zakko
+          mountPath: /zakko
+    nginx:
+      ## You need to set an fpm version of the image for nextcloud if you want to use nginx!
+      enabled: true
+      image:
+        repository: nginx
+        tag: alpine
+        pullPolicy: IfNotPresent
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        external-dns.alpha.kubernetes.io/target: dd.ur30.ru
+        nginx.ingress.kubernetes.io/proxy-body-size: 4G
+        nginx.ingress.kubernetes.io/server-snippet: |-
+          rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
+          rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+          rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+          location = /.well-known/carddav {
+            return 301 $scheme://$host/remote.php/dav;
+          }
+          location = /.well-known/caldav {
+            return 301 $scheme://$host/remote.php/dav;
+          }
+          location = /robots.txt {
+            allow all;
+            log_not_found off;
+            access_log off;
+          }
+          location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
+            deny all;
+          }
+          location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
+            deny all;
+          }
+      tls:
+        - secretName: gearage-crt-secret
+          hosts:
+            - cloud.gearage.ru
+    redis:
+      enabled: true
+      auth:
+        enabled: true
+        existingSecret: *secret
+        existingSecretPasswordKey: REDIS_PASSWORD
+
+    service:
+      type: LoadBalancer
+      loadBalancerIP: 192.168.40.5
+      port: 8080
+    cronjob:
+      enabled: false
+    metrics:
+      enabled: true
+      replicaCount: 1
+      https: false
+      timeout: 5s
+      image:
+        repository: xperimental/nextcloud-exporter
+        tag: 0.6.2
+        pullPolicy: IfNotPresent
+      service:
+        type: ClusterIP
+        annotations:
+          prometheus.io/scrape: 'true'
+          prometheus.io/port: '9205'
+    internalDatabase:
+      enabled: false
+    externalDatabase:
+      enabled: true
+        ## Supported database engines: mysql or postgresql
+      type: postgresql
+      existingSecret:
+        enabled: true
+        secretName: *secret
+        hostKey: POSTGRES_HOST
+        databaseKey: POSTGRES_DB
+        usernameKey: POSTGRES_USERNAME
+        passwordKey: POSTGRES_PASSWORD
+    persistence:
+      ## Nextcloud Data (/var/www/html)
+      enabled: true
+      existingClaim: nextcloud-config-v1
+    livenessProbe:
+      enabled: false
+    readinessProbe:
+      enabled: false
+    startupProbe:
+      enabled: true
+    lifecycle:
+      postStartCommand: [/bin/sh, -c, crond]

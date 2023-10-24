@@ -1,0 +1,430 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: mailu
+  namespace: apps
+spec:
+  interval: 5m
+  timeout: 10m0s
+  chart:
+    spec:
+      # renovate: registryUrl=https://mailu.github.io/helm-charts/
+      chart: mailu
+      version: 1.3.0
+      sourceRef:
+        kind: HelmRepository
+        name: mailu-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    imageRegistry: ghcr.io
+    global:
+      database:
+        roundcube:
+          database: roundcube
+          username: roundcube
+          existingSecret: &mailu-secret mailu-secret
+          existingSecretPasswordKey: ROUNDCUBE_PASSWORD
+    hostnames:
+      - mail.ur30.ru
+      - webmail.ur30.ru
+    domain: mail.ur30.ru
+    timezone: Europe/Moscow
+    existingSecret: *mailu-secret
+    initialAccount:
+      enabled: true
+      mode: ifmissing
+      domain: gearage.ru
+      existingSecret: *mailu-secret
+      existingSecretPasswordKey: INITIAL_PASSWORD
+      username: m
+    ## @param subnet Change this if you're using different address ranges for pods (IPv4)
+    subnet: 10.244.0.0/16
+
+    ## @param logLevel default log level. can be overridden globally or per service
+    logLevel: WARNING
+
+    ## @param postmaster local part of the postmaster email address (Mailu will use @$DOMAIN as domain part)
+    postmaster: postmaster
+
+    ## @param recipientDelimiter The delimiter used to separate local part from extension in recipient addresses
+    recipientDelimiter: +
+
+    ## @param dmarc.rua Local part of the DMARC report email address (Mailu will use @$DOMAIN as domain part)
+    ## @param dmarc.ruf Local part of the DMARC failure report email address (Mailu will use @$DOMAIN as domain part)
+    dmarc:
+      rua: ''
+      ruf: ''
+
+    limits:
+      ## @param limits.messageSizeLimitInMegabytes Maximum size of an email in megabytes
+      messageSizeLimitInMegabytes: 50
+
+      ## Configuration to prevent brute-force attacks. See the documentation for further information: https://mailu.io/master/configuration.html
+      authRatelimit:
+        ip: 60/hour
+        ipv4Mask: 24
+        ipv6Mask: 56
+        user: 100/day
+        exemptionLength: 86400
+        exemption: ''
+
+      # Configuration to reduce outgoing spam in case of a compromised account. See the documentation for further information: https://mailu.io/1.9/configuration.html?highlight=MESSAGE_RATELIMIT
+      messageRatelimit:
+        value: 200/day
+        exemption: ''
+
+    customization:
+      siteName: Mailu
+      website: https://webmail.ur30.ru
+      logoUrl: ''
+      logoBackground: ''
+
+    welcomeMessage:
+      enabled: false
+      subject: Welcome to Mailu
+      body: Welcome to Mailu, your new email service. Please change your password and update your profile.
+
+    ## @param wildcardSenders List of user emails that can send emails from any address
+    wildcardSenders: []
+
+    tls:
+      outboundLevel: ''
+      deferOnError: ''
+      inboundEnforce: ''
+
+    ## MariaDB chart configuration
+    ## for more options see https://github.com/bitnami/charts/tree/master/bitnami/mariadb
+    mariadb:
+      ## @param mariadb.enabled Enable MariaDB deployment
+      enabled: true
+
+      ## @param mariadb.architecture MariaDB architecture. Allowed values: standalone or replication
+      architecture: standalone
+
+      auth:
+        database: mailu
+        username: mailu
+        existingSecret: *mailu-secret
+      primary:
+        persistence:
+          enabled: true
+          accessMode: ReadWriteOnce
+          size: 10Gi
+
+    ## @param persistence.single_pvc Setings for a single volume for all apps.
+    ## Set single_pvc: false to use a per app volume and set the properties in <app>.persistence (ex. admin.persistence)
+    persistence:
+      single_pvc: true
+      existingClaim: mailu-data-v2
+
+    ## @section Ingress settings
+
+    ## Set external ingress config
+    ingress:
+      ## @param ingress.enabled Enable external ingress
+      enabled: true
+      ingressClassName: nginx
+
+      annotations:
+        external-dns.alpha.kubernetes.io/target: dd.ur30.ru
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        kubernetes.io/tls-acme: 'true'
+      tls: true
+
+      ## @param ingress.realIpHeader Sets the value of `REAL_IP_HEADER` environment variable in the `front` pod
+      realIpHeader: X-Forwarded-For
+
+      ## @param ingress.realIpFrom Sets the value of `REAL_IP_FROM` environment variable in the `front` pod
+      realIpFrom: 0.0.0.0/0
+
+    ## @section Proxy auth configuration
+    ## ref: https://mailu.io/master/configuration.html#header-authentication-using-an-external-proxy
+    proxyAuth:
+      ## @param proxyAuth.whitelist Comma separated list of CIDRs of proxies to trust for authentication
+      whitelist: ''
+
+      ## @param proxyAuth.header HTTP header containing the email address of the user to authenticate
+      header: X-Auth-Email
+
+      ## @param proxyAuth.create Whether non-existing accounts should be auto-created
+      create: 'false'
+
+    ## @section Frontend load balancer for non-HTTP(s) services
+    front:
+      ## @param front.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param front.image.repository Pod image repository
+      ## @param front.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param front.image.pullPolicy Pod image pull policy
+      image:
+        repository: mailu/nginx
+        tag: 2.0.20
+        pullPolicy: IfNotPresent
+
+      ## front.controller.kind Deployment only supported for now
+      # controller:
+      #   kind: Deployment
+
+      ## @param front.hostPort.enabled Expose front mail ports via hostPort
+      hostPort:
+        enabled: false
+
+      externalService:
+        enabled: true
+        type: LoadBalancer
+        ## Example for LoadBalancer:
+        ## type: LoadBalancer
+        loadBalancerIP: 192.168.40.9
+        externalTrafficPolicy: Local
+        ports:
+          pop3: false
+          pop3s: true
+          imap: false
+          imaps: true
+          smtp: true
+          smtps: true
+          submission: true
+
+      ## @param front.kind Kind of resource to create for the front (`Deployment` or `DaemonSet`)
+      kind: Deployment
+
+      ## @param front.replicaCount Number of front replicas to deploy (only for `Deployment` kind)
+      replicaCount: 1
+
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 100m
+        limits:
+          memory: 1024Mi
+          cpu: 500m
+
+    ## @section Admin parameters
+    admin:
+      ## @param admin.enabled Enable access to the admin interface
+      enabled: true
+
+      ## @param admin.uri URI to access the admin interface
+      uri: /admin
+
+      ## @param admin.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param admin.image.repository Pod image repository
+      ## @param admin.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param admin.image.pullPolicy Pod image pull policy
+      image:
+        repository: mailu/admin
+        tag: 2.0.20
+        pullPolicy: IfNotPresent
+
+      resources:
+        requests:
+          memory: 500Mi
+          cpu: 500m
+        limits:
+          memory: 500Mi
+          cpu: 500m
+
+    redis:
+      enabled: true
+
+    ## @section Postfix parameters
+    postfix:
+      ## @param postfix.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param postfix.image.repository Pod image repository
+      ## @param postfix.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param postfix.image.pullPolicy Pod image pull policy
+      image:
+        repository: mailu/postfix
+        tag: 2.0.20
+        pullPolicy: IfNotPresent
+      updateStrategy:
+        type: Recreate
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 100m
+        limits:
+          memory: 1024Mi
+          cpu: 1000m
+      livenessProbe:
+        enabled: false
+        failureThreshold: 3
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      readinessProbe:
+        enabled: false
+        failureThreshold: 3
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+    ## @section Dovecot parameters
+    dovecot:
+      ## @param dovecot.enabled Enable dovecot
+      enabled: true
+
+      ## @param dovecot.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param dovecot.image.repository Pod image repository
+      ## @param dovecot.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param dovecot.image.pullPolicy Pod image pull policy
+      image:
+        repository: mailu/dovecot
+        tag: 2.0.20
+        pullPolicy: IfNotPresent
+
+      resources:
+        requests:
+          memory: 500Mi
+          cpu: 500m
+        limits:
+          memory: 500Mi
+          cpu: 500m
+
+    ## @section rspamd parameters
+    rspamd:
+      ## @param rspamd.antivirusAction Action to take when an virus is detected. Possible values: `reject` or `discard`
+      antivirusAction: discard
+
+      ## @param rspamd.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param rspamd.image.repository Pod image repository
+      ## @param rspamd.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param rspamd.image.pullPolicy Pod image pull policy
+      image:
+        repository: mailu/rspamd
+        tag: 2.0.20
+        pullPolicy: IfNotPresent
+
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 100m
+        limits:
+          memory: 1Gi
+          cpu: 1000m
+
+    ## @section clamav parameters
+    clamav:
+      ## @param clamav.enabled Enable ClamAV
+      enabled: true
+      persistence:
+        ## @param clamav.persistence.enabled Enable persistence using PVC
+        enabled: true
+
+        ## @param clamav.persistence.size Pod pvc size
+        size: 2Gi
+      ## @param clamav.logLevel Override default log level
+      logLevel: ''
+      ## Pod image
+      ## @param clamav.image.repository Pod image repository
+      ## @param clamav.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param clamav.image.pullPolicy Pod image pull policy
+      image:
+        repository: mailu/clamav
+        tag: 2.0.20
+        pullPolicy: IfNotPresent
+
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 1000m
+        limits:
+          memory: 2Gi
+          cpu: 1000m
+      extraVolumeMounts:
+        - name: clamav-config-volume
+          mountPath: /etc/clamav/freshclam.conf
+          subPath: freshclam.conf
+
+      ## @param rspamd.extraVolumes Optionally specify extra list of additional volumes for the pod(s)
+      extraVolumes:
+        - name: clamav-config-volume
+          configMap:
+            name: clamav-config
+    ## @section webmail parameters
+    webmail:
+      ## @param webmail.enabled Enable deployment of Roundcube webmail
+      enabled: true
+
+      ## @param webmail.uri URI to access Roundcube webmail
+      uri: /webmail
+
+      ## @param webmail.type Type of webmail to deploy (`roundcube` or `snappymail`)
+      type: roundcube
+
+      ## @param webmail.roundcubePlugins List of Roundcube plugins to enable
+      roundcubePlugins:
+        - archive
+        - zipdownload
+        - markasjunk
+        - managesieve
+        - enigma
+        - carddav
+        - mailu
+
+      ## @param webmail.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param webmail.image.repository Pod image repository
+      ## @param webmail.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param webmail.image.pullPolicy Pod image pull policy
+      image:
+        repository: mailu/webmail
+        tag: 2.0.20
+        pullPolicy: IfNotPresent
+
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 100m
+        limits:
+          memory: 1024Mi
+          cpu: 1000m
+
+    ## @section OLETools parameters
+    oletools:
+      ## @param oletools.enabled Enable OLETools
+      enabled: true
+
+      ## @param oletools.logLevel Override default log level
+      logLevel: ''
+
+      ## Pod image
+      ## @param oletools.image.repository Pod image repository
+      ## @param oletools.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
+      ## @param oletools.image.pullPolicy Pod image pull policy
+      image:
+        repository: mailu/oletools
+        tag: 2.0.20
+        pullPolicy: IfNotPresent
+
+      resources:
+        limits:
+          cpu: 500m
+          memory: 500Mi
+        requests:
+          cpu: 25m
+          memory: 25Mi
+  valuesFrom:
+    - kind: Secret
+      name: mailu-helm-values
+      valuesKey: values.yaml
+      optional: false

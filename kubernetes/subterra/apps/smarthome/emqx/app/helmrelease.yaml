@@ -1,0 +1,83 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: emqx
+  namespace: smarthome
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://repos.emqx.io/charts
+      chart: emqx
+      version: 5.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: emqx-charts
+        namespace: flux-system
+      interval: 5m
+  install:
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  timeout: 20m
+  values:
+    image:
+      repository: emqx/emqx
+    replicaCount: 1
+    recreatePods: true
+    service:
+      annotations:
+        external-dns.alpha.kubernetes.io/hostname: mqtt.ur30.ru
+      type: LoadBalancer
+      loadBalancerIP: 192.168.40.10
+    emqxConfig:
+      EMQX_ALLOW_ANONYMOUS: 'false'
+      EMQX_LOADED_MODULES: emqx_mod_presence,emqx_mod_acl_internal,emqx_mod_topic_metrics
+      EMQX_LOADED_PLUGINS: emqx_management,emqx_recon,emqx_retainer,emqx_dashboard,emqx_rule_engine,emqx_auth_mnesia,emqx_prometheus
+      EMQX_AUTH__MNESIA__PASSWORD_HASH: plain
+    #   EMQX_ACL_NOMATCH: "deny"
+
+    emqxAclConfig: >
+      {allow, {user, "dashboard"}, subscribe, ["$SYS/#"]}.
+      {allow, {ipaddr, "127.0.0.1"}, pubsub, ["$SYS/#", "#"]}.
+      {allow, all, subscribe, ["$SYS/#", {eq, "#"}]}.
+      {allow, all}.
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 150Mi
+
+    ingress:
+      dashboard:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: nginx
+          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
+        path: /
+        hosts:
+          - emqx.ur30.ru
+        tls:
+          - hosts:
+              - emqx.ur30.ru
+    metrics:
+      enabled: true
+      type: prometheus
+
+  valuesFrom:
+    - targetPath: emqxConfig.EMQX_DASHBOARD__DEFAULT_PASSWORD
+      kind: Secret
+      name: emqx-secret
+      valuesKey: DASHBOARD_PASSWORD
+    - targetPath: emqxConfig.EMQX_AUTH__USER__1__USERNAME
+      kind: Secret
+      name: emqx-secret
+      valuesKey: MQTT_USERNAME
+    - targetPath: emqxConfig.EMQX_AUTH__USER__1__PASSWORD
+      kind: Secret
+      name: emqx-secret
+      valuesKey: MQTT_PASSWORD

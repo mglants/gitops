@@ -1,0 +1,120 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: nut
+  namespace: monitoring
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: network-ups-tools
+      version: 6.4.2
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      # -- image repository
+      repository: ghcr.io/k8s-at-home/network-ups-tools
+      # -- image tag
+      tag: v2.8.0
+      # -- image pull policy
+      pullPolicy: IfNotPresent
+
+    # -- environment variables.
+    # @default -- See below
+    env:
+      # -- Set the container timezone
+      TZ: Europe/Moscow
+    strategy:
+      type: Recreate
+    # affinity:
+    #   nodeAffinity:
+    #     requiredDuringSchedulingIgnoredDuringExecution:
+    #       nodeSelectorTerms:
+    #         - matchExpressions:
+    #             - {key: feature.node.kubernetes.io/custom-ups, operator: In, values: ['true']}
+    # persistence:
+    #   usb:
+    #     enabled: true
+    #     type: hostPath
+    #     mountPath: /dev/bus/usb/001
+    #     hostPath: /dev/bus/usb/001
+    #     hostPathType: Directory
+    # securityContext:
+    #   privileged: true
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: nut-network-ups-tools-config
+    # -- Configures service settings for the chart.
+    # @default -- See values.yaml
+    service:
+      main:
+        ports:
+          http:
+            enabled: false
+          server:
+            enabled: true
+            protocol: TCP
+            port: 3493
+
+    ingress:
+      # -- Enable and configure ingress settings for the chart under this key.
+      # @default -- See values.yaml
+      main:
+        enabled: false
+
+    config:
+      # -- If set to 'values', the configuration will be read from these values.
+      # Otherwise you have to mount a volume to /etc/nut containing the configuration files.
+      mode: values
+
+      # -- See https://github.com/networkupstools/nut/tree/master/conf for config sample files
+      # @default -- See values.yaml
+      files:
+        nut.conf: |
+          MODE=netserver
+        upsd.conf: |
+          LISTEN 0.0.0.0
+        ups.conf: |
+          [ups]
+            driver = dummy-ups
+            port = ups@172.16.30.20
+            desc = "Crown CMUOA-300X-1.5K"
+    metrics:
+      # -- Enable and configure prometheus-nut-exporter sidecar and Prometheus serviceMonitor.
+      # @default -- See values.yaml
+      enabled: true
+      serviceMonitor:
+        interval: 30s
+        scrapeTimeout: 10s
+        labels: {}
+      # -- Enable and configure Prometheus Rules for the chart under this key.
+      # @default -- See values.yaml
+      prometheusRule:
+        enabled: true
+        labels: {}
+        # -- Configure additionial rules for the chart under this key.
+        # @default -- See prometheusrules.yaml
+        rules: []
+      exporter:
+        image:
+          # -- image repository
+          repository: hon95/prometheus-nut-exporter
+          # -- image tag
+          tag: 1.2.1
+          # -- image pull policy
+          pullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 10m
+            memory: 16Mi
+          requests:
+            cpu: 1m
+            memory: 8Mi
+        env:
+          # -- metrics port
+          HTTP_PORT: 9995

@@ -1,0 +1,47 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: externaldns-internal
+  namespace: networking
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: external-dns
+      version: 1.12.2
+      sourceRef:
+        kind: HelmRepository
+        name: kubernetes-sigs-external-dns-charts
+        namespace: flux-system
+      interval: 30m
+
+  values:
+    fullnameOverride: externaldns-internal
+
+    domainFilters:
+      - ur30.ru
+
+    env:
+      - name: EXTERNAL_DNS_RFC2136_HOST
+        value: 192.168.48.14
+      - name: EXTERNAL_DNS_RFC2136_PORT
+        value: '53'
+      - name: EXTERNAL_DNS_RFC2136_ZONE
+        value: ur30.ru
+      - name: EXTERNAL_DNS_RFC2136_TSIG_AXFR
+        value: 'true'
+      - name: EXTERNAL_DNS_RFC2136_INSECURE
+        value: 'true'
+
+    policy: sync
+    provider: rfc2136
+
+    serviceMonitor:
+      enabled: true
+
+    sources:
+      - ingress
+      - service
+
+    txtPrefix: k8s.
