@@ -69,7 +69,8 @@ spec:
         apache-pretty-urls.config.php: true
         apcu.config.php: true
         apps.config.php: true
-        autoconfig.php: true
+        # LEGACY CONFIG INSIDE CONTAINER !TODO
+        autoconfig.php: false
         smtp.config.php: true
       configs:
         migrate.config.php: |-
@@ -104,10 +105,6 @@ spec:
           max_input_time = 3600
           max_execution_time = 3600
       extraVolumes:
-        - name: nfs
-          nfs:
-            server: 192.168.1.50
-            path: /mnt/Storinator/NextCloud
         - name: public
           nfs:
             server: 192.168.1.50
@@ -205,6 +202,10 @@ spec:
       ## Nextcloud Data (/var/www/html)
       enabled: true
       existingClaim: nextcloud-config-v1
+      nextcloudData:
+        enabled: true
+        existingClaim: nextcloud-nfs
+        accessMode: ReadWriteMany
     livenessProbe:
       enabled: false
     readinessProbe:
