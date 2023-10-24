@@ -54,7 +54,7 @@ spec:
               - path: /
                 pathType: Prefix
         tls:
-          - secretName: ha-glants-crt
+          - secretName: ha-ur30-crt
             hosts:
               - ha.ur30.ru
 
