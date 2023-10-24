@@ -64,7 +64,7 @@ spec:
       value: true
     - op: replace
       path: /cluster/discovery/registries/kubernetes/disabled
-      value: true
+      value: false
   selector:
     matchLabels:
       worker-node: 'true'
