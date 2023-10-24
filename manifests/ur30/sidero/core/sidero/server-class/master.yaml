@@ -90,7 +90,7 @@ spec:
     - op: replace
       path: /cluster/discovery/registries/service/disabled
       value: true
-    - op: remove
+    - op: replace
       path: /cluster/discovery/registries/kubernetes/disabled
       value: true
   selector:
