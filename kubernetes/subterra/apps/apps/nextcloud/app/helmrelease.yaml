@@ -199,6 +199,7 @@ spec:
     externalDatabase:
       enabled: true
       type: postgresql
+      host: postgres-postgresql.infra.svc.cluster.local
       existingSecret:
         enabled: true
         secretName: *secret
