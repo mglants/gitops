@@ -67,35 +67,27 @@ spec:
         - secretName: netbox-tls
           hosts:
             - netbox.gearage.ru
-    maxPageSize: 0
-    # remoteAuth:
-    #   enabled: false
-    #   backend: netbox.authentication.LDAPBackend
-    #   ldap:
-    #     serverUri: ldaps://ak-outpost-ldap-netbox.kube-system:636
-    #     bindDn: 'CN=ldap,OU=users,DC=ldap,DC=goauthentik,DC=io'
-    #     ignoreCertErrors: true
-    #     userDnTemplate:
-    #     userSearchBaseDn: OU=users,DC=ldap,DC=goauthentik,DC=io
-    #     userSearchAttr: sAMAccountName
-    #     groupSearchBaseDn: DC=ldap,DC=goauthentik,DC=io
-    #     groupSearchClass: group
-    #     groupType: GroupOfNamesType
-    #     findGroupPerms: true
-    #     mirrorGroups: true
-    #     mirrorGroupsExcept:
-    #     cacheTimeout: 3600
-    #     requireGroupDn: ''
-    #     isAdminDn: CN=Netbox Admins,OU=groups,DC=ldap,DC=goauthentik,DC=io
-    #     isSuperUserDn: CN=Netbox SuperUsers,OU=groups,DC=ldap,DC=goauthentik,DC=io
-    #     attrFirstName: givenName
-    #     attrLastName: sn
-    #     attrMail: mail
-remoteAuth:
-  ldap:
-    bindPassword: 92HQDPHh4hbUfi51GvhF0jWlCtnSGxVohI8zF8bAz0SFSujQL9RPcAgRi85UcsHdXp1imaqI1oFMYJ3HfHTqKwXtA3rMhfWJOmdqsBOkkidsCc9UBSXggWVpbPGXViPa
-  valuesFrom:
-    - kind: Secret
-      name: netbox-helm-values
-      valuesKey: values.yaml
-      optional: false
+
+      # remoteAuth:
+      #   enabled: false
+      #   backend: netbox.authentication.LDAPBackend
+      #   ldap:
+      #     serverUri: ldaps://ak-outpost-ldap-netbox.kube-system:636
+      #     bindDn: 'CN=ldap,OU=users,DC=ldap,DC=goauthentik,DC=io'
+      #     ignoreCertErrors: true
+      #     userDnTemplate:
+      #     userSearchBaseDn: OU=users,DC=ldap,DC=goauthentik,DC=io
+      #     userSearchAttr: sAMAccountName
+      #     groupSearchBaseDn: DC=ldap,DC=goauthentik,DC=io
+      #     groupSearchClass: group
+      #     groupType: GroupOfNamesType
+      #     findGroupPerms: true
+      #     mirrorGroups: true
+      #     mirrorGroupsExcept:
+      #     cacheTimeout: 3600
+      #     requireGroupDn: ''
+      #     isAdminDn: CN=Netbox Admins,OU=groups,DC=ldap,DC=goauthentik,DC=io
+      #     isSuperUserDn: CN=Netbox SuperUsers,OU=groups,DC=ldap,DC=goauthentik,DC=io
+      #     attrFirstName: givenName
+      #     attrLastName: sn
+      #     attrMail: mail
