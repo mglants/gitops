@@ -128,7 +128,7 @@ spec:
       ingressClassName: nginx
 
       annotations:
-        external-dns.alpha.kubernetes.io/target: dd.ur30.ru
+        external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
         cert-manager.io/cluster-issuer: letsencrypt-prod
         kubernetes.io/tls-acme: 'true'
       tls: true
@@ -181,8 +181,7 @@ spec:
         loadBalancerIP: 192.168.40.9
         externalTrafficPolicy: Local
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: imap.ur30.ru,pop.ur30.ru
-          external-dns.alpha.kubernetes.io/target: utex.ur30.ru
+          external-dns.alpha.kubernetes.io/hostname: mail.ur30.ru
         ports:
           pop3: false
           pop3s: true

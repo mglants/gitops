@@ -7,3 +7,4 @@ metadata:
 data:
   CLUSTER_NAME: berries
   LB_INGRESS: 172.16.32.1
+  DNS_INGRESS: ingress.home

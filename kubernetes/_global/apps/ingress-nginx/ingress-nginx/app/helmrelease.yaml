@@ -27,6 +27,8 @@ spec:
       admissionWebhooks:
         enabled: false
       service:
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: ${DNS_INGRESS}
         loadBalancerIP: ${LB_INGRESS}
         externalTrafficPolicy: Local
       metrics:

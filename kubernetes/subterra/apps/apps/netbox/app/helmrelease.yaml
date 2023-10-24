@@ -57,7 +57,7 @@ spec:
       annotations:
         kubernetes.io/tls-acme: 'true'
         cert-manager.io/cluster-issuer: letsencrypt-prod
-        external-dns.alpha.kubernetes.io/target: dd.ur30.ru
+        external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
         nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16,77.37.244.212/32,94.141.170.143/32
       hosts:
         - host: netbox.gearage.ru

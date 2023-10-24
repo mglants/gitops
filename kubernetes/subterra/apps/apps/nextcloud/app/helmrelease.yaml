@@ -146,7 +146,7 @@ spec:
       annotations:
         kubernetes.io/ingress.class: nginx
         cert-manager.io/cluster-issuer: letsencrypt-prod
-        external-dns.alpha.kubernetes.io/target: dd.ur30.ru
+        external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
         nginx.ingress.kubernetes.io/proxy-body-size: 4G
         nginx.ingress.kubernetes.io/server-snippet: |-
           rewrite ^/.well-known/webfinger /public.php?service=webfinger last;

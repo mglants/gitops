@@ -44,7 +44,7 @@ spec:
         annotations:
           kubernetes.io/ingress.class: nginx
           cert-manager.io/cluster-issuer: letsencrypt-prod
-          external-dns.alpha.kubernetes.io/target: dd.ur30.ru
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
         hosts:
           - host: bitwarden.ur30.ru
             paths:

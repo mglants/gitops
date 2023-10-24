@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: externaldns-internal
+  name: &name externaldns-internal
   namespace: networking
 spec:
   interval: 30m
@@ -17,11 +17,13 @@ spec:
       interval: 30m
 
   values:
-    fullnameOverride: externaldns-internal
+    fullnameOverride: *name
 
     domainFilters:
       - ur30.ru
-
+    extraArgs:
+      - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
+      - --crd-source-kind=DNSEndpoint
     env:
       - name: EXTERNAL_DNS_RFC2136_HOST
         value: 192.168.40.14
@@ -43,5 +45,16 @@ spec:
     sources:
       - ingress
       - service
-
+      - crd
     txtPrefix: k8s.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              version: v1
+              kind: Deployment
+              name: *name
+            patch: |
+              - op: add
+                path: /spec/template/spec/enableServiceLinks
+                value: false

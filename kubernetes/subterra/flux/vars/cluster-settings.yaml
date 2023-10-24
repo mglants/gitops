@@ -7,3 +7,4 @@ metadata:
 data:
   CLUSTER_NAME: subterra
   LB_INGRESS: 192.168.40.1
+  DNS_INGRESS: ingress.ur30.ru

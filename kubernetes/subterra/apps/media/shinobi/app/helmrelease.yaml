@@ -37,7 +37,7 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-prod
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
-          external-dns.alpha.kubernetes.io/target: dd.ur30.ru
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
         ingressClassName: nginx
         hosts:
           - host: shinobi.ur30.ru
