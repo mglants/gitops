@@ -9,11 +9,62 @@ spec:
       path: /machine/install/disk
       value: /dev/sda
     - op: add
+      path: /machine/install/extraKernelArgs
+      value:
+        - net.ifnames=0
+    - op: add
       path: /machine/network
       value:
         interfaces:
           - interface: eth0
             dhcp: true
+    - op: add
+      path: /machine/kubelet/extraMounts
+      value:
+        - destination: /var/local-path-provisioner
+          type: bind
+          source: /var/local-path-provisioner
+          options:
+            - bind
+            - rshared
+            - rw
+    - op: add
+      path: /machine/files
+      value:
+        - op: create
+          content: |
+            [metrics]
+              address = "0.0.0.0:11234"
+            [plugins]
+              [plugins."io.containerd.grpc.v1.cri"]
+                enable_unprivileged_ports = true
+                enable_unprivileged_icmp = true
+          path: /etc/cri/conf.d/20-customization.part
+    - op: add
+      path: /machine/sysctls
+      value:
+        fs.inotify.max_user_watches: '1048576'
+        fs.inotify.max_user_instances: '8192'
+        vm.max_map_count: '524288'
+    - op: add
+      path: /machine/kubelet/extraArgs
+      value:
+        rotate-server-certificates: true
+        feature-gates: GracefulNodeShutdown=true
+    - op: add
+      path: /machine/kubelet/nodeIP
+      value:
+        validSubnets:
+          - 192.168.48.0/24
+    - op: add
+      path: /cluster/aescbcEncryptionSecret
+      value: ${aescbcEncryptionSecret}
+    - op: replace
+      path: /cluster/discovery/registries/service/disabled
+      value: true
+    - op: remove
+      path: /cluster/discovery/registries/kubernetes/disabled
+      value: true
   selector:
     matchLabels:
       worker-node: 'true'

@@ -9,6 +9,10 @@ spec:
       path: /machine/install/disk
       value: /dev/sda
     - op: add
+      path: /machine/install/extraKernelArgs
+      value:
+        - net.ifnames=0
+    - op: add
       path: /machine/network
       value:
         interfaces:
@@ -16,6 +20,79 @@ spec:
             dhcp: true
             vip:
               ip: ${CP_IP}
+    - op: add
+      path: /machine/kubelet/extraArgs
+      value:
+        rotate-server-certificates: true
+        feature-gates: GracefulNodeShutdown=true
+    - op: add
+      path: /machine/kubelet/nodeIP
+      value:
+        validSubnets:
+          - 192.168.48.0/24
+    - op: add
+      path: /cluster/apiServer/extraArgs
+      value:
+        feature-gates: GracefulNodeShutdown=true
+    - op: add
+      path: /cluster/etcd/advertisedSubnets
+      value:
+        - 192.168.48.0/24
+    - op: add
+      path: /cluster/etcd/extraArgs
+      value:
+        election-timeout: '20000'
+        listen-metrics-urls: http://0.0.0.0:2381
+    - op: replace
+      path: /cluster/proxy/disabled
+      value: true
+    - op: add
+      path: /machine/files
+      value:
+        - content: |
+            [metrics]
+              address = "0.0.0.0:11234"
+            [plugins]
+              [plugins."io.containerd.grpc.v1.cri"]
+                enable_unprivileged_ports = true
+                enable_unprivileged_icmp = true
+          path: /etc/cri/conf.d/20-customization.part
+          op: create
+    - op: add
+      path: /machine/sysctls
+      value:
+        fs.inotify.max_user_watches: '1048576'
+        fs.inotify.max_user_instances: '8192'
+        vm.max_map_count: '524288'
+    - op: replace
+      path: /machine/features/kubernetesTalosAPIAccess
+      value:
+        enabled: true
+        allowedRoles:
+          - os:etcd:backup
+        allowedKubernetesNamespaces:
+          - backup
+    # - op: remove
+    #   path: /cluster/apiServer/admissionControl
+    - op: add
+      path: /cluster/network/cni
+      value:
+        name: custom
+        urls:
+          - https://raw.githubusercontent.com/MGlants/gitops/main/kubernetes/subterra/apps/kube-system/cilium/app/bootstrap/manifest.yaml
+    - op: add
+      path: /cluster/extraManifests
+      value:
+        - https://raw.githubusercontent.com/MGlants/gitops/main/kubernetes/subterra/apps/kube-system/kubelet-csr-approver/app/bootstrap/manifest.yaml
+    - op: add
+      path: /cluster/aescbcEncryptionSecret
+      value: ${aescbcEncryptionSecret}
+    - op: replace
+      path: /cluster/discovery/registries/service/disabled
+      value: true
+    - op: remove
+      path: /cluster/discovery/registries/kubernetes/disabled
+      value: true
   selector:
     matchLabels:
       master-node: 'true'
