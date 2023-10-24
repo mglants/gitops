@@ -329,7 +329,7 @@ spec:
         enabled: true
 
         ## @param clamav.persistence.size Pod pvc size
-        size: 2Gi
+        size: 10Gi
       ## @param clamav.logLevel Override default log level
       logLevel: ''
       ## Pod image
