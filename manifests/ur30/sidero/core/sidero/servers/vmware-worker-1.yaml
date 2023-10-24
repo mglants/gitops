@@ -12,6 +12,10 @@ spec:
     namespace: default
     name: default-amd64
   hostname: vmware-worker-1
+  configPatches:
+    - op: add
+      path: /machine/network/hostname
+      value: subterra-worker-2
   hardware:
     compute:
       processors:

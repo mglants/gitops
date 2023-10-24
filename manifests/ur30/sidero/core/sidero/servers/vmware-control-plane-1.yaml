@@ -11,6 +11,10 @@ spec:
   environmentRef:
     namespace: default
     name: default-amd64
+  configPatches:
+    - op: add
+      path: /machine/network/hostname
+      value: subterra-cp1
   hostname: vmware-control-plane-1
   hardware:
     compute:

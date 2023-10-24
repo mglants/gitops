@@ -12,6 +12,10 @@ spec:
     namespace: default
     name: default-amd64
   hostname: vmware-control-plane-2
+  configPatches:
+    - op: add
+      path: /machine/network/hostname
+      value: subterra-cp2
   hardware:
     compute:
       processors:

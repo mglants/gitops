@@ -10,12 +10,16 @@ spec:
     - op: replace
       path: /machine/install/disk
       value: /dev/vda
+    - op: add
+      path: /machine/network/hostname
+      value: subterra-cp3
   pxeBootAlways: true
   accepted: true
   environmentRef:
     namespace: default
     name: default-amd64
   hostname: vmware-control-plane-3
+
   hardware:
     compute:
       processors:
