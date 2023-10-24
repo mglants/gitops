@@ -39,4 +39,4 @@ spec:
       daily: 14
     volumeSnapshotClassName: freenas-nfs-csi
     storageClassName: freenas-nfs-csi
-    cacheStorageClassName: local-hostpath
+    cacheStorageClassName: freenas-nfs-csi
