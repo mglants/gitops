@@ -182,6 +182,7 @@ spec:
         externalTrafficPolicy: Local
         annotations:
           external-dns.alpha.kubernetes.io/hostname: mail.ur30.ru
+          external-dns.alpha.kubernetes.io/type: internal
         ports:
           pop3: false
           pop3s: true

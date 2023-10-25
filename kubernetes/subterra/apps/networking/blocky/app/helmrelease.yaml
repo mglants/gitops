@@ -52,6 +52,7 @@ spec:
         annotations:
           metallb.universe.tf/allow-shared-ip: dns
           external-dns.alpha.kubernetes.io/hostname: blocky.ur30.ru
+          external-dns.alpha.kubernetes.io/type: internal
     metrics:
       # -- Enable and configure a Prometheus serviceMonitor for the chart under this key.
       # @default -- See values.yaml

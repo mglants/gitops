@@ -41,6 +41,7 @@ spec:
           enabled: true
           annotations:
             nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
+            external-dns.alpha.kubernetes.io/type: internal
           className: nginx
           hosts:
             - hubble-ui.ur30.ru

@@ -51,6 +51,7 @@ spec:
         protocol: TCP
         annotations:
           external-dns.alpha.kubernetes.io/hostname: syslog.ur30.ru
+          external-dns.alpha.kubernetes.io/type: internal
         service:
           type: LoadBalancer
           port: 1514

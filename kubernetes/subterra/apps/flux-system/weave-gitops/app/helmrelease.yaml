@@ -37,6 +37,7 @@ spec:
       className: nginx
       annotations:
         nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
+        external-dns.alpha.kubernetes.io/type: internal
         hajimari.io/icon: mdi:sawtooth-wave
       hosts:
         - host: gitops.ur30.ru

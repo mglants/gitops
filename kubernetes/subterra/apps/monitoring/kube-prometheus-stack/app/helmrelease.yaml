@@ -114,6 +114,7 @@ spec:
         annotations:
           kubernetes.io/ingress.class: nginx
           nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
+          external-dns.alpha.kubernetes.io/type: internal
         hosts:
           - prometheus.ur30.ru
       prometheusSpec:

@@ -29,7 +29,7 @@ spec:
       - service
       - ingress
     provider: cloudflare
-    annotationFilter: external-dns.alpha.kubernetes.io/target
+    annotationFilter: external-dns.alpha.kubernetes.io/type notin (internal)
     cloudflare:
       proxied: false
     crd:
