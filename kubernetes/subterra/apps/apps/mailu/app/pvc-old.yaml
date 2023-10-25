@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mailu-data-v3
+  name: mailu-data-v2
   namespace: apps
 spec:
   accessModes:

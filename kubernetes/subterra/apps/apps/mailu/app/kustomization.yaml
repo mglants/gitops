@@ -6,3 +6,4 @@ resources:
   - externalsecret.yaml
   - helmrelease.yaml
   - cm-clamav.yaml
+  - pvc-old.yaml

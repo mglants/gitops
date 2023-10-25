@@ -117,7 +117,7 @@ spec:
     ## Set single_pvc: false to use a per app volume and set the properties in <app>.persistence (ex. admin.persistence)
     persistence:
       single_pvc: true
-      existingClaim: mailu-data-v2
+      existingClaim: mailu-data-v3
 
     ## @section Ingress settings
 
