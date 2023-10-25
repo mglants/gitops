@@ -27,6 +27,15 @@ spec:
     deschedulerPolicy:
       evictLocalStoragePods: false
       strategies:
+        PodLifeTime:
+          enabled: true
+          params:
+            podLifeTime:
+              states:
+                - Pending
+                - PodInitializing
+                - ContainerCreating
+              maxPodLifeTimeSeconds: 3600
         RemoveDuplicates:
           enabled: true
         RemovePodsViolatingNodeTaints:
