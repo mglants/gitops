@@ -71,7 +71,7 @@ spec:
         allowedRoles:
           - os:etcd:backup
         allowedKubernetesNamespaces:
-          - backup
+          - default
     # - op: remove
     #   path: /cluster/apiServer/admissionControl
     - op: add
