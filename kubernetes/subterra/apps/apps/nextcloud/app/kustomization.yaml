@@ -6,3 +6,4 @@ resources:
   - externalsecret.yaml
   - pvc.yaml
   - nfs-pvc.yaml
+  - volsync.yaml
