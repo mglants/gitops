@@ -34,6 +34,11 @@ spec:
       tag: 2023.9.2
     env:
       TZ: Europe/Moscow
+      SECRET_RECORDER_DB_URL:
+        valueFrom:
+          secretKeyRef:
+            name: homeassistant-pgsql-pguser-home-assistant
+            key: uri
     service:
       main:
         annotations:

@@ -20,7 +20,7 @@ spec:
         name: repo1
         s3:
           bucket: crunchy-postgres
-          endpoint: nas.glants.xyz
+          endpoint: nas.ur30.ru
           region: us-east-1
   patroni:
     dynamicConfiguration:
@@ -31,13 +31,13 @@ spec:
           - hostnossl all all all md5
   instances:
     - name: postgres
-      replicas: 2
+      replicas: 1
       dataVolumeClaimSpec:
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 5Gi
+            storage: 30Gi
   users:
     - name: home-assistant
       databases:
@@ -66,5 +66,5 @@ spec:
             differential: 0 1 * * 1-6
           s3:
             bucket: crunchy-postgres
-            endpoint: nas.glants.xyz
+            endpoint: nas.ur30.ru
             region: us-east-1
