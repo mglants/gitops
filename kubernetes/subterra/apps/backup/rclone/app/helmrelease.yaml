@@ -46,7 +46,7 @@ spec:
       - --rc-no-auth
       - --rc-addr=:5572
       - --checksum
-      - --exclude-from=/config/rclone/exclustion.txt
+      - --include-from=/config/rclone/include.txt
     persistence:
       config:
         enabled: true
@@ -58,8 +58,8 @@ spec:
         enabled: true
         type: configMap
         name: rclone-exclusion
-        mountPath: /config/rclone/exclustion.txt
-        subPath: exclustion.txt
+        mountPath: /config/rclone/include.txt
+        subPath: include.txt
         readOnly: true
     configMaps:
       exclusion:
@@ -67,8 +67,10 @@ spec:
         enabled: true
         # -- configMap data content. Helm template enabled.
         data:
-          exclustion.txt: |
-            */wals/**
+          include.txt: |
+            crunchy-postgres/**/backup/**
+            volsync-restic/**
+            talos-backups/**
     service:
       main:
         ports:
