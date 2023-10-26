@@ -1,0 +1,28 @@
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: nas
+  namespace: networking
+  annotations:
+    external-dns.alpha.kubernetes.io/type: internal
+spec:
+  endpoints:
+    - dnsName: nas.ur30.ru
+      recordType: A
+      targets:
+        - 192.168.1.50
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: vsphere
+  namespace: networking
+  annotations:
+    external-dns.alpha.kubernetes.io/type: internal
+spec:
+  endpoints:
+    - dnsName: vsphere.ur30.ru
+      recordType: A
+      targets:
+        - 192.168.1.30
