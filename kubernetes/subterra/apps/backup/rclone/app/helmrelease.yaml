@@ -54,15 +54,15 @@ spec:
         name: rclone-secret
         mountPath: /config/rclone/rclone.conf
         subPath: rclone.conf
-      exclusion:
+      include:
         enabled: true
         type: configMap
-        name: rclone-exclusion
+        name: rclone-include
         mountPath: /config/rclone/include.txt
         subPath: include.txt
         readOnly: true
     configMaps:
-      exclusion:
+      include:
         # -- Enables or disables the configMap
         enabled: true
         # -- configMap data content. Helm template enabled.
