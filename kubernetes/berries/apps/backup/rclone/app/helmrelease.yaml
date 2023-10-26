@@ -40,7 +40,6 @@ spec:
       - gdrive:BACKUP/sh/s3
       - -v
       - --s3-no-check-bucket
-      - --fast-list
       - --rc
       - --rc-enable-metrics
       - --rc-no-auth
