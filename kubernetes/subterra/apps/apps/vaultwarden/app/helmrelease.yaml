@@ -31,6 +31,11 @@ spec:
       SMTP_TIMEOUT: 15
       SIGNUPS_ALLOWED: 'false'
       DOMAIN: https://bitwarden.ur30.ru
+      DATABASE_URL:
+        valueFrom:
+          secretKeyRef:
+            name: vaultwarden-pgsql-pguser-vaultwarden
+            key: uri
     envFrom:
       - secretRef:
           name: vaultwarden-secret
