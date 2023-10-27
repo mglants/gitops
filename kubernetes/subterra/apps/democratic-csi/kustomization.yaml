@@ -6,3 +6,4 @@ resources:
   - ./namespace.yaml
   # Flux-Kustomizations
   - ./truenas-nfs-csi/ks.yaml
+  - ./truenas-icssi-csi/ks.yaml
