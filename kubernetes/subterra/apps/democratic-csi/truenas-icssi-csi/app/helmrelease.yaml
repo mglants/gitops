@@ -73,10 +73,10 @@ spec:
               # get the correct ID from the "initiators" section in the UI
               targetGroupInitiatorGroup: 1
               # None, CHAP, or CHAP Mutual
-              targetGroupAuthType: CHAP
+              targetGroupAuthType: None
               # get the correct ID from the "Authorized Access" section of the UI
               # only required if using Chap
-              targetGroupAuthGroup: 1
+              targetGroupAuthGroup:
           extentInsecureTpc: true
           extentXenCompat: false
           extentDisablePhysicalBlocksize: true
