@@ -86,6 +86,16 @@ spec:
           extentRpm: SSD
           # 0-100 (0 == ignore)
           extentAvailThreshold: 0
+    node:
+      hostPID: true
+      driver:
+        extraEnv:
+          - name: ISCSIADM_HOST_STRATEGY
+            value: nsenter
+          - name: ISCSIADM_HOST_PATH
+            value: /usr/local/sbin/iscsiadm
+        iscsiDirHostPath: /usr/local/etc/iscsi
+        iscsiDirHostPathType: ''
   valuesFrom:
     - targetPath: driver.config.httpConnection.apiKey
       kind: Secret
