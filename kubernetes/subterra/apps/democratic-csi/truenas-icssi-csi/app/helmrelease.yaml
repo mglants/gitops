@@ -50,7 +50,7 @@ spec:
         instance_id:
         httpConnection:
           protocol: http
-          host: 192.168.1.50
+          host: 192.168.48.150
           port: 80
           username: root
           allowInsecure: true
@@ -64,7 +64,7 @@ spec:
           zvolEnableReservation: false
           zvolBlocksize: 16K
         iscsi:
-          targetPortal: 192.168.1.50:3260
+          targetPortal: 192.168.48.150:3260
           namePrefix: csi-
           nameSuffix: -subterra
           targetGroups:
