@@ -33,6 +33,7 @@ spec:
     - name: postgres
       replicas: 2
       dataVolumeClaimSpec:
+        storageClassName: freenas-iscsi-csi
         accessModes:
           - ReadWriteOnce
         resources:
