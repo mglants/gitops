@@ -27,7 +27,7 @@ spec:
       backup.velero.io/backup-volumes: nextcloud-data
     nextcloud:
       host: cloud.gearage.ru
-      update: 0
+      update: 1
       datadir: /nextcloud/data
       existingSecret:
         enabled: true
@@ -72,13 +72,6 @@ spec:
         autoconfig.php: true
         smtp.config.php: true
       configs:
-        migrate.config.php: |-
-          <?php
-          $CONFIG = array (
-            'instanceid' => getenv('INSTANCE_ID'),
-            'passwordsalt' => getenv('PASSWORD_SALT'),
-            'secret' => getenv('ENCRYPTION_SECRET')
-          );
         custom.config.php: |-
           <?php
           $CONFIG = array (
