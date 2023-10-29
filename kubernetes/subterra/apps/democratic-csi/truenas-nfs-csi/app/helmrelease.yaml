@@ -76,7 +76,7 @@ spec:
           datasetPermissionsUser: 0
           datasetPermissionsGroup: 0
         nfs:
-          shareHost: 192.168.1.50
+          shareHost: 192.168.48.150
           shareAlldirs: false
           shareAllowedHosts: []
           shareAllowedNetworks: [192.168.48.0/24]
