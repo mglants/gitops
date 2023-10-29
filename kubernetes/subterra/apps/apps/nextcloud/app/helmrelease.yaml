@@ -80,6 +80,16 @@ spec:
             'passwordsalt' => getenv('PASSWORD_SALT'),
             'secret' => getenv('ENCRYPTION_SECRET')
           );
+        database.config.php: |-
+          <?php
+          $CONFIG = array (
+            'dbtype' => 'pgsql',
+            'dbname' => getenv('POSTGRES_DB'),
+            'dbhost' => getenv('POSTGRES_HOST'),
+            'dbtableprefix' => 'oc_',
+            'dbuser' => getenv('POSTGRES_USER'),
+            'dbpassword' => getenv('POSTGRES_PASSWORD')
+          );
         custom.config.php: |-
           <?php
           $CONFIG = array (
@@ -189,13 +199,13 @@ spec:
     externalDatabase:
       enabled: true
       type: postgresql
-      host: postgres-postgresql.infra.svc.cluster.local
       existingSecret:
         enabled: true
-        secretName: *secret
-        databaseKey: POSTGRES_DB
-        usernameKey: POSTGRES_USERNAME
-        passwordKey: POSTGRES_PASSWORD
+        secretName: nextcloud-pgsql-pguser-nextcloud
+        hostKey: host
+        databaseKey: dbname
+        usernameKey: user
+        passwordKey: password
     persistence:
       ## Nextcloud Data (/var/www/html)
       enabled: true
