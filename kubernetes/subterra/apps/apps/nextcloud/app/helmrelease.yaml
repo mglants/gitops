@@ -69,8 +69,7 @@ spec:
         apache-pretty-urls.config.php: true
         apcu.config.php: true
         apps.config.php: true
-        # LEGACY CONFIG INSIDE CONTAINER !TODO
-        autoconfig.php: false
+        autoconfig.php: true
         smtp.config.php: true
       configs:
         migrate.config.php: |-
@@ -79,16 +78,6 @@ spec:
             'instanceid' => getenv('INSTANCE_ID'),
             'passwordsalt' => getenv('PASSWORD_SALT'),
             'secret' => getenv('ENCRYPTION_SECRET')
-          );
-        database.config.php: |-
-          <?php
-          $CONFIG = array (
-            'dbtype' => 'pgsql',
-            'dbname' => getenv('POSTGRES_DB'),
-            'dbhost' => getenv('POSTGRES_HOST'),
-            'dbtableprefix' => 'oc_',
-            'dbuser' => getenv('POSTGRES_USER'),
-            'dbpassword' => getenv('POSTGRES_PASSWORD')
           );
         custom.config.php: |-
           <?php
