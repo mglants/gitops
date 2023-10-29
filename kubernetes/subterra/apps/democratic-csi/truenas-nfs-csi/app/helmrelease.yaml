@@ -61,7 +61,7 @@ spec:
         instance_id:
         httpConnection:
           protocol: http
-          host: 192.168.1.50
+          host: 192.168.48.150
           port: 80
           username: root
           allowInsecure: true
