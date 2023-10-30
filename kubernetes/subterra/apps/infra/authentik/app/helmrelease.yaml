@@ -84,8 +84,3 @@ spec:
       enabled: false
     redis:
       enabled: true
-  valuesFrom:
-    - kind: Secret
-      name: authentik-helm-values
-      valuesKey: values.yaml
-      optional: false
