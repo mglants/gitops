@@ -24,15 +24,40 @@ spec:
     image:
       repository: ghcr.io/goauthentik/server
       tag: 2023.8.3
+
+    envValueFrom:
+      AUTHENTIK_SECRET_KEY:
+        secretKeyRef:
+          name: authentik-secret
+          key: AUTHENTIK_SECRET_KEY
+      AUTHENTIK_EMAIL__USERNAME:
+        secretKeyRef:
+          name: authentik-secret
+          key: SMTP_USERNAME
+      AUTHENTIK_EMAIL__PASSWORD:
+        secretKeyRef:
+          name: authentik-secret
+          key: SMTP_PASSWORD
+      AUTHENTIK_POSTGRESQL__HOST:
+        secretKeyRef:
+          name: authentik-pgsql-pguser-authentik
+          key: host
+      AUTHENTIK_POSTGRESQL__NAME:
+        secretKeyRef:
+          name: authentik-pgsql-pguser-authentik
+          key: dbname
+      AUTHENTIK_POSTGRESQL__USER:
+        secretKeyRef:
+          name: authentik-pgsql-pguser-authentik
+          key: user
+      AUTHENTIK_POSTGRESQL__PASSWORD:
+        secretKeyRef:
+          name: authentik-pgsql-pguser-authentik
+          key: password
+
     authentik:
       error_reporting:
         enabled: true
-      postgresql:
-        s3_backup:
-          bucket: authentik
-          region: us-east-1
-          host: http://192.168.1.50:9000
-          insecure_skip_verify: true
 
     ingress:
       enabled: true
@@ -40,6 +65,12 @@ spec:
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-prod
         external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+      email:
+        host: mail.ur30.ru
+        port: 465
+        from: authentik@gearage.ru
+        use_ssl: true
+        timeout: 30
       hosts:
         - host: authentik.gearage.ru
           paths:
@@ -50,9 +81,7 @@ spec:
           hosts:
             - authentik.gearage.ru
     postgresql:
-      enabled: true
-      persistence:
-        existingClaim: authentik-pgsql-v1
+      enabled: false
     redis:
       enabled: true
   valuesFrom:
