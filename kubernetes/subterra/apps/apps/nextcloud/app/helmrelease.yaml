@@ -27,7 +27,7 @@ spec:
       backup.velero.io/backup-volumes: nextcloud-data
     nextcloud:
       host: cloud.gearage.ru
-      update: 1
+      update: 0
       datadir: /nextcloud/data
       existingSecret:
         enabled: true
@@ -69,9 +69,26 @@ spec:
         apache-pretty-urls.config.php: true
         apcu.config.php: true
         apps.config.php: true
-        autoconfig.php: true
+        autoconfig.php: false
         smtp.config.php: true
       configs:
+        migrate.config.php: |-
+          <?php
+          $CONFIG = array (
+            'instanceid' => getenv('INSTANCE_ID'),
+            'passwordsalt' => getenv('PASSWORD_SALT'),
+            'secret' => getenv('ENCRYPTION_SECRET')
+          );
+        dbhostoverride.config.php: |-
+          <?php
+          $CONFIG = array (
+            'dbtype' =>  'pgsql',
+            'dbname' =>  getenv('POSTGRES_DB'),
+            'dbhost' =>  getenv('POSTGRES_HOST'),
+            'dbtableprefix' =>  'oc_',
+            'dbuser' =>  getenv('POSTGRES_USER'),
+            'dbpassword' =>  getenv('POSTGRES_PASSWORD')
+          );
         custom.config.php: |-
           <?php
           $CONFIG = array (
