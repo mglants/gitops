@@ -23,15 +23,15 @@ spec:
       database:
         roundcube:
           database: roundcube
-          username: roundcube
-          existingSecret: &mailu-secret mailu-secret
-          existingSecretPasswordKey: ROUNDCUBE_PASSWORD
+          username: mailu
+          existingSecret: mailu-pgsql-pguser-mailu
+          existingSecretPasswordKey: password
     hostnames:
       - mail.ur30.ru
       - webmail.ur30.ru
     domain: mail.ur30.ru
     timezone: Europe/Moscow
-    existingSecret: *mailu-secret
+    existingSecret: &mailu-secret mailu-secret
     initialAccount:
       enabled: true
       mode: ifmissing
@@ -98,20 +98,15 @@ spec:
     ## for more options see https://github.com/bitnami/charts/tree/master/bitnami/mariadb
     mariadb:
       ## @param mariadb.enabled Enable MariaDB deployment
-      enabled: true
-
-      ## @param mariadb.architecture MariaDB architecture. Allowed values: standalone or replication
-      architecture: standalone
-
-      auth:
-        database: mailu
-        username: mailu
-        existingSecret: *mailu-secret
-      primary:
-        persistence:
-          enabled: true
-          accessMode: ReadWriteOnce
-          size: 10Gi
+      enabled: false
+    externalDatabase:
+      type: postgresql
+      host: mailu-pgsql-primary.apps.svc
+      port: 5432
+      existingSecret: mailu-pgsql-pguser-mailu
+      existingSecretDatabaseKey: dbname
+      existingSecretUsernameKey: user
+      existingSecretPasswordKey: password
 
     ## @param persistence.single_pvc Setings for a single volume for all apps.
     ## Set single_pvc: false to use a per app volume and set the properties in <app>.persistence (ex. admin.persistence)
