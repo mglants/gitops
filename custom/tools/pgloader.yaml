@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pgloader
+  labels:
+    app: pgloader
+spec:
+  containers:
+    - name: pgloader-container
+      image: dimitri/pgloader
+      command: [/bin/sh, -c, sleep infinity]

@@ -7,3 +7,4 @@ resources:
   - helmrelease.yaml
   - cm-clamav.yaml
   - volsync.yaml
+  - postgresCluster.yaml

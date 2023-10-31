@@ -16,3 +16,4 @@ spec:
   dependsOn:
     - name: cluster-apps-external-secrets-stores
     - name: cluster-apps-democratic-csi
+    - name: cluster-apps-crunchy-postgres-operator
