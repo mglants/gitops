@@ -7,3 +7,4 @@ resources:
   - pvc.yaml
   - volsync.yaml
   - postgresCluster.yaml
+  - configmap.yaml

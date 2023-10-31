@@ -71,26 +71,47 @@ spec:
           hosts:
             - netbox.gearage.ru
 
-      # remoteAuth:
-      #   enabled: false
-      #   backend: netbox.authentication.LDAPBackend
-      #   ldap:
-      #     serverUri: ldaps://ak-outpost-ldap-netbox.kube-system:636
-      #     bindDn: 'CN=ldap,OU=users,DC=ldap,DC=goauthentik,DC=io'
-      #     ignoreCertErrors: true
-      #     userDnTemplate:
-      #     userSearchBaseDn: OU=users,DC=ldap,DC=goauthentik,DC=io
-      #     userSearchAttr: sAMAccountName
-      #     groupSearchBaseDn: DC=ldap,DC=goauthentik,DC=io
-      #     groupSearchClass: group
-      #     groupType: GroupOfNamesType
-      #     findGroupPerms: true
-      #     mirrorGroups: true
-      #     mirrorGroupsExcept:
-      #     cacheTimeout: 3600
-      #     requireGroupDn: ''
-      #     isAdminDn: CN=Netbox Admins,OU=groups,DC=ldap,DC=goauthentik,DC=io
-      #     isSuperUserDn: CN=Netbox SuperUsers,OU=groups,DC=ldap,DC=goauthentik,DC=io
-      #     attrFirstName: givenName
-      #     attrLastName: sn
-      #     attrMail: mail
+    remoteAuth:
+      enabled: true
+      backend: social_core.backends.open_id_connect.OpenIdConnectAuth
+      autoCreateUser: true
+    extraEnvs:
+      - name: SOCIAL_AUTH_OIDC_ENDPOINT
+        value: https://authentik.gearage.ru/application/o/netbox/
+      - name: LOGOUT_REDIRECT_URL
+        value: https://authentik.gearage.ru/application/o/netbox/end-session/
+      - name: SOCIAL_AUTH_OIDC_KEY
+        value: netbox
+      - name: SOCIAL_AUTH_OIDC_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: *secret
+            key: OIDC_SECRET
+    extraConfig:
+      - values:
+          SOCIAL_AUTH_PIPELINE:
+            - social_core.pipeline.social_auth.social_details
+            - social_core.pipeline.social_auth.social_uid
+            - social_core.pipeline.social_auth.auth_allowed
+            - social_core.pipeline.social_auth.social_user
+            - social_core.pipeline.user.get_username
+            - social_core.pipeline.user.create_user
+            - social_core.pipeline.social_auth.associate_user
+            - social_core.pipeline.social_auth.load_extra_data
+            - social_core.pipeline.user.user_details
+            - netbox.custom_pipeline.add_groups
+            - netbox.custom_pipeline.remove_groups
+            - netbox.custom_pipeline.set_roles
+    extraVolumes:
+      - name: netbox-sso-cm
+        configMap:
+          name: netbox-sso-cm
+    extraVolumeMounts:
+      - name: netbox-sso-cm
+        mountPath: /opt/netbox/netbox/netbox/custom_pipeline.py
+        subPath: custom_pipeline.py
+        readOnly: true
+      - name: netbox-sso-cm
+        mountPath: /opt/netbox/netbox/netbox/authentik.py
+        subPath: authentik.py
+        readOnly: true
