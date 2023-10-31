@@ -29,7 +29,7 @@ spec:
       AUTHENTIK_SECRET_KEY:
         secretKeyRef:
           name: authentik-secret
-          key: AUTHENTIK_SECRET_KEY
+          key: SECRET_KEY
       AUTHENTIK_EMAIL__USERNAME:
         secretKeyRef:
           name: authentik-secret
