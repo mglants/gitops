@@ -45,7 +45,7 @@ spec:
           kubernetes.io/tls-acme: 'true'
           cert-manager.io/cluster-issuer: letsencrypt-prod
           nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16, 77.37.244.212/32, 94.141.170.143/32
+          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16, 77.37.244.8/32, 94.141.170.143/32
         hosts:
           - host: unific.ur30.ru
             paths:
@@ -62,7 +62,7 @@ spec:
           kubernetes.io/tls-acme: 'true'
           cert-manager.io/cluster-issuer: letsencrypt-prod
           nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16, 77.37.244.212/32, 94.141.170.143/32
+          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16, 77.37.244.8/32, 94.141.170.143/32
         hosts:
           - host: unifiportal.ur30.ru
             paths:
