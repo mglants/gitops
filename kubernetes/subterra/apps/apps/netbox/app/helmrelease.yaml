@@ -112,6 +112,6 @@ spec:
         subPath: custom_pipeline.py
         readOnly: true
       - name: netbox-sso-cm
-        mountPath: /opt/netbox/netbox/netbox/authentik.py
+        mountPath: /etc/netbox/config/authentik.py
         subPath: authentik.py
         readOnly: true
