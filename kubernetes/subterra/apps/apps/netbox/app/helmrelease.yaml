@@ -35,7 +35,11 @@ spec:
         console:
           class: logging.StreamHandler
       loggers:
-        netbox.authentication.*:
+        netbox:
+          handlers:
+            - console
+          level: DEBUG
+        django:
           handlers:
             - console
           level: DEBUG
