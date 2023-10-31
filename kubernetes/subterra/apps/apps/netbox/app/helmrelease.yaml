@@ -47,8 +47,10 @@ spec:
       enabled: true
       existingClaim: netbox-config-v1
     externalDatabase:
-      host: postgres-postgresql.infra.svc.cluster.local
+      host: netbox-pgsql-primary.apps.svc
       port: 5432
+      existingSecretName: netbox-pgsql-pguser-netbox
+      existingSecretKey: password
       database: netbox
       username: netbox
     ingress:
