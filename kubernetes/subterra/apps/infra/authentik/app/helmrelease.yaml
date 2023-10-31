@@ -84,10 +84,10 @@ spec:
       - name: public
         nfs:
           server: 192.168.48.150
-          path: /mnt/Storinator/Public
+          path: /mnt/Storinator/Public/SRV/authentik
     volumeMounts:
       - name: public
-        mountPath: /public
+        mountPath: /web/dist/custom
     postgresql:
       enabled: false
     redis:
