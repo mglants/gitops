@@ -39,6 +39,7 @@ spec:
       from: noreply@gearage.ru
     redis:
       enabled: true
+      architecture: standalone
       auth:
         existingSecret: *secret
         existingSecretPasswordKey: REDIS_PASSWORD
