@@ -29,6 +29,17 @@ spec:
       email: reg@glants.xyz
     postgresql:
       enabled: false
+    logging:
+      disable_existing_loggers: false
+      handlers:
+        console:
+          class: logging.StreamHandler
+      loggers:
+        netbox.authentication.*:
+          handlers:
+            - console
+          level: DEBUG
+      version: 1
     email:
       server: mail.ur30.ru
       port: 465
