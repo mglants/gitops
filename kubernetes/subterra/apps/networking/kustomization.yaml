@@ -11,3 +11,4 @@ resources:
   - ./kea/ks.yaml
   - ./unifi/ks.yaml
   - ./vpn-gateway/ks.yaml
+  - ./echo-server/ks.yaml
