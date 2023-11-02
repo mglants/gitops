@@ -221,7 +221,24 @@ spec:
         repository: heviat/admin
         tag: 544c7237d0fac7c07c898f6bd362fb7d8a4c2760-build
         pullPolicy: IfNotPresent
-
+      extraEnvVars:
+        - name: OIDC_ENABLED
+          value: 'True'
+        - name: OIDC_PROVIDER_INFO_URL
+          value: https://authentik.gearage.ru/application/o/mailu/.well-known/openid-configuration
+        - name: OIDC_CLIENT_ID
+          value: mailu
+        - name: OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: *mailu-secret
+              key: OIDC_SECRET
+        - name: OIDC_BUTTON_NAME
+          value: SSO
+        - name: OIDC_CHANGE_PASSWORD_REDIRECT_ENABLED
+          value: 'True'
+        - name: OIDC_CHANGE_PASSWORD_REDIRECT_URL
+          value: https://authentik.gearage.ru/if/flow/default-password-change/
       resources:
         requests:
           memory: 500Mi
