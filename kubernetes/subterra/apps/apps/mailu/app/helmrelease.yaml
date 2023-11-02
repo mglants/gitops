@@ -323,7 +323,7 @@ spec:
       ## @param clamav.image.pullPolicy Pod image pull policy
       image:
         repository: heviat/clamav
-        tag: 544c7237d0fac7c07c898f6bd362fb7d8a4c2760-build
+        tag: 298c109acec7fdc2b410839910d9b616c520258b-build
         pullPolicy: IfNotPresent
 
       resources:
