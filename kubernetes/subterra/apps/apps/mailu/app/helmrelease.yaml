@@ -139,10 +139,10 @@ spec:
     ## ref: https://mailu.io/master/configuration.html#header-authentication-using-an-external-proxy
     proxyAuth:
       ## @param proxyAuth.whitelist Comma separated list of CIDRs of proxies to trust for authentication
-      whitelist: ''
+      whitelist: 10.0.0.0/8
 
       ## @param proxyAuth.header HTTP header containing the email address of the user to authenticate
-      header: ''
+      header: X-authentik-email
 
       ## @param proxyAuth.create Whether non-existing accounts should be auto-created
       create: 'false'
