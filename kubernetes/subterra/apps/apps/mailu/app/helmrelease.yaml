@@ -157,8 +157,8 @@ spec:
       ## @param front.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
       ## @param front.image.pullPolicy Pod image pull policy
       image:
-        repository: heviat/nginx
-        tag: 544c7237d0fac7c07c898f6bd362fb7d8a4c2760-build
+        repository: mailu/nginx
+        tag: 2.0.31
         pullPolicy: IfNotPresent
 
       ## front.controller.kind Deployment only supported for now
@@ -218,8 +218,8 @@ spec:
       ## @param admin.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
       ## @param admin.image.pullPolicy Pod image pull policy
       image:
-        repository: heviat/admin
-        tag: 544c7237d0fac7c07c898f6bd362fb7d8a4c2760-build
+        repository: mailu/admin
+        tag: 2.0.31
         pullPolicy: IfNotPresent
       extraEnvVars:
         - name: OIDC_ENABLED
@@ -260,8 +260,8 @@ spec:
       ## @param postfix.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
       ## @param postfix.image.pullPolicy Pod image pull policy
       image:
-        repository: heviat/postfix
-        tag: 544c7237d0fac7c07c898f6bd362fb7d8a4c2760-build
+        repository: mailu/postfix
+        tag: 2.0.31
         pullPolicy: IfNotPresent
       updateStrategy:
         type: Recreate
@@ -285,8 +285,8 @@ spec:
       ## @param dovecot.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
       ## @param dovecot.image.pullPolicy Pod image pull policy
       image:
-        repository: heviat/dovecot
-        tag: 544c7237d0fac7c07c898f6bd362fb7d8a4c2760-build
+        repository: mailu/dovecot
+        tag: 2.0.31
         pullPolicy: IfNotPresent
 
       resources:
@@ -310,8 +310,8 @@ spec:
       ## @param rspamd.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
       ## @param rspamd.image.pullPolicy Pod image pull policy
       image:
-        repository: heviat/rspamd
-        tag: 544c7237d0fac7c07c898f6bd362fb7d8a4c2760-build
+        repository: mailu/rspamd
+        tag: 2.0.31
         pullPolicy: IfNotPresent
 
       resources:
@@ -339,8 +339,8 @@ spec:
       ## @param clamav.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
       ## @param clamav.image.pullPolicy Pod image pull policy
       image:
-        repository: heviat/clamav
-        tag: 298c109acec7fdc2b410839910d9b616c520258b-build
+        repository: mailu/clamav
+        tag: 2.0.31
         pullPolicy: IfNotPresent
 
       resources:
@@ -389,8 +389,8 @@ spec:
       ## @param webmail.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
       ## @param webmail.image.pullPolicy Pod image pull policy
       image:
-        repository: heviat/webmail
-        tag: 544c7237d0fac7c07c898f6bd362fb7d8a4c2760-build
+        repository: mailu/webmail
+        tag: 2.0.31
         pullPolicy: IfNotPresent
 
       resources:
@@ -414,8 +414,8 @@ spec:
       ## @param oletools.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
       ## @param oletools.image.pullPolicy Pod image pull policy
       image:
-        repository: heviat/oletools
-        tag: 544c7237d0fac7c07c898f6bd362fb7d8a4c2760-build
+        repository: mailu/oletools
+        tag: 2.0.31
         pullPolicy: IfNotPresent
 
       resources:
