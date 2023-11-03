@@ -142,7 +142,7 @@ spec:
       whitelist: 10.0.0.0/8
 
       ## @param proxyAuth.header HTTP header containing the email address of the user to authenticate
-      header: X-authentik-email
+      header: X-mailu-email
 
       ## @param proxyAuth.create Whether non-existing accounts should be auto-created
       create: 'false'
