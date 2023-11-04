@@ -127,6 +127,10 @@ spec:
         external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
         cert-manager.io/cluster-issuer: letsencrypt-prod
         kubernetes.io/tls-acme: 'true'
+        nginx.ingress.kubernetes.io/auth-response-headers: Set-Cookie,X-mailu-email
+        nginx.ingress.kubernetes.io/auth-signin: /outpost.goauthentik.io/start?rd=$escaped_request_uri
+        nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Host $http_host;
+        nginx.ingress.kubernetes.io/auth-url: http://ak-outpost-authentik-embedded-outpost.infra.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
       tls: true
 
       ## @param ingress.realIpHeader Sets the value of `REAL_IP_HEADER` environment variable in the `front` pod
