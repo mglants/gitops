@@ -13,6 +13,8 @@ spec:
   dnsNames:
     - authentik.infra.svc.cluster.local
     - authentik.gearage.ru
+    - ldap.gearage.ru
+    - ldap.ur30.ru
     - authentik
   issuerRef:
     group: cert-manager.io
