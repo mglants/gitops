@@ -6,3 +6,4 @@ resources:
   - pvc.yaml
   - postgresCluster.yaml
   - externalsecret.yaml
+  - certificate.yaml
