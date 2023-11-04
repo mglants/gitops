@@ -70,6 +70,13 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
             supplementalGroups: [44, 105, 10000]
 
+    service:
+      main:
+        type: ClusterIP
+        ports:
+          http:
+            port: *port
+
     ingress:
       main:
         enabled: true
