@@ -34,7 +34,7 @@ spec:
           main:
             image:
               repository: ghcr.io/onedr0p/jellyfin
-              tag: 10.8.1
+              tag: 10.8.11
             env:
               DOTNET_SYSTEM_IO_DISABLEFILELOCKING: 'true'
               JELLYFIN_FFmpeg__probesize: 50000000
