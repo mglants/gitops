@@ -1,72 +1,102 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: jellyfin
   namespace: media
 spec:
-  interval: 5m
-  timeout: 10m0s
+  interval: 30m
   chart:
     spec:
-      # renovate: registryUrl=https://loeken.github.io/helm-charts
-      chart: jellyfin
-      version: 10.8.10
+      chart: app-template
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
-        name: loeken-at-home-charts
+        name: bjw-s-charts
         namespace: flux-system
-      interval: 5m
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
   values:
-    image:
-      # -- image repository
-      repository: ghcr.io/onedr0p/jellyfin
-      # -- image tag
-      tag: 10.8.11
-      # -- image pull policy
-      pullPolicy: IfNotPresent
-    env:
-      TZ: Europe/Moscow
-      DOTNET_SYSTEM_IO_DISABLEFILELOCKING: 'true'
-      JELLYFIN_FFmpeg__probesize: 50000000
-      JELLYFIN_FFmpeg__analyzeduration: 50000000
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: 'true'
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/jellyfin
+              tag: 10.8.1
+            env:
+              DOTNET_SYSTEM_IO_DISABLEFILELOCKING: 'true'
+              JELLYFIN_FFmpeg__probesize: 50000000
+              JELLYFIN_FFmpeg__analyzeduration: 50000000
+              TZ: Europe/Moscow
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 8096
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+            resources:
+              requests:
+                cpu: 500m
+                memory: 1Gi
+              limits:
+                memory: 16Gi
+        pod:
+          enableServiceLinks: false
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups: [44, 105, 10000]
+
     ingress:
       main:
         enabled: true
+        className: nginx
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-prod
           external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
-        ingressClassName: nginx
         hosts:
-          - host: jellyfin.ur30.ru
+          - host: &host '{{ .Release.Name }}.ur30.ru'
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
-          - secretName: jellyfinur30ru-crt-secret
-            hosts:
-              - jellyfin.ur30.ru
+          - hosts:
+              - *host
     persistence:
       config:
         enabled: true
         existingClaim: jellyfin-config-v1
-      cache:
-        enabled: true
+        mountPath: /config
+      transcode:
         type: emptyDir
-        medium: Memory
-        mountPath: /cache
+        globalMounts:
+          - path: /transcode
       media:
-        enabled: true
-        existingClaim: nfs-public-pvc
-        mountPath: /media
-        readOnly: false
-    podAnnotations:
-      backup.velero.io/backup-volumes: config
-      setGateway: 'true'
-    resources:
-      requests:
-        cpu: 4000m
-        memory: 8Gi
-      limits:
-        memory: 16Gi
-        cpu: 8000m
+        existingClaim: media
+        globalMounts:
+          - readOnly: true
