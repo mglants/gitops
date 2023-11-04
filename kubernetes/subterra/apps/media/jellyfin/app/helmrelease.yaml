@@ -20,13 +20,16 @@ spec:
   values:
     image:
       # -- image repository
-      repository: loeken/jellyfin
+      repository: ghcr.io/onedr0p/jellyfin
       # -- image tag
-      tag: 10.8.9-alpine
+      tag: 10.8.11
       # -- image pull policy
       pullPolicy: IfNotPresent
     env:
       TZ: Europe/Moscow
+      DOTNET_SYSTEM_IO_DISABLEFILELOCKING: 'true'
+      JELLYFIN_FFmpeg__probesize: 50000000
+      JELLYFIN_FFmpeg__analyzeduration: 50000000
     ingress:
       main:
         enabled: true
