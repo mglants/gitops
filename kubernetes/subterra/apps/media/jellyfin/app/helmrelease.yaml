@@ -104,6 +104,6 @@ spec:
         globalMounts:
           - path: /transcode
       media:
-        existingClaim: media
+        existingClaim: nfs-public-pvc
         globalMounts:
           - readOnly: true
