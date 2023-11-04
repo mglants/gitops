@@ -13,7 +13,7 @@ metadata:
   namespace: cert-manager
 spec:
   secretName: subterra-ca-secret
-  duration: 8736h0m0s # 1 year
+  duration: 87360h0m0s # 10 year
   renewBefore: 240h0m0s # 10 days
   issuerRef:
     name: selfsigning-issuer
