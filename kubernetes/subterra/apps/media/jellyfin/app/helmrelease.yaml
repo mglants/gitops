@@ -62,6 +62,8 @@ spec:
               limits:
                 memory: 16Gi
         pod:
+          annotations:
+            setGateway: 'true'
           enableServiceLinks: false
           securityContext:
             runAsUser: 568
