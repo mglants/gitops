@@ -22,7 +22,7 @@ spec:
       # -- image repository
       repository: linuxserver/radarr
       # -- image tag
-      tag: version-4.3.2.6857
+      tag: version-5.0.3.8127
       # -- image pull policy
       pullPolicy: IfNotPresent
     podSecurityContext:
