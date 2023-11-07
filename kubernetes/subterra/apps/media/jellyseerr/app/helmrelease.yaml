@@ -24,7 +24,7 @@ spec:
           main:
             image:
               repository: docker.io/fallenbagel/jellyseerr
-              tag: 1.7.0
+              tag: preview-pr184
             env:
               TZ: Europe/Moscow
     service:
