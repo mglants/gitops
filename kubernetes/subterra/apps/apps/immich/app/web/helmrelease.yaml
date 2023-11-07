@@ -108,3 +108,4 @@ spec:
         tls:
           - hosts:
               - *host
+            secretName: immich-tls-cert
