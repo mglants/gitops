@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: immich-configmap
+  namespace: apps
+data:
+  # URLS
+  IMMICH_WEB_URL: http://immich-web.apps.svc.cluster.local:3000
+  IMMICH_SERVER_URL: http://immich-server.apps.svc.cluster.local:3001
+  PUBLIC_IMMICH_SERVER_URL: https://immich.ur30.ru
+
+  # REDIS
+  REDIS_HOSTNAME: immich-redis.apps.svc.cluster.local
+  REDIS_PORT: '6379'
+
+  # TYPESENSE
+  TYPESENSE_ENABLED: 'true'
+  TYPESENSE_HOST: immich-typesense.apps.svc.cluster.local
+  TYPESENSE_PORT: '8108'
+  TYPESENSE_PROTOCOL: http
