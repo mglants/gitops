@@ -43,7 +43,9 @@ spec:
           - host: &host jellyseerr.ur30.ru
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - secretName: jellyseerr-tls
             hosts:
