@@ -38,5 +38,5 @@ spec:
     retain:
       daily: 14
     volumeSnapshotClassName: freenas-nfs-csi
-    storageClassName: freenas-nfs-csi
+    storageClassName: freenas-iscsi-csi
     cacheStorageClassName: freenas-iscsi-csi
