@@ -10,3 +10,4 @@ resources:
   - ./nextcloud/ks.yaml
   - ./vaultwarden/ks.yaml
   - ./immich/ks.yaml
+  - ./paperless/ks.yaml
