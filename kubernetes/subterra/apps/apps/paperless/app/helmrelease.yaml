@@ -69,7 +69,7 @@ spec:
               PAPERLESS_CONSUMER_RECURSIVE: 'true'
               PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS: 'true'
               # Configure OCR
-              PAPERLESS_OCR_LANGUAGES: rus+eng
+              PAPERLESS_OCR_LANGUAGES: rus eng
               PAPERLESS_OCR_LANGUAGE: rus+eng
               # Configure redis integration
               PAPERLESS_REDIS: redis://paperless-redis.apps.svc.cluster.local:6379
