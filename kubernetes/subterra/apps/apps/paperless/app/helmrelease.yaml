@@ -121,7 +121,7 @@ spec:
         tls:
           - hosts:
               - *host
-
+            secretName: paperless-tls
     persistence:
       nas:
         type: persistentVolumeClaim
