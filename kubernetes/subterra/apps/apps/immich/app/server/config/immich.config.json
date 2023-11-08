@@ -88,5 +88,9 @@
     "jpegSize": 1440,
     "quality": 90,
     "colorspace": "p3"
+  },
+  "trash": {
+    "enabled": true,
+    "days": 30
   }
 }
