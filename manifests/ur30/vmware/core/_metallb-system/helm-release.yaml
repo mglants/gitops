@@ -33,4 +33,4 @@ spec:
       frr:
         image:
           repository: quay.io/frrouting/frr
-          tag: 8.5.2
+          tag: 9.0.1
