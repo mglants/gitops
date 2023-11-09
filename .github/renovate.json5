@@ -13,6 +13,9 @@
   "helm-values": {
     "fileMatch": ["kubernetes/.+helmrelease\\.yaml$"]
   },
+  "flux": {
+    "fileMatch": ["kubernetes/.+helmrelease\\.yaml$"]
+  },
   "kubernetes": {
     "fileMatch": ["kubernetes/.+\\.yaml$"],
     "ignorePaths": [
