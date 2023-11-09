@@ -11,10 +11,10 @@
   // Do not rebase PRs
   "rebaseWhen": "auto",
   "helm-values": {
-    "fileMatch": ["manifests/.+helm-release\\.yaml$"]
+    "fileMatch": ["kubernetes/.+helmrelease\\.yaml$"]
   },
   "kubernetes": {
-    "fileMatch": ["manifests/.+\\.yaml$"],
+    "fileMatch": ["kubernetes/.+\\.yaml$"],
     "ignorePaths": [
       "**/flux-system/**"
     ]
@@ -42,7 +42,7 @@
     },
     {
       "fileMatch": [
-        "manifests/.+helm-release\\.yaml$"
+        "kubernetes/.+helmrelease\\.yaml$"
       ],
       "matchStrings": [
         //helm-releases
