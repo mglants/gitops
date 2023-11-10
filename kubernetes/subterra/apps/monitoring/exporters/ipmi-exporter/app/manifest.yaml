@@ -24,7 +24,7 @@ spec:
             name: ipmi-exporter
       containers:
         - name: ipmi-exporter
-          image: prometheuscommunity/ipmi-exporter:v1.6.1
+          image: prometheuscommunity/ipmi-exporter:v1.7.0
           args: [--config-file /tmp/config.yaml]
           imagePullPolicy: IfNotPresent
           volumeMounts:
