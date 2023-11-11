@@ -54,12 +54,16 @@ spec:
           nginx.org/websocket-services: home-assistant
           cert-manager.io/cluster-issuer: letsencrypt-prod
           nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
+          external-dns.alpha.kubernetes.io/type: internal
         hosts:
-          - host: ha.ur30.ru
+          - host: &host ha.ur30.ru
             paths:
               - path: /
                 pathType: Prefix
-
+        tls:
+          - hosts:
+              - *host
+            secretName: homeassistant-tls
     metrics:
       # -- Enable and configure a Prometheus serviceMonitor for the chart under this key.
       # @default -- See values.yaml
