@@ -55,7 +55,7 @@ spec:
             s3:
               s3:
               bucketnames: loki
-              endpoint: nas.glants.xyz:9000
+              endpoint: nas.ur30.ru:9000
               insecure: false
               s3forcepathstyle: true
           ring:
