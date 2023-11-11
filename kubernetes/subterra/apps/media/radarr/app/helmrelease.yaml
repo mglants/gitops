@@ -19,9 +19,7 @@ spec:
       interval: 5m
   values:
     image:
-      # -- image repository
       repository: linuxserver/radarr
-      # -- image tag
       tag: version-5.0.3.8127
       # -- image pull policy
       pullPolicy: IfNotPresent
