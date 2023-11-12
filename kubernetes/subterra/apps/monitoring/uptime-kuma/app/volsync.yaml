@@ -37,6 +37,6 @@ spec:
     repository: uptime-kuma-restic-secret
     retain:
       daily: 14
-    volumeSnapshotClassName: freenas-nfs-csi
-    storageClassName: freenas-nfs-csi
+    volumeSnapshotClassName: freenas-iscsi-csi
+    storageClassName: freenas-iscsi-csi
     cacheStorageClassName: freenas-iscsi-csi
