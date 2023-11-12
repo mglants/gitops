@@ -136,7 +136,7 @@ spec:
         scrapeInterval: 1m
         additionalScrapeConfigs: {}
         externalLabels:
-          cluster: sweethome
+          cluster: subterra
         resources:
           requests:
             memory: 1500Mi
