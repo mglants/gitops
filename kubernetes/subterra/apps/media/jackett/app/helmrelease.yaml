@@ -85,6 +85,8 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-prod
           external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
+          external-dns.alpha.kubernetes.io/type: internal
         hosts:
           - host: &host '{{ .Release.Name }}.ur30.ru'
             paths:
