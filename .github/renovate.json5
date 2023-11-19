@@ -154,6 +154,13 @@
       "separateMinorPatch": false
     },
     {
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": ["^ghcr.io/immich-app/.*"],
+      "groupName": "immich",
+      "additionalBranchPrefix": "",
+      "separateMinorPatch": false
+    },
+    {
       "matchDatasources": ["helm", "docker"],
       "matchPackagePatterns": ["^kube-prometheus-stack|.*prometheus-operator"],
       "groupName": "prometheus-stack",
