@@ -23,7 +23,7 @@ spec:
   values:
     controllers:
       main:
-        strategy: RollingUpdate
+        strategy: Recreate
         annotations:
           reloader.stakater.com/auto: 'true'
 
