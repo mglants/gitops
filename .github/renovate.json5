@@ -185,6 +185,7 @@
       "matchDatasources": ["docker"],
       "matchPackagePatterns": ["^mailu/.*"],
       "groupName": "mailu",
+      "registryUrls": ["https://ghcr.io"],
       "additionalBranchPrefix": "",
       "separateMinorPatch": false
     },
