@@ -48,7 +48,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.87.0
+              tag: v1.88.2
             args:
               - start-server.sh
             env:
@@ -142,3 +142,35 @@ spec:
         existingClaim: immich-nfs
         globalMounts:
           - path: *mediaLocation
+
+    ingress:
+      main:
+        enabled: true
+        className: nginx
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            rewrite /api/(.*) /$1 break;
+            set $forwarded_client_ip "";
+            if ($http_x_forwarded_for ~ "^([^,]+)") {
+              set $forwarded_client_ip $1;
+            }
+            set $client_ip $remote_addr;
+            if ($forwarded_client_ip != "") {
+              set $client_ip $forwarded_client_ip;
+            }
+          nignx.ingress.kubernetes.io/force-ssl-redirect: 'true'
+          nginx.ingress.kubernetes.io/proxy-body-size: '0'
+          nginx.ingress.kubernetes.io/upstream-hash-by: $client_ip
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+        hosts:
+          - host: &host immich.ur30.ru
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+            secretName: immich-tls-cert
