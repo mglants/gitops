@@ -150,7 +150,6 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
           nginx.ingress.kubernetes.io/configuration-snippet: |
-            rewrite /api/(.*) /$1 break;
             set $forwarded_client_ip "";
             if ($http_x_forwarded_for ~ "^([^,]+)") {
               set $forwarded_client_ip $1;
