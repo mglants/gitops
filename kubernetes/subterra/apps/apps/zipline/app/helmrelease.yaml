@@ -80,7 +80,7 @@ spec:
               URLS_ROUTE: /go
               URLS_LENGTH: 6
               # Website
-              WEBSITE_TITLE: bjw-s
+              WEBSITE_TITLE: zipline
               WEBSITE_SHOW_FILES_PER_USER: 'false'
               WEBSITE_SHOW_VERSION: 'false'
             resources:
