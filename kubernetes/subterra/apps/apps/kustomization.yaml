@@ -11,3 +11,4 @@ resources:
   - ./vaultwarden/ks.yaml
   - ./immich/ks.yaml
   - ./paperless/ks.yaml
+  - ./zipline/ks.yaml
