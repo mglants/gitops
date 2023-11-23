@@ -139,8 +139,3 @@ spec:
         memory: 1000Mi
     postgresql:
       enabled: false
-  valuesFrom:
-    - kind: Secret
-      name: homeassistant-helm-values
-      valuesKey: values.yaml
-      optional: false
