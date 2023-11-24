@@ -31,7 +31,7 @@ jobs:
       - name: Keep HelmReleases only
         id: extract
         run: |
-          filtered=$(grep -zl "kind: HelmRelease.*registryUrl=" ${{ steps.filter.outputs.changed_files }} \
+          filtered=$(grep -zl "kind: HelmRelease.*" ${{ steps.filter.outputs.changed_files }} \
             | jq -nR '[inputs | select(length>0)]')
           echo ::set-output name=files::${filtered}
   helm:
