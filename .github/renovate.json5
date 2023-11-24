@@ -1,4 +1,5 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "enabled": true,
   "timezone": "Europe/Moscow",
   "semanticCommits": "enabled",
@@ -6,46 +7,26 @@
   "prHourlyLimit": 0,
   "dependencyDashboardTitle": "Renovate Dashboard",
   "commitBody": "Signed-off-by: Mark Glants <mglants@users.noreply.github.com>",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "to {{newVersion}}",
+  "commitMessageSuffix": "",
   // Do not notify on closed unmerged PRs
   "suppressNotifications": ["prIgnoreNotification"],
   // Do not rebase PRs
-  "rebaseWhen": "auto",
+  "rebaseWhen": "conflicted",
   "helm-values": {
-    "fileMatch": ["kubernetes/.+helmrelease\\.yaml$"]
+    "fileMatch": ["kubernetes/.+\\.yaml$"]
   },
   "flux": {
-    "fileMatch": ["kubernetes/.+helmrelease\\.yaml$"]
+    "fileMatch": ["kubernetes/.+\\.yaml$"]
   },
   "kubernetes": {
-    "fileMatch": ["kubernetes/.+\\.yaml$"],
-    "ignorePaths": [
-      "**/flux-system/**"
-    ]
+    "fileMatch": ["kubernetes/.+\\.yaml$"]
   },
   "regexManagers": [
-      {
-      "fileMatch": [
-        "crds/.+\\.yaml$$"
-      ],
-      "matchStrings": [
-        //crds based on helm version
-        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?) type=helm\n.*\/(?<currentValue>v.*?)\/"
-      ],
-      "datasourceTemplate": "helm"
-    },
-      {
-      "fileMatch": [
-        "crds/.+\\.yaml$$"
-      ],
-      "matchStrings": [
-        //crds based on docker version
-        "image=(?<depName>.*?) type=docker\n.*\/(?<currentValue>v.*?)\/"
-      ],
-      "datasourceTemplate": "docker"
-    },
     {
       "fileMatch": [
-        "kubernetes/.+helmrelease\\.yaml$"
+        "kubernetes/.+\\.yaml$"
       ],
       "matchStrings": [
         //helm-releases
@@ -55,7 +36,7 @@
     },
     {
       "fileMatch": [
-        "manifests/.+cluster-settings\\.yaml$"
+        "kubernetes/.+cluster-settings\\.yaml$"
       ],
       "matchStrings": [
         //git versioning for talos and etc/
@@ -68,14 +49,11 @@
     // Setup datasources
     {
       "datasources": ["helm"],
-      "commitMessageTopic": "Helm chart {{depName}}"
+      "commitMessageTopic": "chart {{depName}}"
     },
     {
       "datasources": ["docker"],
-      "commitMessageTopic": "Docker image {{depName}}",
-      "commitMessageExtra": "to {{#if isSingleVersion}}{{{toVersion}}}{{else}}{{{newValue}}}{{/if}}",
-      "updateTypes": ["major", "minor", "patch"],
-      "enabled": true
+      "commitMessageTopic": "image {{depName}}",
     },
     // Add labels according to package and update types
     {
@@ -214,6 +192,23 @@
         "docker.io/nodered/node-red"
       ]
     },
+    {
+      "description": "Auto merge Github Actions",
+      "matchManagers": ["github-actions"],
+      "automerge": true,
+      "automergeType": "branch",
+      "ignoreTests": true,
+      "matchUpdateTypes": ["minor", "patch", "digest"]
+    },
+    {
+      "description": "Auto merge container digests",
+      "matchDatasources": ["docker"],
+      "automerge": true,
+      "automergeType": "branch",
+      "ignoreTests": true,
+      "matchUpdateTypes": ["digest"]
+    },
+
     // auto-updates - weekly
     {
       "datasources": ["docker"],
