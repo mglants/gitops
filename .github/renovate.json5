@@ -13,7 +13,7 @@
   // Do not notify on closed unmerged PRs
   "suppressNotifications": ["prIgnoreNotification"],
   // Do not rebase PRs
-  "rebaseWhen": "conflicted",
+  "rebaseWhen": "auto",
   "helm-values": {
     "fileMatch": ["kubernetes/.+\\.yaml$"]
   },
