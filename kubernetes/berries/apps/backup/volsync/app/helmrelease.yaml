@@ -18,17 +18,17 @@ spec:
       interval: 30m
   values:
     image:
-      repository: zimbres/volsync
+      repository: ghcr.io/onedr0p/volsync
     rclone:
-      repository: zimbres/volsync
+      repository: ghcr.io/onedr0p/volsync
     restic:
-      repository: zimbres/volsync
+      repository: ghcr.io/onedr0p/volsync
     rsync:
-      repository: zimbres/volsync
+      repository: ghcr.io/onedr0p/volsync
     rsync-tls:
-      repository: zimbres/volsync
+      repository: ghcr.io/onedr0p/volsync
     syncthing:
-      repository: zimbres/volsync
+      repository: ghcr.io/onedr0p/volsync
     manageCRDs: true
     metrics:
       disableAuth: true
