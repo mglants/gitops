@@ -21,7 +21,7 @@ spec:
     image:
       repository: linuxserver/deluge
       pullPolicy: IfNotPresent
-      tag: version-2.0.3-2201906121747ubuntu18.04.1
+      tag: 2.1.1
     hostname: deluge
     env:
       TZ: Europe/Moscow
