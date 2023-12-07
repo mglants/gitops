@@ -102,7 +102,7 @@ spec:
     # -- settings to expose ports, usually through a VPN provider.
     # NOTE: if you change it you will need to manually restart the gateway POD
     publicPorts:
-      - hostname: deluge
+      - hostname: qbittorrent
         IP: 10
         ports:
           - type: udp

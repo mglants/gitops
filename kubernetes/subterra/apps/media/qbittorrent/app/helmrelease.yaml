@@ -1,0 +1,93 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: qbittorrent
+  namespace: media
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.3.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+
+  values:
+    defaultPodOptions:
+      hostname: qbittorrent
+    controllers:
+      main:
+        pod:
+          securityContext:
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups:
+              - 65542 # gladius:external-services
+
+        containers:
+          main:
+            nameOverride: qbittorrent
+            image:
+              repository: ghcr.io/onedr0p/qbittorrent
+              tag: 4.6.2@sha256:ab8cc91bcf93d2a147767032d37c52ca2528439d037090657a18ea39cfeb272b
+            env:
+              UMASK: '022'
+              QBITTORRENT__PORT: &port 8080
+            resources:
+              requests:
+                cpu: 49m
+                memory: 1024Mi
+              limits:
+                memory: 8192Mi
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 568
+
+    service:
+      main:
+        ports:
+          http:
+            port: *port
+      bittorrent:
+        enabled: true
+        ports:
+          bittorrent:
+            enabled: true
+            port: 57047
+            protocol: TCP
+            targetPort: 57047
+
+    ingress:
+      main:
+        enabled: true
+        className: nginx
+        annotations:
+          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
+          external-dns.alpha.kubernetes.io/type: internal
+        hosts:
+          - host: qbittorrent.ur30.ru
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: http
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: qbittorrent-config-v1
+        advancedMounts:
+          main:
+            main:
+              - path: /config
+      media:
+        existingClaim: nfs-public-pvc
+        advancedMounts:
+          main:
+            main:
+              - path: /downloads

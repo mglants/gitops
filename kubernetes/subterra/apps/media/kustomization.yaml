@@ -16,3 +16,4 @@ resources:
   - ./xteve/ks.yaml
   - ./jellyseerr/ks.yaml
   - ./jackett/ks.yaml
+  - ./qbittorrent/ks.yaml
