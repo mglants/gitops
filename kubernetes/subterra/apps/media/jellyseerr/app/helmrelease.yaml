@@ -51,6 +51,8 @@ spec:
             hosts:
               - *host
     defaultPodOptions:
+      annotations:
+        setGateway: 'true'
       podSecurityContext:
         runAsUser: 1000
         runAsGroup: 1000
