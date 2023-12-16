@@ -20,7 +20,7 @@ spec:
   values:
     image:
       repository: linuxserver/sonarr
-      tag: version-3.0.9.1549
+      tag: 3.0.10
       # -- image pull policy
       pullPolicy: IfNotPresent
     podSecurityContext:
