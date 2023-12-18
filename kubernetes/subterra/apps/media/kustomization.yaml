@@ -5,7 +5,6 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
-  - ./deluge/ks.yaml
   - ./jellyfin/ks.yaml
   - ./nfs/ks.yaml
   - ./plex/ks.yaml

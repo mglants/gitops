@@ -1,0 +1,63 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: qbtools-emonoda
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.4.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+
+  values:
+    controllers:
+      main:
+        type: cronjob
+
+        cronjob:
+          schedule: '@hourly'
+
+        pod:
+          restartPolicy: OnFailure
+        containers:
+          main:
+            image:
+              repository: ghcr.io/mglants/emonoda
+              tag: 2.1.37
+            command:
+              - emupdate
+            args:
+              - --config
+              - /app/config.yaml
+            resources:
+              requests:
+                memory: 250Mi
+                cpu: 5m
+              limits:
+                memory: 500Mi
+
+    persistence:
+      config-file:
+        type: secret
+        name: qbtools-emonoda-secret
+        globalMounts:
+          - path: /app/config.yaml
+            subPath: config.yaml
+            readOnly: true
+      media:
+        existingClaim: nfs-public-pvc
+        advancedMounts:
+          main:
+            main:
+              - path: /downloads
+
+    service:
+      main:
+        enabled: false
