@@ -5,6 +5,7 @@ metadata:
   name: immich-pgsql
   namespace: apps
 spec:
+  image: ghcr.io/chkpwd/cdpgvecto.rs:15-v0.1.13
   postgresVersion: 15
   dataSource:
     pgbackrest:
@@ -27,6 +28,8 @@ spec:
       synchronous_mode: true
       postgresql:
         synchronous_commit: on
+        parameters:
+          shared_preload_libraries: vectors.so
         pg_hba:
           - hostnossl all all all md5
   instances:
