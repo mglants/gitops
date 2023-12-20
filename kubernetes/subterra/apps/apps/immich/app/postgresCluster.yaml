@@ -5,7 +5,8 @@ metadata:
   name: immich-pgsql
   namespace: apps
 spec:
-  image: ghcr.io/chkpwd/cdpgvecto.rs:15-v0.1.13
+  # TODO! REPLACE WHEN RELEASED
+  image: ghcr.io/mglants/cdpgvecto.rs:15-v0.1.11
   postgresVersion: 15
   dataSource:
     pgbackrest:
