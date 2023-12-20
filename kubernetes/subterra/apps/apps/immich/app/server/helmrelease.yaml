@@ -17,8 +17,6 @@ spec:
         name: bjw-s-charts
         namespace: flux-system
 
-  dependsOn:
-    - name: immich-typesense
 
   values:
     controllers:

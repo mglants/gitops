@@ -19,7 +19,6 @@ spec:
 
   dependsOn:
     - name: immich-server
-    - name: immich-typesense
 
   values:
     controllers:
@@ -95,32 +94,6 @@ spec:
                   configMapKeyRef:
                     name: immich-configmap
                     key: REDIS_PORT
-              # Typesense
-              TYPESENSE_ENABLED:
-                valueFrom:
-                  configMapKeyRef:
-                    name: immich-configmap
-                    key: TYPESENSE_ENABLED
-              TYPESENSE_API_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: immich-secret
-                    key: TYPESENSE_API_KEY
-              TYPESENSE_HOST:
-                valueFrom:
-                  configMapKeyRef:
-                    name: immich-configmap
-                    key: TYPESENSE_HOST
-              TYPESENSE_PORT:
-                valueFrom:
-                  configMapKeyRef:
-                    name: immich-configmap
-                    key: TYPESENSE_PORT
-              TYPESENSE_PROTOCOL:
-                valueFrom:
-                  configMapKeyRef:
-                    name: immich-configmap
-                    key: TYPESENSE_PROTOCOL
             resources:
               requests:
                 cpu: 100m
