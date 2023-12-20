@@ -10,7 +10,6 @@ resources:
   - ./machine-learning
   - ./microservices
   - ./server
-  - ./typesense
 labels:
   - pairs:
       app.kubernetes.io/name: immich
