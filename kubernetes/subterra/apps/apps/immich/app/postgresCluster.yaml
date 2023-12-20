@@ -6,7 +6,7 @@ metadata:
   namespace: apps
 spec:
   # TODO! REPLACE WHEN RELEASED
-  image: ghcr.io/mglants/cdpgvecto.rs:15-v0.1.11
+  image: ghcr.io/chkpwd/cdpgvecto.rs:15-v0.1.11
   postgresVersion: 15
   dataSource:
     pgbackrest:
