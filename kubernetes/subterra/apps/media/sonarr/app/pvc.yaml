@@ -4,11 +4,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: sonarr-config-v1
   namespace: media
-  labels:
-    kasten.io/backup-volume: enabled
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: freenas-iscsi-csi
   resources:
     requests:
       storage: 5Gi
