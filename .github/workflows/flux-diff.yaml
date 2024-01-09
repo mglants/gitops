@@ -75,7 +75,7 @@ jobs:
         uses: allenporter/flux-local/action/diff@4.2.2
         id: diff
         with:
-          sources: gitops-kubernetes
+          sources: home-ops-kubernetes
           path: ${{ matrix.paths }}
           resource: ${{ matrix.resources }}
 
