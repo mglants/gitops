@@ -19,8 +19,8 @@ spec:
       interval: 5m
   values:
     image:
-      repository: linuxserver/sonarr
-      tag: 4.0.0
+      repository: ghcr.io/onedr0p/sonarr
+      tag: 4.0.0.748
       # -- image pull policy
       pullPolicy: IfNotPresent
     podSecurityContext:
