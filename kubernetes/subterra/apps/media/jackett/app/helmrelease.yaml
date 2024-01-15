@@ -34,7 +34,7 @@ spec:
           main:
             image:
               repository: linuxserver/jackett
-              tag: 0.21.1546
+              tag: 0.21.1548
             env:
               TZ: Europe/Moscow
             probes:
