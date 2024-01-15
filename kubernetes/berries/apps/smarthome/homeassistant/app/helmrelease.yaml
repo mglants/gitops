@@ -61,7 +61,9 @@ spec:
           - secretName: ha-glants-crt
             hosts:
               - ha.glants.xyz
-
+    # TO DO RESETUP NODES FOR IOT INTERFACE TEMP SOLUTION
+    nodeSelector:
+      kubernetes.io/hostname: talos-0dj-hqc
     metrics:
       # -- Enable and configure a Prometheus serviceMonitor for the chart under this key.
       # @default -- See values.yaml
