@@ -38,11 +38,11 @@ spec:
               TZ: Europe/Moscow
             resources:
               requests:
-                cpu: 100m
-                memory: 256M
+                cpu: 500m
+                memory: 512M
               limits:
                 cpu: 1000m
-                memory: 1024M
+                memory: 2048M
 
     service:
       main:
