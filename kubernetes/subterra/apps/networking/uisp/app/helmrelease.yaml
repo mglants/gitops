@@ -1,0 +1,96 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: uisp
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.5.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  values:
+    controllers:
+      main:
+        replicas: 1
+        strategy: RollingUpdate
+
+        annotations:
+          reloader.stakater.com/auto: 'true'
+
+        pod:
+          securityContext:
+            runAsUser: 911
+            runAsGroup: 911
+            runAsNonRoot: true
+
+        containers:
+          main:
+            image:
+              repository: nico640/docker-unms
+              tag: 2.3.57
+            env:
+              TZ: Europe/Moscow
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: [ALL]}
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256M
+              limits:
+                cpu: 500m
+                memory: 512M
+
+    service:
+      main:
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: uisp.ur30.ru
+          external-dns.alpha.kubernetes.io/type: internal
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+        loadBalancerIP: 192.168.40.13
+        ports:
+          http:
+            port: 80
+          https:
+            port: 443
+          netflow:
+            port: 2055
+            protocol: UDP
+
+    ingress:
+      main:
+        enabled: true
+        className: nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
+          external-dns.alpha.kubernetes.io/type: internal
+        hosts:
+          - host: &host uispc.ur30.ru
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: https
+        tls:
+          - hosts:
+              - *host
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: uisp-config-v1
+        advancedMounts:
+          main:
+            main:
+              - path: /config

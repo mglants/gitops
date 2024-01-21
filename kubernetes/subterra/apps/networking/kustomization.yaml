@@ -9,6 +9,7 @@ resources:
   - ./blocky/ks.yaml
   - ./externaldns/ks.yaml
   - ./kea/ks.yaml
+  - ./uisp/ks.yaml
   - ./unifi/ks.yaml
   - ./vpn-gateway/ks.yaml
   - ./echo-server/ks.yaml
