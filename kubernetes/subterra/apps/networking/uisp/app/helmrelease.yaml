@@ -27,7 +27,7 @@ spec:
 
         pod:
           securityContext:
-            fsGroup: 568
+            fsGroup: 911
 
         containers:
           main:
