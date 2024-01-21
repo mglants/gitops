@@ -40,7 +40,6 @@ spec:
               TZ: Europe/Moscow
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
               capabilities: {drop: [ALL]}
             resources:
               requests:
