@@ -27,9 +27,7 @@ spec:
 
         pod:
           securityContext:
-            runAsUser: 911
-            runAsGroup: 911
-            runAsNonRoot: true
+            fsGroup: 568
 
         containers:
           main:
@@ -38,9 +36,6 @@ spec:
               tag: 2.3.57
             env:
               TZ: Europe/Moscow
-            securityContext:
-              allowPrivilegeEscalation: false
-              capabilities: {drop: [ALL]}
             resources:
               requests:
                 cpu: 100m
@@ -75,6 +70,7 @@ spec:
           external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
           nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
           external-dns.alpha.kubernetes.io/type: internal
+          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
         hosts:
           - host: &host uispc.ur30.ru
             paths:
@@ -85,6 +81,7 @@ spec:
         tls:
           - hosts:
               - *host
+            secretName: uispc-ur30-ru-tls
 
     persistence:
       config:
