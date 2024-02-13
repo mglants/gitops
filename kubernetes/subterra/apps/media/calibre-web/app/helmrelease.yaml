@@ -68,9 +68,6 @@ spec:
                 service:
                   name: main
                   port: http
-        tls:
-          - hosts:
-              - *host
 
     persistence:
       config:
