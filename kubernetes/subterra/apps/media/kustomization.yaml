@@ -16,3 +16,4 @@ resources:
   - ./jellyseerr/ks.yaml
   - ./jackett/ks.yaml
   - ./qbittorrent/ks.yaml
+  - ./calibre-web/ks.yaml

@@ -1,0 +1,92 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: calibre-web
+  namespace: media
+spec:
+  chart:
+    spec:
+      chart: app-template
+      version: 2.5.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  interval: 30m
+  values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: 'true'
+
+        pod:
+          enableServiceLinks: false
+          securityContext:
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups:
+              - 65542 # gladius:external-services
+
+        containers:
+          main:
+            image:
+              repository: ghcr.io/bjw-s/calibre-web
+              tag: 0.6.21@sha256:a8f04deba9cbb27104125ac33835536c6ef3c5e9b6f6debee4a39b83f9a195df
+            env:
+              CACHE_DIR: /cache
+            resources:
+              requests:
+                cpu: 5m
+                memory: 470M
+              limits:
+                memory: 470M
+
+    service:
+      main:
+        ports:
+          http:
+            port: 8083
+
+    ingress:
+      main:
+        enabled: true
+        className: nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
+          external-dns.alpha.kubernetes.io/type: internal
+        hosts:
+          - host: &host '{{ .Release.Name }}.ur30.ru'
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: calibre-web-config-v1
+        advancedMounts:
+          main:
+            main:
+              - path: /config
+
+      media:
+        type: nfs
+        server: 192.168.1.50
+        path: /mnt/Storinator/Public/Books
+        advancedMounts:
+          main:
+            main:
+              - path: /data/nas-media
+      cache:
+        type: emptyDir
+        globalMounts:
+          - path: /cache
