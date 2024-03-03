@@ -31,6 +31,7 @@ spec:
         synchronous_commit: on
         parameters:
           shared_preload_libraries: vectors.so
+          search_path: '"$user", public, vectors'
         pg_hba:
           - hostnossl all all all md5
   instances:
