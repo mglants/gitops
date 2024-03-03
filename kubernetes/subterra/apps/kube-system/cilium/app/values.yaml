@@ -15,7 +15,7 @@ bgp:
 bgpControlPlane:
   enabled: true
 
-k8sServiceHost: 172.16.30.100
+k8sServiceHost: 192.168.48.100
 k8sServicePort: 6443
 
 rollOutCiliumPods: true
