@@ -44,7 +44,6 @@ resources:
   - loeken-at-home-charts.yaml
   - itzg-charts.yaml
   - angelnu-charts.yaml
-  - weaveworks-gitops-charts.yaml
   - cilium-charts.yaml
   - postfinance-charts.yaml
   - kubernetes-metrics-server-charts.yaml
