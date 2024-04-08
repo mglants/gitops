@@ -308,7 +308,7 @@ spec:
           - name: TeslaMate
             type: postgres
             access: proxy
-            url: postgres-v15-rw.apps.svc.cluster.local:5432
+            url: smarthome-pgsql-primary.smarthome.svc:5432
             database: teslamate
             user: teslamate
             secureJsonData:
