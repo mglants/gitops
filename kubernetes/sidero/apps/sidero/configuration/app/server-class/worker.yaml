@@ -21,7 +21,7 @@ spec:
     - op: add
       path: /machine/install/extensions
       value:
-        - image: ghcr.io/siderolabs/iscsi-tools:v0.1.4@sha256:df408de17b61066f137face0ba301a8308d46cf2c844aa456cb0097043b10597
+        - image: ghcr.io/siderolabs/iscsi-tools:v0.1.4@sha256:c0ab739544051b54dce1b776875ea98c28642b748dd31089cc5463082e934e95
     - op: add
       path: /machine/kubelet/extraMounts
       value:
