@@ -17,102 +17,104 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
+    deploymentMode: SimpleScalable
+
     loki:
-      structuredConfig:
-        auth_enabled: false
+      podAnnotations:
+        secret.reloader.stakater.com/reload: loki-secret
 
-        server:
-          log_level: info
-          http_listen_port: 3100
-          grpc_listen_port: 9095
+      auth_enabled: false
 
-        memberlist:
-          join_members: [loki-memberlist]
+      analytics:
+        reporting_enabled: false
 
-        limits_config:
-          retention_period: 60d
-          enforce_metric_name: false
-          reject_old_samples: true
-          reject_old_samples_max_age: 168h
-          max_cache_freshness_per_query: 10m
-          split_queries_by_interval: 15m
-          ingestion_rate_mb: 8
-          ingestion_burst_size_mb: 16
+      compactor:
+        working_directory: /var/loki/compactor/retention
+        delete_request_store: s3
+        retention_enabled: true
 
-        schema_config:
-          configs:
-            - from: '2021-08-01'
-              store: boltdb-shipper
-              object_store: s3
-              schema: v11
-              index:
-                prefix: loki_index_
-                period: 24h
-        common:
-          path_prefix: /var/loki
-          replication_factor: 1
-          storage:
-            s3:
-              s3:
-              bucketnames: loki
-              endpoint: nas.glants.xyz:9000
-              insecure: false
-              s3forcepathstyle: true
-          ring:
-            kvstore:
-              store: memberlist
+      frontend:
+        max_outstanding_per_tenant: 4096
 
-        ruler:
-          enable_api: true
-          enable_alertmanager_v2: true
-          alertmanager_url: http://kube-prometheus-stack-alertmanager:9093
-          storage:
-            type: local
-            local:
-              directory: /rules
-          rule_path: /tmp/scratch
-          ring:
-            kvstore:
-              store: memberlist
+      ingester:
+        chunk_encoding: snappy
 
-        distributor:
-          ring:
-            kvstore:
-              store: memberlist
+      limits_config:
+        ingestion_burst_size_mb: 128
+        ingestion_rate_mb: 64
+        max_query_parallelism: 100
+        per_stream_rate_limit: 64M
+        per_stream_rate_limit_burst: 128M
+        reject_old_samples: true
+        reject_old_samples_max_age: 168h
+        retention_period: 30d
+        shard_streams:
+          enabled: true
+        split_queries_by_interval: 1h
 
-        compactor:
-          working_directory: /var/loki/boltdb-shipper-compactor
-          shared_store: s3
-          compaction_interval: 10m
-          retention_enabled: true
-          retention_delete_delay: 2h
-          retention_delete_worker_count: 150
+      query_scheduler:
+        max_outstanding_requests_per_tenant: 4096
 
-        ingester:
-          max_chunk_age: 1h
-          lifecycler:
-            ring:
-              kvstore:
-                store: memberlist
+      rulerConfig:
+        enable_api: true
+        enable_alertmanager_v2: true
+        alertmanager_url: http://alertmanager.monitoring.svc.cluster.local:9093
+        storage:
+          type: local
+          local:
+            directory: /rules
+        rule_path: /rules/fake
 
-        analytics:
-          reporting_enabled: false
+      schemaConfig:
+        configs:
+          - from: '2024-04-01'
+            store: tsdb
+            object_store: s3
+            schema: v13
+            index:
+              prefix: loki_index_
+              period: 24h
+
+      server:
+        log_level: info
+        grpc_server_max_recv_msg_size: 8388608
+        grpc_server_max_send_msg_size: 8388608
+
+      storage:
+        type: s3
+        bucketNames:
+          chunks: loki-chunks
+          ruler: loki-ruler
+          admin: loki-admin
+        s3:
+          s3ForcePathStyle: true
+          insecure: true
+          bucketnames: loki
+          endpoint: nas.glants.xyz:9000
 
     gateway:
-      enabled: true
       replicas: 1
-      affinity: |
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    {{- include "loki.gatewaySelectorLabels" . | nindent 12 }}
-                topologyKey: kubernetes.io/hostname
+      enabled: true
+      image:
+        registry: ghcr.io
+        repository: nginxinc/nginx-unprivileged
+        tag: 1.25-alpine@sha256:7b4316677e4015a53d326e657915340128d9fd506f826f676d9f169c0c8557f6
+      deploymentStrategy:
+        type: RollingUpdate
+      topologySpreadConstraints:
+        - maxSkew: 2
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: loki
+              app.kubernetes.io/component: gateway
       ingress:
         enabled: true
         ingressClassName: nginx
+        annotations:
+          nginx.ingress.kubernetes.io/whitelist-source-range: |
+            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
         hosts:
           - host: loki.home
             paths:
@@ -121,72 +123,52 @@ spec:
 
     write:
       replicas: 1
-      affinity: |
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    {{- include "loki.writeSelectorLabels" . | nindent 12 }}
-                topologyKey: kubernetes.io/hostname
       persistence:
+        storageClass: local-hostpath
         size: 10Gi
 
     read:
       replicas: 1
-      affinity: |
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    {{- include "loki.readSelectorLabels" . | nindent 12 }}
-                topologyKey: kubernetes.io/hostname
-      extraVolumeMounts:
-        - name: loki-rules
-          mountPath: /rules/fake
-        - name: loki-rules-tmp
-          mountPath: /tmp/scratch
-        - name: loki-tmp
-          mountPath: /tmp/loki-tmp
-      extraVolumes:
-        - name: loki-rules
-          emptyDir: {}
-        - name: loki-rules-tmp
-          emptyDir: {}
-        - name: loki-tmp
-          emptyDir: {}
+
+    backend:
+      replicas: 1
       persistence:
+        storageClass: local-hostpath
         size: 10Gi
+
     monitoring:
       dashboards:
-        enabled: true
         annotations:
-          kustomize.toolkit.fluxcd.io/substitute: disabled
           grafana_folder: Loki
-        labels:
-          grafana_dashboard: 'true'
       rules:
-        enabled: true
+        enabled: false
       serviceMonitor:
-        enabled: true
+        enabled: false
+        metricsInstance:
+          enabled: false
       selfMonitoring:
         enabled: false
-        lokiCanary:
-          enabled: false
         grafanaAgent:
           installOperator: false
-    test:
+
+    sidecar:
+      image:
+        repository: ghcr.io/kiwigrid/k8s-sidecar
+      rules:
+        searchNamespace: ALL
+        folder: /rules/fake
+
+    lokiCanary:
       enabled: false
 
+    test:
+      enabled: false
   valuesFrom:
-    - targetPath: loki.structuredConfig.common.storage.s3.access_key_id
+    - targetPath: loki.storage.s3.accessKeyId
       kind: Secret
       name: loki-secret
       valuesKey: AWS_ACCESS_KEY_ID
-    - targetPath: loki.structuredConfig.common.storage.s3.secret_access_key
+    - targetPath: loki.storage.s3.secretAccessKey
       kind: Secret
       name: loki-secret
       valuesKey: AWS_SECRET_ACCESS_KEY
