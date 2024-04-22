@@ -83,13 +83,12 @@ spec:
       storage:
         type: s3
         bucketNames:
-          chunks: loki-chunks
-          ruler: loki-ruler
-          admin: loki-admin
+          chunks: loki
+          ruler: loki
+          admin: loki
         s3:
           s3ForcePathStyle: true
           insecure: true
-          bucketnames: loki
           endpoint: nas.glants.xyz:9000
 
     gateway:
