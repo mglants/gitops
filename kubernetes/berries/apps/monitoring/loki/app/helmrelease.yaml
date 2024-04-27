@@ -135,7 +135,8 @@ spec:
       persistence:
         storageClass: local-hostpath
         size: 10Gi
-
+    chunksCache:
+      allocatedMemory: 2048
     monitoring:
       dashboards:
         annotations:
