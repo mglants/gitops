@@ -48,10 +48,10 @@ spec:
 
     resources:
       limits:
-        memory: 219M
+        memory: 512M
       requests:
-        cpu: 23m
-        memory: 127M
+        cpu: 100m
+        memory: 256M
 
     dashboardProviders:
       dashboardproviders.yaml:
