@@ -74,7 +74,8 @@ spec:
             index:
               prefix: loki_index_
               period: 24h
-
+      commonConfig:
+        replication_factor: 1
       server:
         log_level: info
         grpc_server_max_recv_msg_size: 8388608
