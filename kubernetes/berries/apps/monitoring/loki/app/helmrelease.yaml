@@ -88,8 +88,9 @@ spec:
           admin: loki
         s3:
           s3ForcePathStyle: true
-          insecure: true
+          insecure: false
           endpoint: nas.glants.xyz:9000
+          region: us-east-1
 
     gateway:
       replicas: 1
