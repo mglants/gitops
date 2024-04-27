@@ -301,7 +301,7 @@ spec:
             access: proxy
             url: http://kube-prometheus-stack-prometheus:9090/
             isDefault: true
-          - name: loki
+          - name: Loki
             type: loki
             access: proxy
             url: http://loki-gateway:80
