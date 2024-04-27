@@ -89,7 +89,7 @@ spec:
         s3:
           s3ForcePathStyle: true
           insecure: false
-          endpoint: nas.glants.xyz:9000
+          endpoint: nas.glants.xyz:30000
           region: us-east-1
 
     gateway:
