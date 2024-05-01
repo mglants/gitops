@@ -19,7 +19,7 @@ spec:
                 - name: AWS_REGION
                   value: us-east-1
                 - name: CUSTOM_S3_ENDPOINT
-                  value: https://nas.glants.xyz:9000
+                  value: https://nas.glants.xyz:30002
                 - name: BUCKET
                   value: talos-backups
               # CLUSTER_NAME is optional; if omitted it will fall back to the name of the default context.
