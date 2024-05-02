@@ -56,4 +56,4 @@ spec:
         advancedMounts:
           isponsorblocktv:
             app:
-              - path: /config
+              - path: /app/data
