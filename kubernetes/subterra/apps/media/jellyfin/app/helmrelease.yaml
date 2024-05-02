@@ -87,7 +87,8 @@ spec:
                   identifier: app
                   port: http
         tls:
-          - hosts:
+          - secretName: jellyfin-tls
+            hosts:
               - *hostName
 
     persistence:
