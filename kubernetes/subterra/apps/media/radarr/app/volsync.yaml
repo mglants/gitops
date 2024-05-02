@@ -43,6 +43,6 @@ spec:
     storageClassName: freenas-nfs-csi
     cacheStorageClassName: freenas-iscsi-csi
     moverSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
+      runAsUser: 911
+      runAsGroup: 911
       fsGroup: 568
