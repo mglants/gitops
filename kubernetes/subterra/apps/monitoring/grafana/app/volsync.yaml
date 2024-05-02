@@ -36,7 +36,9 @@ spec:
     pruneIntervalDays: 7
     repository: grafana-restic-secret
     retain:
-      daily: 14
+      hourly: 24
+      daily: 7
+      weekly: 5
     volumeSnapshotClassName: freenas-nfs-csi
     storageClassName: freenas-nfs-csi
     cacheStorageClassName: freenas-iscsi-csi

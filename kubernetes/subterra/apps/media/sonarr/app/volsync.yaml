@@ -36,7 +36,9 @@ spec:
     pruneIntervalDays: 7
     repository: sonarr-restic-secret
     retain:
-      daily: 14
+      hourly: 24
+      daily: 7
+      weekly: 5
     volumeSnapshotClassName: freenas-iscsi-csi
     storageClassName: freenas-iscsi-csi
     cacheStorageClassName: freenas-iscsi-csi
