@@ -350,10 +350,10 @@ spec:
       resources:
         requests:
           memory: 1Gi
-          cpu: 1000m
+          cpu: 2000m
         limits:
           memory: 2Gi
-          cpu: 2000m
+          cpu: 4000m
       extraVolumeMounts:
         - name: clamav-config-volume
           mountPath: /etc/clamav/freshclam.conf
