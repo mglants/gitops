@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,104 +10,102 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.0.3
+      version: 3.1.0
+      interval: 30m
       sourceRef:
         kind: HelmRepository
         name: bjw-s-charts
         namespace: flux-system
-  maxHistory: 2
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  uninstall:
-    keepHistory: false
   values:
     controllers:
-      main:
+      jellyfin:
         annotations:
           reloader.stakater.com/auto: 'true'
+
+        pod:
+          annotations:
+            setGateway: 'true'
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups:
+              - 44
+              - 105
+              - 10000
+
         containers:
-          main:
+          app:
             image:
-              repository: ghcr.io/onedr0p/jellyfin
-              tag: 10.8.11
+              repository: docker.io/jellyfin/jellyfin
+              tag: 10.8.13-1
             env:
               DOTNET_SYSTEM_IO_DISABLEFILELOCKING: 'true'
               JELLYFIN_FFmpeg__probesize: 50000000
               JELLYFIN_FFmpeg__analyzeduration: 50000000
               TZ: Europe/Moscow
             probes:
-              liveness: &probes
+              liveness:
                 enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /health
-                    port: &port 8096
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
+              readiness:
+                enabled: true
               startup:
-                enabled: false
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
             resources:
               requests:
-                cpu: 500m
-                memory: 1Gi
+                cpu: 100m
+                memory: 9248M
               limits:
-                memory: 16Gi
-        pod:
-          annotations:
-            setGateway: 'true'
-          enableServiceLinks: false
-          securityContext:
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
-            supplementalGroups: [44, 105, 10000]
+                memory: 9248M
 
     service:
-      main:
-        type: ClusterIP
+      app:
+        controller: jellyfin
+        type: LoadBalancer
+        externalTrafficPolicy: Cluster
+        annotations:
+          io.cilium/lb-ipam-ips: 192.168.40.17
         ports:
           http:
-            port: *port
+            port: 8096
 
     ingress:
-      main:
-        enabled: true
-        className: nginx
+      app:
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-prod
-          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          external-dns.alpha.kubernetes.io/target: ingress
+        className: nginx
         hosts:
-          - host: &host '{{ .Release.Name }}.ur30.ru'
+          - host: &hostName jellyfin.ur30.ru
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
-              - *host
-            secretName: jellyfin-tls
+              - *hostName
 
     persistence:
       config:
-        enabled: true
         existingClaim: jellyfin-config-v1
-        mountPath: /config
+        advancedMounts:
+          jellyfin:
+            app:
+              - path: /config
+      nfs-nas-media:
+        existingClaim: nfs-public-pvc
+        advancedMounts:
+          jellyfin:
+            app:
+              - path: /media
       transcode:
         type: emptyDir
-        globalMounts:
-          - path: /transcode
-      media:
-        existingClaim: nfs-public-pvc
-        globalMounts:
-          - readOnly: true
+        advancedMounts:
+          jellyfin:
+            app:
+              - path: /transcode
