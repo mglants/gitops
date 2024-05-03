@@ -125,6 +125,11 @@ spec:
           gnetId: 1860
           revision: 36
           datasource: Prometheus
+        ipmi-exporter:
+          # renovate: dashboardName="IPMI Exporter"
+          gnetId: 15765
+          revision: 2
+          datasource: Prometheus
         prometheus-exporter-summary:
           url: https://raw.githubusercontent.com/billimek/k8s-gitops/master/monitoring/grafana/dashboards/prometheus_exporter_summary.json
           datasource: Prometheus
