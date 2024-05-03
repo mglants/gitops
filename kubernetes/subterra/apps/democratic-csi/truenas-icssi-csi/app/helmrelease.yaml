@@ -54,6 +54,7 @@ spec:
           port: 80
           username: root
           allowInsecure: true
+          apiVersion: 2
         zfs:
           cli:
             sudoEnabled: true
