@@ -1,0 +1,89 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: ipmi-exporter
+  namespace: monitoring
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.1.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  values:
+    controllers:
+      ipmi-exporter:
+        annotations:
+          reloader.stakater.com/auto: 'true'
+
+        pod:
+          securityContext:
+            runAsUser: 2001
+            runAsGroup: 2001
+            fsGroup: 2001
+            fsGroupChangePolicy: OnRootMismatch
+
+        containers:
+          app:
+            image:
+              repository: prometheuscommunity/ipmi-exporter
+              tag: v1.8.0
+            args:
+              - --config.file=/config/config.yaml
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 5m
+                memory: 50M
+    service:
+      app:
+        controller: ipmi-exporter
+        ports:
+          http:
+            port: 9290
+
+    serviceMonitor:
+      app:
+        serviceName: ipmi-exporter
+        endpoints:
+          - honorLabels: true
+            params:
+              module:
+                - default
+              target:
+                - 172.16.5.201
+            path: /ipmi
+            port: http
+            relabelings:
+              - action: replace
+                sourceLabels:
+                  - __param_target
+                targetLabel: instance
+              - targetLabel: instance
+                replacement: nas
+            scrapeTimeout: 10s
+    persistence:
+      config:
+        type: secret
+        name: ipmi-exporter-secret
+        advancedMounts:
+          ipmi-exporter:
+            app:
+              - path: /config/config.yaml
+                subPath: config.yaml
+                readOnly: true
