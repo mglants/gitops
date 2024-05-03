@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: prometheuscommunity/ipmi-exporter
-              tag: v1.8.0
+              tag: master
             args:
               - --config.file=/config/config.yaml
             probes:
