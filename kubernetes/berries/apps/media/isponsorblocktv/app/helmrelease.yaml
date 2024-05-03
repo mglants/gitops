@@ -52,8 +52,10 @@ spec:
 
     persistence:
       config:
-        existingClaim: isponsorblocktv-config-v1
+        type: secret
+        name: isponsorblocktv-secret
         advancedMounts:
           isponsorblocktv:
             app:
-              - path: /app/data
+              - path: /app/data/config.json
+                subPath: config.json
