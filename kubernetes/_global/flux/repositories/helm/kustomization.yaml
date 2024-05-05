@@ -52,3 +52,4 @@ resources:
   - external-secrets-charts.yaml
   - botkube-charts.yaml
   - crunchydata-charts.yaml
+  - k8tz-charts.yaml
