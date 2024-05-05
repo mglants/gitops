@@ -204,7 +204,6 @@ spec:
           cpu: 100m
         limits:
           memory: 1024Mi
-          cpu: 500m
 
     ## @section Admin parameters
     admin:
@@ -249,7 +248,6 @@ spec:
           cpu: 500m
         limits:
           memory: 500Mi
-          cpu: 500m
 
     redis:
       enabled: true
@@ -275,7 +273,6 @@ spec:
           cpu: 100m
         limits:
           memory: 1024Mi
-          cpu: 1000m
     ## @section Dovecot parameters
     dovecot:
       ## @param dovecot.enabled Enable dovecot
@@ -299,7 +296,6 @@ spec:
           cpu: 1000m
         limits:
           memory: 1024Mi
-          cpu: 2000m
 
     ## @section rspamd parameters
     rspamd:
@@ -324,7 +320,6 @@ spec:
           cpu: 100m
         limits:
           memory: 1Gi
-          cpu: 1000m
 
     ## @section clamav parameters
     clamav:
@@ -353,7 +348,6 @@ spec:
           cpu: 2000m
         limits:
           memory: 2Gi
-          cpu: 4000m
       extraVolumeMounts:
         - name: clamav-config-volume
           mountPath: /etc/clamav/freshclam.conf
@@ -403,7 +397,6 @@ spec:
           cpu: 200m
         limits:
           memory: 1024Mi
-          cpu: 1000m
 
     ## @section OLETools parameters
     oletools:
@@ -427,5 +420,4 @@ spec:
           cpu: 500m
           memory: 500Mi
         requests:
-          cpu: 250m
           memory: 128Mi
