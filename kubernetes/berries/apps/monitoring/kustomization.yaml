@@ -17,4 +17,4 @@ resources:
   - ./kube-prometheus-stack/ks.yaml
   - ./loki/ks.yaml
   - ./nut/ks.yaml
-  - ./promtail/ks.yaml
+  - ./vector/ks.yaml
