@@ -32,7 +32,7 @@ spec:
     labels:
       app.kubernetes.io/name: *appname
   interval: 10m
-  path: ./kubernetes/berries/apps/monitoring/vector/agent"
+  path: ./kubernetes/berries/apps/monitoring/vector/agent
   prune: true
   sourceRef:
     kind: GitRepository
