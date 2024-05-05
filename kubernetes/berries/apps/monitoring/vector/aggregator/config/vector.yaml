@@ -1,5 +1,6 @@
 ---
 data_dir: /vector-data-dir
+timezone: Europe/Moscow
 
 api:
   enabled: true
