@@ -29,7 +29,7 @@ spec:
 
     controllerServiceAccount:
       name: actions-runner-controller-gha-rs-controller
-      namespace: apps
+      namespace: dev
 
     listenerTemplate:
       metadata:
