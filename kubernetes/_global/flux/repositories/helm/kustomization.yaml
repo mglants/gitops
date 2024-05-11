@@ -53,3 +53,4 @@ resources:
   - botkube-charts.yaml
   - crunchydata-charts.yaml
   - k8tz-charts.yaml
+  - actions-runner-controller-charts.yaml
