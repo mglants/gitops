@@ -28,8 +28,6 @@ spec:
       requests:
         cpu: 100m
         memory: 128Mi
-    env:
-      TZ: Europe/Moscow
     service:
       dhcp:
         type: LoadBalancer
