@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://charts.glants.xyz
       chart: kea-dhcp
-      version: 0.6.1
+      version: 0.7.0
       sourceRef:
         kind: HelmRepository
         name: mglants-charts
@@ -18,8 +18,8 @@ spec:
       interval: 5m
   values:
     image:
-      repository: smailkoz/kea-dhcp
-      tag: 2.1.2
+      repository: ghcr.io/mglants/kea-dhcp
+      tag: 2.1.8
     replicaCount: 1
     resources:
       limits:
