@@ -23,7 +23,7 @@ spec:
 
     image:
       repository: quay.io/prometheus/alertmanager
-      tag: main@sha256:1afe3fa75dd93296fe4d7437e68ab19c3f03ddd9213810e48759f64d63ef8c4f
+      tag: main@sha256:554fd1ae4b42b8317b750364889c5f6feb5becc684f4ed470ce1d3ac48308d2f
 
     podAnnotations:
       reloader.stakater.com/auto: 'true'
