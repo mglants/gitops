@@ -20,7 +20,7 @@ spec:
   values:
     image:
       repository: linuxserver/prowlarr
-      tag: 1.16.2
+      tag: 1.17.2
       pullPolicy: IfNotPresent
     env:
       TZ: Europe/Moscow
