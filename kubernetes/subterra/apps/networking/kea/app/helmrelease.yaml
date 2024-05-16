@@ -47,6 +47,8 @@ spec:
         options:
           - name: domain-name-servers
             data: 192.168.40.3
+          - name: dhcp-server-identifier
+            data: 192.168.40.2
           - name: domain-name
             data: ur30.ru
           - name: domain-search
