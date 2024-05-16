@@ -18,9 +18,16 @@ spec:
             "ips": true
           },
           "ipam": {
-            "type": "static",
-            "routes": [
-              { "dst": "0.0.0.0/0", "gw": "172.16.10.1" }
+              "type": "dhcp",
+              "provide": [
+                {
+                  "option": "host-name",
+                  "fromArg": "dhcp-host-name"
+                },
+                {
+                  "option": "host-name",
+                  "fromArg": "K8S_POD_NAME"
+                }
             ]
           }
         }
