@@ -35,17 +35,7 @@ spec:
     podAnnotations:
       secret.reloader.stakater.com/reload: kea-helm-values
       configmap.reloader.stakater.com/reload: kea-dhcp
-      k8s.v1.cni.cncf.io/networks: |
-        [{
-          "name":"multus-servers",
-          "namespace": "kube-system",
-          "ips": ["172.16.30.2/24"]
-        }]
-    # TODO  Temp solution to mvp kea
-    nodeSelector:
-      kubernetes.io/hostname: talos-0dj-hqc
     kea:
-      interface: net1
       dhcp4:
         enabled: true
         validlifetime: '4000'
@@ -55,6 +45,8 @@ spec:
         options:
           - name: domain-name-servers
             data: 172.16.32.254
+          - name: dhcp-server-identifier
+            data: 172.16.32.3
           - name: domain-name
             data: sweethome
           - name: domain-search
