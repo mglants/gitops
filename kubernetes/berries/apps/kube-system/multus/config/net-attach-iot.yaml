@@ -18,17 +18,7 @@ spec:
             "ips": true
           },
           "ipam": {
-              "type": "dhcp",
-              "provide": [
-                {
-                  "option": "host-name",
-                  "fromArg": "dhcp-host-name"
-                },
-                {
-                  "option": "host-name",
-                  "fromArg": "K8S_POD_NAME"
-                }
-            ]
+            "type": "static"
           }
         }
       ]
