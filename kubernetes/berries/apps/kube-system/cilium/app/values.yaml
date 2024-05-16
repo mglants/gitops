@@ -57,6 +57,9 @@ ipv4NativeRoutingCIDR: 10.244.0.0/16
 routingMode: native
 containerRuntime:
   integration: containerd
+enableRuntimeDeviceDetection: true
+endpointRoutes:
+  enabled: true
 
 hubble:
   enabled: true
