@@ -23,7 +23,7 @@ spec:
 
     cni:
       image:
-        repository: ghcr.io/angelnu/cni-plugins
+        repository: ghcr.io/mglants/cni-plugins
         tag: 1.4.1
 
       paths:
