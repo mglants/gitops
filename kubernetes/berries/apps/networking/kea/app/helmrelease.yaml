@@ -41,6 +41,9 @@ spec:
           "namespace": "kube-system",
           "ips": ["172.16.30.2/24"]
         }]
+    # TODO  Temp solution to mvp kea
+    nodeSelector:
+      kubernetes.io/hostname: talos-0dj-hqc
     kea:
       interface: net1
       dhcp4:
