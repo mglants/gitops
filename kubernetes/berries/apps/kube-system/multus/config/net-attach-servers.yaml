@@ -2,7 +2,7 @@
 apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
 metadata:
-  name: multus-iot
+  name: multus-servers
   namespace: kube-system
 spec:
   config: |-
@@ -12,16 +12,13 @@ spec:
       "plugins": [
         {
           "type": "macvlan",
-          "master": "eth0.10",
+          "master": "eth0",
           "mode": "bridge",
           "capabilities": {
             "ips": true
           },
           "ipam": {
-            "type": "static",
-            "routes": [
-              { "dst": "192.168.214.0/24", "gw": "172.16.10.1" }
-            ]
+            "type": "static"
           }
         }
       ]
