@@ -107,11 +107,6 @@ spec:
           # renovate: dashboardName="blocky"
           gnetId: 13768
           revision: 3
-          datasource:
-            - name: DS_PROMETHEUS
-              value: Prometheus
-            - name: VAR_BLOCKY_URL
-              value: http:\\/\\/172.16.32.254:4000
         external-dns:
           # renovate: dashboardName="External-DNS"
           gnetId: 15038
