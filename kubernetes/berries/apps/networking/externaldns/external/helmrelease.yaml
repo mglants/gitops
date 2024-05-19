@@ -21,7 +21,7 @@ spec:
     fullnameOverride: &name externaldns-external
 
     domainFilters:
-      - bjw-s.dev
+      - glants.xyz
 
     env:
       - name: CF_API_TOKEN
