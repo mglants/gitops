@@ -21,6 +21,8 @@ spec:
     extraArgs:
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
+    domainFilters:
+      - home
     env:
       - name: EXTERNAL_DNS_RFC2136_HOST
         value: 172.16.32.2
