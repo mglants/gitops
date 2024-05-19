@@ -86,7 +86,7 @@ spec:
             any: true
 
       extraArgs:
-        default-ssl-certificate: network/glants-xyz-tls
+        default-ssl-certificate: networking/glants-xyz-tls
 
       topologySpreadConstraints:
         - maxSkew: 2
