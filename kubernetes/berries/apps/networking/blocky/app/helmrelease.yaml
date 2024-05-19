@@ -100,7 +100,7 @@ spec:
     config: |-
       customDNS:
         mapping:
-          ha.glants.xyz: 172.16.32.5
+          ha.glants.xyz: 172.16.32.4
           nas.glants.xyz: 172.16.30.200
           unifi.ur30.ru: 192.168.40.7
       bootstrapDns: tcp+udp:1.1.1.1
