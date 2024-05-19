@@ -48,7 +48,8 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: nginx
+        ingressClassName: external-nginx
+
         annotations:
           nginx.org/websocket-services: home-assistant
           cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -129,8 +130,7 @@ spec:
         ingress:
           enabled: true
           annotations:
-            kubernetes.io/ingress.class: nginx
-            nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.214.0/24, 10.13.12.0/24
+            kubernetes.io/ingress.class: internal-nginx
           hosts:
             - host: ha-vscode.home
               paths:
