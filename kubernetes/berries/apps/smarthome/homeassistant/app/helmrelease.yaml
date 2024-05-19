@@ -42,7 +42,7 @@ spec:
     service:
       main:
         annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-ext.glants.xyz
+          external-dns.alpha.kubernetes.io/hostname: ha.glants.xyz
         type: LoadBalancer
         loadBalancerIP: 172.16.32.200
     ingress:
@@ -53,6 +53,7 @@ spec:
         annotations:
           nginx.org/websocket-services: home-assistant
           cert-manager.io/cluster-issuer: letsencrypt-prod
+          external-dns.alpha.kubernetes.io/target: ingress-ext.glants.xyz
         hosts:
           - host: ha.glants.xyz
             paths:
