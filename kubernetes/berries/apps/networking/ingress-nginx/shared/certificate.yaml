@@ -1,0 +1,14 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: glants-xyz
+spec:
+  secretName: glants-xyz-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: glants.xyz
+  dnsNames:
+    - glants.xyz
+    - '*.glants.xyz'

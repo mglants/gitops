@@ -85,6 +85,8 @@ spec:
           namespaceSelector:
             any: true
 
+      extraArgs:
+        default-ssl-certificate: network/glants-xyz-tls
 
       topologySpreadConstraints:
         - maxSkew: 2
