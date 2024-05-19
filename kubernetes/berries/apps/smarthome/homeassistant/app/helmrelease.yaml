@@ -42,7 +42,7 @@ spec:
     service:
       main:
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: home-assistant.home
+          external-dns.alpha.kubernetes.io/target: ingress-ext.glants.xyz
         type: LoadBalancer
         loadBalancerIP: 172.16.32.200
     ingress:
