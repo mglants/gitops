@@ -37,7 +37,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: nginx
+        ingressclassName: internal-nginx
         hosts:
           - host: alertmanager.home
             paths:

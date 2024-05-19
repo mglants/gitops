@@ -50,8 +50,7 @@ spec:
       main:
         enabled: true
         annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.214.0/24, 10.13.12.0/24
-          kubernetes.io/ingress.class: nginx
+          kubernetes.io/ingress.class: internal-nginx
         hosts:
           - host: esphome.home
             paths:
