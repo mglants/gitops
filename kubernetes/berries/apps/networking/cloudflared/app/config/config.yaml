@@ -1,0 +1,11 @@
+---
+ingress:
+  - hostname: glants.xyz
+    service: https://nginx-external-controller.networking.svc.cluster.local:443
+    originRequest:
+      originServerName: ingress-ext.glants.xyz
+  - hostname: '*.glants.xyz'
+    service: https://nginx-external-controller.networking.svc.cluster.local:443
+    originRequest:
+      originServerName: ingress-ext.glants.xyz
+  - service: http_status:404

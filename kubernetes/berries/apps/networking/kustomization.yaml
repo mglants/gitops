@@ -10,3 +10,5 @@ resources:
   - ./external-services/ks.yaml
   - ./externaldns-internal/ks.yaml
   - ./kea/ks.yaml
+  - ./ingress-nginx/ks.yaml
+  - ./cloudflared/ks.yaml
