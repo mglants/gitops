@@ -130,8 +130,7 @@ spec:
           - none
         ingress:
           enabled: true
-          annotations:
-            kubernetes.io/ingress.class: internal-nginx
+          ingressClassName: internal-nginx
           hosts:
             - host: ha-vscode.home
               paths:

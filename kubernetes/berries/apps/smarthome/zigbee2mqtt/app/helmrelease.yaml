@@ -65,7 +65,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressclassName: internal-nginx
+        ingressClassName: internal-nginx
         hosts:
           - host: zigbee2mqtt.home
             paths:

@@ -49,8 +49,7 @@ spec:
       # @default -- See values.yaml
       main:
         enabled: true
-        annotations:
-          kubernetes.io/ingress.class: internal-nginx
+        ingressClassName: internal-nginx
         hosts:
           - host: esphome.home
             paths:
