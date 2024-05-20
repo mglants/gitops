@@ -111,6 +111,9 @@ spec:
           # renovate: dashboardName="Mikrotik MKTXP Exporter"
           gnetId: 13679
           revision: 21
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
         external-dns:
           # renovate: dashboardName="External-DNS"
           gnetId: 15038
