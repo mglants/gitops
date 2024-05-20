@@ -107,6 +107,10 @@ spec:
           # renovate: dashboardName="blocky"
           gnetId: 13768
           revision: 3
+        mikrotik:
+          # renovate: dashboardName="Mikrotik MKTXP Exporter"
+          gnetId: 13679
+          revision: 21
         external-dns:
           # renovate: dashboardName="External-DNS"
           gnetId: 15038
