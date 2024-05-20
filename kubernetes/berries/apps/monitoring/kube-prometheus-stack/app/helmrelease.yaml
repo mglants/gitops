@@ -111,8 +111,8 @@ spec:
       ingress:
         enabled: true
         pathType: Prefix
+        ingressClassName: internal-nginx
         annotations:
-          kubernetes.io/ingress.class: internal-nginx
           nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.214.0/24, 10.13.12.0/24
         hosts:
           - prometheus.home
