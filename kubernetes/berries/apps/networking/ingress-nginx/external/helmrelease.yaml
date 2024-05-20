@@ -31,6 +31,7 @@ spec:
         enabled: true
         type: LoadBalancer
         annotations:
+          external-dns.alpha.kubernetes.io/hostname: ingress-ext.glants.xyz
           io.cilium/lb-ipam-ips: 172.16.32.4
         externalTrafficPolicy: Cluster
 
