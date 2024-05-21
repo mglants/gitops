@@ -23,7 +23,8 @@ spec:
       repository: bitnami/wordpress
       tag: 6.5.3
       pullPolicy: IfNotPresent
-
+    updateStrategy:
+      type: Recreate
     wordpressBlogName: Dachia
     wordpressTablePrefix: wp_
     wordpressScheme: https
