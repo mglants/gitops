@@ -6,4 +6,3 @@ resources:
   - helmrelease.yaml
   - secret.enc.yaml
   - pvc.yaml
-  - postgresCluster.yaml
