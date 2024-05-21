@@ -6,4 +6,3 @@ resources:
   - ./namespace.yaml
   # Flux-Kustomizations
   - ./wp-dachia/ks.yaml
-  - ./wp-ruzahouse/ks.yaml

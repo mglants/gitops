@@ -11,7 +11,7 @@ spec:
     spec:
       # renovate: registryUrl=https://charts.bitnami.com/bitnami
       chart: wordpress
-      version: 15.4.1
+      version: 22.3.0
       sourceRef:
         kind: HelmRepository
         name: bitnami-charts
@@ -21,14 +21,13 @@ spec:
     image:
       registry: docker.io
       repository: bitnami/wordpress
-      tag: 5.9.3-debian-10-r12
+      tag: 6.5.3
       pullPolicy: IfNotPresent
 
-    wordpressBlogName: User's Blog!
+    wordpressBlogName: Dachia
     wordpressTablePrefix: wp_
     wordpressScheme: https
     wordpressConfigureCache: true
-    wordpressAutoUpdateLevel: minor
     wordpressExtraConfigContent: |
       @ini_set( 'upload_max_filesize' , '512M' );
       @ini_set( 'post_max_size', '512M');
@@ -61,7 +60,8 @@ spec:
     persistence:
       enabled: true
       existingClaim: wp-dachia-wp-v1
-
+    networkPolicy:
+      enabled: false
     mariadb:
       enabled: true
       architecture: standalone
