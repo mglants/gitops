@@ -21,7 +21,6 @@ spec:
     extraArgs:
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
-      - --registry=noop
     domainFilters:
       - home
       - glants.xyz
@@ -31,9 +30,13 @@ spec:
           secretKeyRef:
             name: externaldns-internal-secrets
             key: pihole_api_key
-
-    policy: upsert-only
+      - name: EXTERNAL_DNS_PIHOLE_SERVER
+        valueFrom:
+          secretKeyRef:
+            name: externaldns-internal-secrets
+            key: pihole_server
     provider: pihole
+    registry: noop
     serviceMonitor:
       enabled: true
 
