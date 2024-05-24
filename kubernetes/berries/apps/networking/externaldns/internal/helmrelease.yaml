@@ -21,23 +21,19 @@ spec:
     extraArgs:
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
+      - --registry=noop
     domainFilters:
       - home
+      - glants.xyz
     env:
-      - name: EXTERNAL_DNS_RFC2136_HOST
-        value: 172.16.32.2
-      - name: EXTERNAL_DNS_RFC2136_PORT
-        value: '53'
-      - name: EXTERNAL_DNS_RFC2136_ZONE
-        value: home
-      - name: EXTERNAL_DNS_RFC2136_TSIG_AXFR
-        value: 'true'
-      - name: EXTERNAL_DNS_RFC2136_INSECURE
-        value: 'true'
+      - name: EXTERNAL_DNS_PIHOLE_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: externaldns-internal-secrets
+            key: pihole_api_key
 
-    policy: sync
-    provider: rfc2136
-
+    policy: upsert-only
+    provider: pihole
     serviceMonitor:
       enabled: true
 
