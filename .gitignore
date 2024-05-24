@@ -30,3 +30,6 @@ custom/*/*/controlplane.yaml
 vmtoolsd-secret.yaml
 daemonset-test.yaml
 daemonset-test1.yaml
+.terraform
+terraform.tfstate
+terraform.tfstate.*
