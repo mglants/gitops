@@ -9,6 +9,5 @@ resources:
   - ./blocky/ks.yaml
   - ./external-services/ks.yaml
   - ./externaldns/ks.yaml
-  - ./kea/ks.yaml
   - ./ingress-nginx/ks.yaml
   - ./cloudflared/ks.yaml
