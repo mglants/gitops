@@ -62,3 +62,10 @@ spec:
       config:
         enabled: true
         existingClaim: esphome-config-v1
+    podAnnotations:
+      k8s.v1.cni.cncf.io/networks: |-
+        [{
+          "name":"multus-iot",
+          "namespace": "kube-system",
+          "ips": ["172.16.10.6/24"]
+        }]
