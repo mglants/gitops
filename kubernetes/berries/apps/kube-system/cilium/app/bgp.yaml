@@ -5,8 +5,9 @@ metadata:
   name: bgp-main
 spec:
   nodeSelector:
-    matchLabels:
-      kubernetes.io/os: linux
+    matchExpressions:
+      - key: node-role.kubernetes.io/control-plane
+        operator: DoesNotExist
   virtualRouters:
     - localASN: 65005
       exportPodCIDR: false
