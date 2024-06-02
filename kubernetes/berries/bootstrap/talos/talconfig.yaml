@@ -4,7 +4,7 @@ clusterName: ${clusterName}
 endpoint: https://${clusterEndpointIP}:6443
 
 # renovate: depName=ghcr.io/siderolabs/installer datasource=docker
-talosVersion: v1.7.2
+talosVersion: v1.7.4
 # renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker
 kubernetesVersion: v1.30.1
 
@@ -70,7 +70,7 @@ nodes:
       - *worker_interface
 
 controlPlane:
-  schematic: &schematic
+  schematic:
     overlay:
       name: rpi_generic
       image: siderolabs/sbc-raspberrypi
@@ -155,7 +155,16 @@ controlPlane:
           net.core.rmem_max: "2500000"
           net.core.wmem_max: "2500000"
 worker:
-  schematic: *schematic
+  schematic:
+    overlay:
+      name: rpi_generic
+      image: siderolabs/sbc-raspberrypi
+    customization:
+      extraKernelArgs:
+        - net.ifnames=0
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/usb-modem-drivers
   patches:
     - *machine_search_domain
     - *machine_kubelet
@@ -173,3 +182,10 @@ worker:
                 - bind
                 - rshared
                 - rw
+    - |-
+      machine:
+        kernel:
+          modules:
+            - name: usbserial
+            - name: cdc_ncm
+            - name: huawei_cdc_ncm
