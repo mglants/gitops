@@ -54,10 +54,7 @@ nodes:
         vlans:
           - vlanId: 10
             mtu: 1500
-            dhcp: true
-            dhcpOptions:
-              routeMetric: 4096
-              ipv6: false
+            dhcp: false
   - hostname: berries-worker2
     ipAddress: 172.16.30.227
     installDisk: *install_disk
