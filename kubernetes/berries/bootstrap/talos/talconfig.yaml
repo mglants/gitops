@@ -51,10 +51,14 @@ nodes:
       - &worker_interface
         interface: eth0
         dhcp: true
+        dhcpOptions:
+          routeMetric: 1024
         vlans:
           - vlanId: 10
             mtu: 1500
-            dhcp: false
+            dhcp: true
+            dhcpOptions:
+              routeMetric: 4096
   - hostname: berries-worker2
     ipAddress: 172.16.30.227
     installDisk: *install_disk
