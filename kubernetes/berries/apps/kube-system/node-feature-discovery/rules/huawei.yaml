@@ -2,14 +2,14 @@
 apiVersion: nfd.k8s-sigs.io/v1alpha1
 kind: NodeFeatureRule
 metadata:
-  name: zigbee
+  name: huawei
 spec:
   rules:
       # CC2652R Multiprotocol RF Stick
-    - name: zigbee
+    - name: huawei
       labels:
-        device.feature.node.kubernetes.io/zigbee: 'true'
+        device.feature.node.kubernetes.io/huawei: 'true'
       matchFeatures:
         - feature: usb.device
           matchExpressions:
-            vendor: {op: In, value: [1a86]}
+            vendor: {op: In, value: [12d1]}
