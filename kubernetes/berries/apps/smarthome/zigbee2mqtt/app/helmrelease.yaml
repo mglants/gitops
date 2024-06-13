@@ -16,14 +16,6 @@ spec:
         namespace: flux-system
   values:
     defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [20]
-        seccompProfile: {type: RuntimeDefault}
       nodeSelector:
         device.feature.node.kubernetes.io/zigbee: 'true'
 
