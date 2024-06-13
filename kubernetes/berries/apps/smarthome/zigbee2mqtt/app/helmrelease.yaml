@@ -9,81 +9,106 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
-      interval: 30m
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s-charts
         namespace: flux-system
-
   values:
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [20]
+        seccompProfile: {type: RuntimeDefault}
+      nodeSelector:
+        device.feature.node.kubernetes.io/zigbee: 'true'
 
-    image:
-      repository: ghcr.io/koenkk/zigbee2mqtt
-      tag: 1.38.0
-    env:
-      ZIGBEE2MQTT_DATA: /data
-      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_DISCOVERY_TOPIC: homeassistant
-      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_LEGACY_ENTITY_ATTRIBUTES: 'false'
-      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_LEGACY_TRIGGERS: 'false'
-      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_STATUS_TOPIC: homeassistant/status
-      ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN: ISO_8601
-      ZIGBEE2MQTT_CONFIG_ADVANCED_LEGACY_API: 'false'
-      ZIGBEE2MQTT_CONFIG_ADVANCED_LEGACY_AVAILABILITY_PAYLOAD: 'false'
-      ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: info
-      ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_OUTPUT: '["console"]'
-      ZIGBEE2MQTT_CONFIG_ADVANCED_TRANSMIT_POWER: 20
-      # ZIGBEE2MQTT_CONFIG_AVAILABILITY_ACTIVE_TIMEOUT: 60
-      # ZIGBEE2MQTT_CONFIG_AVAILABILITY_PASSIVE_TIMEOUT: 2000
-      ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_LEGACY: 'false'
-      ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_RETAIN: 'true'
-      ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API: 'true'
-      ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: 8080
-      ZIGBEE2MQTT_CONFIG_FRONTEND_URL: http://zigbee2mqtt.home
-      ZIGBEE2MQTT_CONFIG_HOMEASSISTANT: 'true'
-      ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC: zigbee2mqtt
-      ZIGBEE2MQTT_CONFIG_MQTT_INCLUDE_DEVICE_INFORMATION: 'true'
-      ZIGBEE2MQTT_CONFIG_MQTT_KEEPALIVE: 60
-      ZIGBEE2MQTT_CONFIG_MQTT_REJECT_UNAUTHORIZED: 'true'
-      ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx
-      ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
-      ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: 'false'
-      ZIGBEE2MQTT_CONFIG_SERIAL_PORT: tcp://172.16.10.20:20108
-      ZIGBEE2MQTT_CONFIG_SERIAL_DISABLE_LED: false
-    envFrom:
-      - secretRef:
-          name: zigbee2mqtt-secret
+    controllers:
+      zigbee2mqtt:
+        annotations:
+          reloader.stakater.com/auto: 'true'
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/koenkk/zigbee2mqtt
+              tag: 1.38.0
+            env:
+              ZIGBEE2MQTT_DATA: /data
+              ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_DISCOVERY_TOPIC: homeassistant
+              ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_LEGACY_ENTITY_ATTRIBUTES: 'false'
+              ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_LEGACY_TRIGGERS: 'false'
+              ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_STATUS_TOPIC: homeassistant/status
+              ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN: ISO_8601
+              ZIGBEE2MQTT_CONFIG_ADVANCED_LEGACY_API: 'false'
+              ZIGBEE2MQTT_CONFIG_ADVANCED_LEGACY_AVAILABILITY_PAYLOAD: 'false'
+              ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: info
+              ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_OUTPUT: '["console"]'
+              ZIGBEE2MQTT_CONFIG_ADVANCED_TRANSMIT_POWER: 20
+              # ZIGBEE2MQTT_CONFIG_AVAILABILITY_ACTIVE_TIMEOUT: 60
+              # ZIGBEE2MQTT_CONFIG_AVAILABILITY_PASSIVE_TIMEOUT: 2000
+              ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_LEGACY: 'false'
+              ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_RETAIN: 'true'
+              ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API: 'true'
+              ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: 8080
+              ZIGBEE2MQTT_CONFIG_FRONTEND_URL: http://zigbee2mqtt.home
+              ZIGBEE2MQTT_CONFIG_HOMEASSISTANT: 'true'
+              ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC: zigbee2mqtt
+              ZIGBEE2MQTT_CONFIG_MQTT_INCLUDE_DEVICE_INFORMATION: 'true'
+              ZIGBEE2MQTT_CONFIG_MQTT_KEEPALIVE: 60
+              ZIGBEE2MQTT_CONFIG_MQTT_REJECT_UNAUTHORIZED: 'true'
+              ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx
+              ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
+              ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: 'false'
+              ZIGBEE2MQTT_CONFIG_SERIAL_PORT: /dev/ttyUSB0
+              ZIGBEE2MQTT_CONFIG_SERIAL_DISABLE_LED: false
+            envFrom:
+              - secretRef:
+                  name: zigbee2mqtt-secret
+            securityContext:
+              privileged: true
+            probes:
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
     service:
-      main:
+      app:
+        controller: zigbee2mqtt
         ports:
           http:
             port: 8080
-          metrics:
-            enabled: true
-            port: 9000
-
     ingress:
-      main:
+      app:
         enabled: true
         ingressClassName: internal-nginx
         hosts:
           - host: zigbee2mqtt.home
             paths:
               - path: /
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
+                service:
+                  identifier: app
+                  port: http
 
-    resources:
-      requests:
-        cpu: 8m
-        memory: 212M
-      limits:
-        memory: 256M
     persistence:
-      data:
+      config:
         enabled: true
         existingClaim: zigbee2mqtt-data-v1
-        mountPath: /data
+        globalMounts:
+          - path: /config
+      usb:
+        enabled: true
+        type: hostPath
+        hostPathType: CharDevice
+        hostPath: /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0
+        globalMounts:
+          - path: /dev/ttyUSB0
