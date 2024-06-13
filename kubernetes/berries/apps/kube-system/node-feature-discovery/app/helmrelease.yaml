@@ -24,12 +24,7 @@ spec:
     prometheus:
       enable: true
     master:
-      resources:
-        requests:
-          cpu: 21m
-          memory: 51Mi
-        limits:
-          memory: 51Mi
+      enable: false
 
     worker:
       config:
