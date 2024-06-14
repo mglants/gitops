@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: ghcr.io/mglants/gammu-telegram
-              tag: v0.0.2
+              tag: v0.0.3
             env:
               GAMMU_CONNECTION: at115200
               GAMMU_DEVICE: /dev/ttyUSB0
