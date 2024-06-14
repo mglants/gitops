@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: ghcr.io/mglants/gammu-telegram
-              tag: v0.0.1
+              tag: v0.0.2
             env:
               GAMMU_CONNECTION: at115200
               GAMMU_DEVICE: /dev/ttyUSB0
@@ -37,6 +37,8 @@ spec:
               - secretRef:
                   name: gammu-kz-secret
             securityContext:
+              runAsUser: 0
+              runAsGroup: 0
               privileged: true
             probes:
               startup:
