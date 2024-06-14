@@ -32,7 +32,7 @@ spec:
             env:
               GAMMU_CONNECTION: at115200
               GAMMU_DEVICE: /dev/modem
-              GAMMU_NUMBER: 🇰🇿
+              GAMMU_NUMBER: 🇹🇷
             envFrom:
               - secretRef:
                   name: gammu-tr-secret
