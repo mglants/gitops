@@ -20,7 +20,7 @@ data:
     # Updates
     ###############
 
-    DatabaseMirror pivotal-clamav-mirror.s3.amazonaws.com
-    ScriptedUpdates yes
+    PrivateMirror pivotal-clamav-mirror.s3.amazonaws.com
+    ScriptedUpdates no
     NotifyClamd /etc/clamav/clamd.conf
     Bytecode yes
