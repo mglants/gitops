@@ -146,7 +146,7 @@ spec:
       whitelist: 10.0.0.0/8
 
       ## @param proxyAuth.header HTTP header containing the email address of the user to authenticate
-      header: X-mailu-email
+      header: X-authentik-email
 
       ## @param proxyAuth.create Whether non-existing accounts should be auto-created
       create: 'false'
@@ -224,24 +224,6 @@ spec:
         repository: mailu/admin
         tag: 2024.06.3
         pullPolicy: IfNotPresent
-      extraEnvVars:
-        - name: OIDC_ENABLED
-          value: 'True'
-        - name: OIDC_PROVIDER_INFO_URL
-          value: https://authentik.gearage.ru/application/o/mailu/
-        - name: OIDC_CLIENT_ID
-          value: mailu
-        - name: OIDC_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: *mailu-secret
-              key: OIDC_SECRET
-        - name: OIDC_BUTTON_NAME
-          value: SSO
-        - name: OIDC_CHANGE_PASSWORD_REDIRECT_ENABLED
-          value: 'True'
-        - name: OIDC_CHANGE_PASSWORD_REDIRECT_URL
-          value: https://authentik.gearage.ru/if/flow/default-password-change/
       resources:
         requests:
           memory: 500Mi
