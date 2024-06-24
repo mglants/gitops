@@ -10,7 +10,7 @@ data:
     # General
     ###############
 
-    DatabaseDirectory /data
+    DatabaseDirectory /var/lib/clamav
     UpdateLogFile /dev/stdout
     LogTime yes
     PidFile /run/freshclam.pid
