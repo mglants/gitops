@@ -338,9 +338,10 @@ spec:
       ## @param clamav.image.tag Pod image tag (defaults to mailuVersion if set, otherwise Chart.AppVersion)
       ## @param clamav.image.pullPolicy Pod image pull policy
       image:
-        repository: mailu/clamav
-        tag: 2.0.43
+        repository: clamav/clamav-debian
+        tag: 1.2.0-6
         pullPolicy: IfNotPresent
+        registry: docker.io
 
       resources:
         requests:
