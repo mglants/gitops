@@ -13,7 +13,7 @@ data:
     DatabaseDirectory /var/lib/clamav
     UpdateLogFile /dev/stdout
     LogTime yes
-    PidFile /run/freshclam.pid
+    PidFile /tmp/freshclam.pid
     DatabaseOwner root
 
     ###############
