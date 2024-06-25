@@ -128,17 +128,17 @@ spec:
         cert-manager.io/cluster-issuer: letsencrypt-prod
       tls: true
 
-      ## @param ingress.realIpHeader Sets the value of `REAL_IP_HEADER` environment variable in the `front` pod
+      ## @param ingress.realIpHeader SrealIpFromets the value of `REAL_IP_HEADER` environment variable in the `front` pod
       realIpHeader: X-Forwarded-For
 
       ## @param ingress.realIpFrom Sets the value of `REAL_IP_FROM` environment variable in the `front` pod
-      realIpFrom: 10.244.0.0/16
+      realIpFrom: 10.244.0.0/16,10.96.0.0/12
 
     ## @section Proxy auth configuration
     ## ref: https://mailu.io/master/configuration.html#header-authentication-using-an-external-proxy
     proxyAuth:
       ## @param proxyAuth.whitelist Comma separated list of CIDRs of proxies to trust for authentication
-      whitelist: ''
+      whitelist: 10.244.0.0/16,10.96.0.0/12
 
       ## @param proxyAuth.header HTTP header containing the email address of the user to authenticate
       header: X-authentik-email
