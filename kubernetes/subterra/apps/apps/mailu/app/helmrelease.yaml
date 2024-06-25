@@ -127,6 +127,7 @@ spec:
         external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
         cert-manager.io/cluster-issuer: letsencrypt-prod
       tls: true
+      tlsFlavorOverride: mail
 
       ## @param ingress.realIpHeader SrealIpFromets the value of `REAL_IP_HEADER` environment variable in the `front` pod
       realIpHeader: X-Forwarded-For
