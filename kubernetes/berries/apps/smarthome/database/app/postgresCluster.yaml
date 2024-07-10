@@ -26,7 +26,7 @@ spec:
     dynamicConfiguration:
       synchronous_mode: true
       postgresql:
-        synchronous_commit: on
+        synchronous_commit: "on"
         pg_hba:
           - hostnossl all all all md5
   instances:
@@ -47,6 +47,12 @@ spec:
     - name: teslamate
       databases:
         - teslamate
+      options: SUPERUSER
+    - name: atuin
+      databases:
+        - atuin
+      password:
+        type: AlphaNumeric
       options: SUPERUSER
   backups:
     pgbackrest:
