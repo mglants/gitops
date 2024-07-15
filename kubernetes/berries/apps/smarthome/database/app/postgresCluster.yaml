@@ -25,6 +25,7 @@ spec:
   patroni:
     dynamicConfiguration:
       synchronous_mode: true
+      max_timelines_history: 10
       postgresql:
         synchronous_commit: "on"
         pg_hba:
