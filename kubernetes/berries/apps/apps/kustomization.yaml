@@ -5,4 +5,5 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   - ./gammu/ks.yaml
+  - ./atuin/ks.yaml
   # Flux-Kustomizations
