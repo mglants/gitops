@@ -2,7 +2,7 @@
 apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
-  name: smarthome-pgsql
+  name: &name smarthome-pgsql
   namespace: smarthome
 spec:
   postgresVersion: 15
@@ -40,6 +40,14 @@ spec:
         resources:
           requests:
             storage: 5Gi
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: "kubernetes.io/hostname"
+          whenUnsatisfiable: "DoNotSchedule"
+          labelSelector:
+            matchLabels:
+              postgres-operator.crunchydata.com/cluster: *name
+              postgres-operator.crunchydata.com/data: postgres
   users:
     - name: home-assistant
       databases:
