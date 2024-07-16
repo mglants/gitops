@@ -20,7 +20,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/sonarr
-      tag: 4.0.5.1710
+      tag: 4.0.7.1863
       # -- image pull policy
       pullPolicy: IfNotPresent
     podSecurityContext:
