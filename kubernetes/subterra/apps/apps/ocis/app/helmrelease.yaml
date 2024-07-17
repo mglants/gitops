@@ -95,7 +95,10 @@ spec:
                 service:
                   identifier: app
                   port: http
-
+        tls:
+          - secretName: ocis-tls
+            hosts:
+              - files.glants.xyz
     persistence:
       config:
         type: configMap
