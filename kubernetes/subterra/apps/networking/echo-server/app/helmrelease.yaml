@@ -48,7 +48,7 @@ spec:
     ingress:
       main:
         enabled: true
-        className: nginx
+        className: nginx-external
         annotations:
           external-dns.alpha.kubernetes.io/target: dd.ur30.ru
           nginx.ingress.kubernetes.io/auth-url: http://ak-outpost-authentik-embedded-outpost.infra.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx

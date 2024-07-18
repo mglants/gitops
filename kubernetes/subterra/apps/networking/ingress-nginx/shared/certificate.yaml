@@ -1,0 +1,14 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ur30-ru
+spec:
+  secretName: ur30-ru-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: ur30.ru
+  dnsNames:
+    - ur30.ru
+    - '*.ur30.ru'

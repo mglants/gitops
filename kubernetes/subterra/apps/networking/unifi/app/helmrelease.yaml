@@ -40,7 +40,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: nginx
+        ingressClassName: nginx-external
         annotations:
           kubernetes.io/tls-acme: 'true'
           cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -57,7 +57,7 @@ spec:
               - unific.ur30.ru
       portal:
         enabled: true
-        ingressClassName: nginx
+        ingressClassName: nginx-external
         annotations:
           kubernetes.io/tls-acme: 'true'
           cert-manager.io/cluster-issuer: letsencrypt-prod

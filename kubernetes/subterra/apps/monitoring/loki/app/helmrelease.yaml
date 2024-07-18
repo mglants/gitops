@@ -112,7 +112,7 @@ spec:
               app.kubernetes.io/component: gateway
       ingress:
         enabled: true
-        ingressClassName: nginx
+        ingressClassName: nginx-external
         annotations:
           nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
           external-dns.alpha.kubernetes.io/type: internal

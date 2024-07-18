@@ -13,3 +13,4 @@ resources:
   - ./unifi/ks.yaml
   - ./vpn-gateway/ks.yaml
   - ./echo-server/ks.yaml
+  - ./ingress-nginx/ks.yaml

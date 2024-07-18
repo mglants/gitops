@@ -41,7 +41,7 @@ spec:
         annotations:
           nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
           external-dns.alpha.kubernetes.io/type: internal
-        ingressClassName: nginx
+        ingressClassName: nginx-external
         hosts:
           - host: xteve.ur30.ru
             paths:
