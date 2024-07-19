@@ -51,8 +51,8 @@ spec:
       type: ClusterIP
     ingress:
       enabled: true
+      ingressClassName: external-nginx
       annotations:
-        kubernetes.io/ingress.class: external-nginx
         cert-manager.io/cluster-issuer: letsencrypt-prod
         external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
       hostname: dachia.ur30.ru

@@ -37,8 +37,8 @@ spec:
         enabled: true
         annotations:
           nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
-          kubernetes.io/ingress.class: external-nginx
           external-dns.alpha.kubernetes.io/type: internal
+        ingressClassName: external-nginx
         hosts:
           - host: sonarr.ur30.ru
             paths:
