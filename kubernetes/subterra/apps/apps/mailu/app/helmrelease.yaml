@@ -121,7 +121,7 @@ spec:
     ingress:
       ## @param ingress.enabled Enable external ingress
       enabled: true
-      ingressClassName: nginx-external
+      ingressClassName: external-nginx
 
       annotations:
         external-dns.alpha.kubernetes.io/target: ingress.ur30.ru

@@ -49,7 +49,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: nginx-external
+        ingressClassName: external-nginx
         annotations:
           nginx.org/websocket-services: home-assistant
           cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -121,7 +121,7 @@ spec:
         ingress:
           enabled: true
           annotations:
-            kubernetes.io/ingress.class: nginx-external
+            kubernetes.io/ingress.class: external-nginx
             nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
             external-dns.alpha.kubernetes.io/type: internal
           hosts:

@@ -71,7 +71,7 @@ spec:
       username: netbox
     ingress:
       enabled: true
-      className: nginx-external
+      className: external-nginx
       annotations:
         kubernetes.io/tls-acme: 'true'
         cert-manager.io/cluster-issuer: letsencrypt-prod

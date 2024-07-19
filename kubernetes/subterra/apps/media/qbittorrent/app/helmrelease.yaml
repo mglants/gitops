@@ -64,7 +64,7 @@ spec:
     ingress:
       main:
         enabled: true
-        className: nginx-external
+        className: external-nginx
         annotations:
           nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
           external-dns.alpha.kubernetes.io/type: internal

@@ -137,7 +137,7 @@ spec:
     ingress:
       enabled: true
       annotations:
-        kubernetes.io/ingress.class: nginx-external
+        kubernetes.io/ingress.class: external-nginx
         cert-manager.io/cluster-issuer: letsencrypt-prod
         external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
         nginx.ingress.kubernetes.io/proxy-body-size: 4G
