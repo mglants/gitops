@@ -57,6 +57,9 @@ spec:
               OCIS_LOG_PRETTY: true
               OCIS_URL: https://files.glants.xyz
               PROXY_TLS: false
+            envFrom:
+              - secretRef:
+                  name: ocis-secret
             probes:
               liveness:
                 enabled: true
