@@ -57,6 +57,11 @@ spec:
               OCIS_LOG_PRETTY: true
               OCIS_URL: https://files.glants.xyz
               PROXY_TLS: false
+              STORAGE_USERS_DRIVER: s3ng
+              STORAGE_USERS_S3NG_ROOT: /var/lib/ocis
+              STORAGE_USERS_S3NG_ENDPOINT: nas.ur30.ru:9000
+              STORAGE_USERS_S3NG_REGION: us-east-1
+              STORAGE_USERS_S3NG_BUCKET: ocis
             envFrom:
               - secretRef:
                   name: ocis-secret
