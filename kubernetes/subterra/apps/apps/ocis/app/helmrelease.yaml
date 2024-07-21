@@ -108,20 +108,24 @@ spec:
             hosts:
               - files.glants.xyz
     persistence:
-      config:
+      web-config:
         type: configMap
         name: ocis-configmap
         globalMounts:
           - path: /etc/ocis/web.yaml
             subPath: web.yaml
             readOnly: true
-      data:
-        existingClaim: ocis-data-v1
+      config:
+        existingClaim: ocis-config-v1
         globalMounts:
-          - path: /var/lib/ocis
-            subPath: data
           - path: /etc/ocis
             subPath: config
+      nfs-data:
+        type: nfs
+        server: nas.glants.xyz
+        path: /mnt/Storinator/ocis
+        globalMounts:
+          - path: /var/lib/ocis
       tmpfs:
         type: emptyDir
         globalMounts:
