@@ -62,6 +62,18 @@ spec:
               STORAGE_USERS_S3NG_ENDPOINT: https://nas.ur30.ru:9000
               STORAGE_USERS_S3NG_REGION: us-east-1
               STORAGE_USERS_S3NG_BUCKET: ocis
+              OCIS_OIDC_ISSUER: "https://authentik.gearage.ru/application/o/ocis/"
+              WEB_OIDC_METADATA_URL: "https://authentik.gearage.ru/application/o/ocis/.well-known/openid-configuration"
+              PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: jwt
+              # Use upstream OIDC provider's .well-known instead of oCIS's, needed for mobile clients to use external OIDC
+              PROXY_OIDC_REWRITE_WELLKNOWN: true
+              # Auto role assignment
+              # docs: https://doc.owncloud.com/ocis/next/deployment/services/s-list/proxy.html#automatic-role-assignments
+              PROXY_AUTOPROVISION_ACCOUNTS: true
+              WEB_OIDC_SCOPE: "openid profile email groups"
+              PROXY_USER_OIDC_CLAIM: "preferred_username"
+              PROXY_ROLE_ASSIGNMENT_DRIVER: oidc
+              PROXY_ROLE_ASSIGNMENT_OIDC_CLAIM: groups
             envFrom:
               - secretRef:
                   name: ocis-secret
