@@ -400,3 +400,32 @@ spec:
         requests:
           cpu: 200m
           memory: 128Mi
+    webdav:
+      enabled: true
+      logLevel: ''
+      image:
+        repository: mailu/radicale
+        tag: 2024.06.6
+        pullPolicy: IfNotPresent
+
+      resources:
+        limits:
+          memory: 500Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+    fetchmail:
+      enabled: true
+      logLevel: ''
+
+      image:
+        repository: mailu/fetchmail
+        tag: 2024.06.6
+        pullPolicy: IfNotPresent
+
+      resources:
+        limits:
+          memory: 500Mi
+        requests:
+          cpu: 200m
+          memory: 128Mi
