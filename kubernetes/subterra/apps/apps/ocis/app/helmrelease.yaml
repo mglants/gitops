@@ -65,6 +65,7 @@ spec:
               OCIS_OIDC_ISSUER: "https://authentik.gearage.ru/application/o/ocis/"
               WEB_OIDC_METADATA_URL: "https://authentik.gearage.ru/application/o/ocis/.well-known/openid-configuration"
               PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: none
+              OCIS_EXCLUDE_RUN_SERVICES: "idp"
               # Use upstream OIDC provider's .well-known instead of oCIS's, needed for mobile clients to use external OIDC
               PROXY_OIDC_REWRITE_WELLKNOWN: true
               # Auto role assignment
