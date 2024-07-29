@@ -21,7 +21,7 @@ spec:
     image:
       registry: docker.io
       repository: bitnami/wordpress
-      tag: 6.5.5
+      tag: 6.6.1
       pullPolicy: IfNotPresent
     updateStrategy:
       type: Recreate
