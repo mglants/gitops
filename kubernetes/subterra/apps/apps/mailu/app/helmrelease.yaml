@@ -11,7 +11,7 @@ spec:
     spec:
       # renovate: registryUrl=https://mailu.github.io/helm-charts/
       chart: mailu
-      version: 2.0.0
+      version: 2.1.0
       sourceRef:
         kind: HelmRepository
         name: mailu-charts
@@ -127,7 +127,6 @@ spec:
         external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
         cert-manager.io/cluster-issuer: letsencrypt-prod
       tls: true
-      tlsFlavorOverride: mail
 
       ## @param ingress.realIpHeader SrealIpFromets the value of `REAL_IP_HEADER` environment variable in the `front` pod
       realIpHeader: X-Forwarded-For
@@ -186,7 +185,8 @@ spec:
           imaps: true
           smtp: true
           smtps: true
-          submission: true
+          submission: false
+          manageSieve: true
 
       ## @param front.kind Kind of resource to create for the front (`Deployment` or `DaemonSet`)
       kind: Deployment
@@ -423,6 +423,22 @@ spec:
         tag: 2024.06.6
         pullPolicy: IfNotPresent
 
+      resources:
+        limits:
+          memory: 500Mi
+        requests:
+          cpu: 200m
+          memory: 128Mi
+    tika:
+      enabled: true
+      languages:
+        - en
+        - ru
+      image:
+        repository: apache/tika
+        tag: 2.9.2.1-full
+        pullPolicy: IfNotPresent
+        registry: docker.io
       resources:
         limits:
           memory: 500Mi
