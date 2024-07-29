@@ -35,10 +35,10 @@ spec:
     initialAccount:
       enabled: true
       mode: ifmissing
-      domain: gearage.ru
+      domain: glants.xyz
       existingSecret: *mailu-secret
       existingSecretPasswordKey: INITIAL_PASSWORD
-      username: m
+      username: mark
     ## @param subnet Change this if you're using different address ranges for pods (IPv4)
     subnet: 10.244.0.0/16
 
