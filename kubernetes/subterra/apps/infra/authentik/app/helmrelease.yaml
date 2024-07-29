@@ -72,14 +72,14 @@ spec:
         use_ssl: true
         timeout: 30
       hosts:
-        - host: authentik.gearage.ru
+        - host: authentik.glants.xyz
           paths:
             - path: /
               pathType: Prefix
       tls:
         - secretName: authentik-tls
           hosts:
-            - authentik.gearage.ru
+            - authentik.glants.xyz
     postgresql:
       enabled: false
     redis:

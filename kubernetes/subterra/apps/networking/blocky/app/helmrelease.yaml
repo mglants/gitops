@@ -101,9 +101,9 @@ spec:
     config: |-
       customDNS:
         mapping:
-          cloud.gearage.ru: 192.168.40.1
-          authentik.gearage.ru: 192.168.40.1
-          netbox.gearage.ru: 192.168.40.1
+          cloud.glants.xyz: 192.168.40.1
+          authentik.glants.xyz: 192.168.40.1
+          netbox.glants.xyz: 192.168.40.1
           mail.ur30.ru: 192.168.40.9
           files.glants.xyz: 192.168.40.1
       bootstrapDns: tcp+udp:1.1.1.1

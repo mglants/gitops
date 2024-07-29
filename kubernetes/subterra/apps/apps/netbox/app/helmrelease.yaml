@@ -92,9 +92,9 @@ spec:
       autoCreateUser: true
     extraEnvs:
       - name: SOCIAL_AUTH_OIDC_ENDPOINT
-        value: https://authentik.gearage.ru/application/o/netbox/
+        value: https://authentik.glants.xyz/application/o/netbox/
       - name: LOGOUT_REDIRECT_URL
-        value: https://authentik.gearage.ru/application/o/netbox/end-session/
+        value: https://authentik.glants.xyz/application/o/netbox/end-session/
       - name: SOCIAL_AUTH_OIDC_KEY
         value: netbox
       - name: SOCIAL_AUTH_OIDC_SECRET

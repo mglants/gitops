@@ -26,7 +26,7 @@ spec:
     podAnnotations:
       backup.velero.io/backup-volumes: nextcloud-data
     nextcloud:
-      host: cloud.gearage.ru
+      host: cloud.glants.xyz
       update: 0
       datadir: /nextcloud/data
       existingSecret:
@@ -41,7 +41,7 @@ spec:
       mail:
         enabled: true
         fromAddress: noreply
-        domain: gearage.ru
+        domain: glants.xyz
         smtp:
           host: mail.ur30.ru
           secure: ''
@@ -95,16 +95,16 @@ spec:
             'trusted_proxies'   => ['external-nginx-controller.networking.svc.cluster.local'],
             'trusted_domains' =>
             array (
-                0 => 'cloud.gearage.ru',
+                0 => 'cloud.glants.xyz',
             ),
             'encryption.legacy_format_support' => true,
             'encryption.key_storage_migrated' => false,
             'enable_previews' => true,
             'filelocking.enabled' => 'true',
             'installed' => true,
-            'overwrite.cli.url' => 'https://cloud.gearage.ru',
+            'overwrite.cli.url' => 'https://cloud.glants.xyz',
             'loglevel' => '2',
-            'overweitehost' => 'cloud.gearage.ru',
+            'overweitehost' => 'cloud.glants.xyz',
             'overwriteprotocol' => 'https'
           );
       phpConfigs:
@@ -165,7 +165,7 @@ spec:
       tls:
         - secretName: gearage-crt-secret
           hosts:
-            - cloud.gearage.ru
+            - cloud.glants.xyz
     redis:
       enabled: true
       auth:

@@ -13,8 +13,7 @@ spec:
     - key encipherment
   dnsNames:
     - authentik.infra.svc.cluster.local
-    - authentik.gearage.ru
-    - ldap.gearage.ru
+    - authentik.glants.xyz
     - ldap.ur30.ru
     - authentik
   issuerRef:
