@@ -5,5 +5,5 @@ namespace: apps
 resources:
   - ./helmrelease.yaml
 commonLabels:
-  app.kubernetes.io/name: immich-redis
-  app.kubernetes.io/instance: immich
+  app.kubernetes.io/name: paperless-redis
+  app.kubernetes.io/instance: paperless
