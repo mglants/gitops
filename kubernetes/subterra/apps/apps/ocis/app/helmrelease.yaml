@@ -71,10 +71,11 @@ spec:
               # Auto role assignment
               # docs: https://doc.owncloud.com/ocis/next/deployment/services/s-list/proxy.html#automatic-role-assignments
               PROXY_AUTOPROVISION_ACCOUNTS: true
-              WEB_OIDC_SCOPE: "openid profile email groups"
+              WEB_OIDC_SCOPE: "openid profile email offline_access groups"
               PROXY_USER_OIDC_CLAIM: "preferred_username"
               PROXY_ROLE_ASSIGNMENT_DRIVER: oidc
               PROXY_ROLE_ASSIGNMENT_OIDC_CLAIM: groups
+              SHARING_PUBLIC_SHARE_MUST_HAVE_PASSWORD: false
             envFrom:
               - secretRef:
                   name: ocis-secret
