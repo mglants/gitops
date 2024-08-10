@@ -73,5 +73,5 @@ spec:
         name: ipmi-server-secret
         globalMounts:
           - path: *config
-            subPath: ipmi.yaml
+            subPath: config.yaml
             readOnly: true
