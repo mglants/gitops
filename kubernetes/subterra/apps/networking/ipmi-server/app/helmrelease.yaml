@@ -26,12 +26,16 @@ spec:
         containers:
           app:
             image:
-              repository: sciapp/nojava-ipmi-kvm-server
-              tag: v0.2.2
+              repository: ghcr.io/mistercalvin/supermicro-java-ikvm
+              tag: x86-1.0.1
             env:
-              KVM_CONFIG_PATH: &config /config/ipmi-server.yaml
-              WEBAPP_PORT: &port 8080
-              WEBAPP_BASE: https://ipmi-server.ur30.ru
+              USER_ID: 1000
+              GROUP_ID: 1000
+              DISPLAY_WIDTH: 1024
+              DISPLAY_HEIGHT: 768
+            envFrom:
+              - secretRef:
+                  name: ipmi-server-secret
             probes:
               liveness:
                 enabled: true
@@ -54,7 +58,9 @@ spec:
         controller: ipmi-server
         ports:
           http:
-            port: *port
+            port: 5800
+          vnc:
+            port: 5900
 
     ingress:
       app:
@@ -67,12 +73,3 @@ spec:
                 service:
                   identifier: app
                   port: http
-
-    persistence:
-      config:
-        type: secret
-        name: ipmi-server-secret
-        globalMounts:
-          - path: *config
-            subPath: config.yaml
-            readOnly: true
