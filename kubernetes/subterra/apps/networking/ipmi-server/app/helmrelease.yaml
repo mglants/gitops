@@ -31,6 +31,7 @@ spec:
             env:
               KVM_CONFIG_PATH: &config /config/ipmi-server.yaml
               WEBAPP_PORT: &port 8080
+              WEBAPP_BASE: http://ipmi-server.ur30.ru
             probes:
               liveness:
                 enabled: true
