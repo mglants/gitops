@@ -69,7 +69,7 @@ spec:
         hosts:
           - host: ipmi-server.ur30.ru
             paths:
-              - path: /
+              - path: /router
                 service:
                   identifier: app
                   port: http
