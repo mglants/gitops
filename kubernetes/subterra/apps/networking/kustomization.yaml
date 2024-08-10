@@ -14,3 +14,4 @@ resources:
   - ./vpn-gateway/ks.yaml
   - ./echo-server/ks.yaml
   - ./ingress-nginx/ks.yaml
+  - ./ipmi-server/ks.yaml
