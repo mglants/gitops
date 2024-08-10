@@ -31,8 +31,8 @@ spec:
             env:
               USER_ID: 1000
               GROUP_ID: 1000
-              DISPLAY_WIDTH: 1024
-              DISPLAY_HEIGHT: 768
+              DISPLAY_WIDTH: 1920
+              DISPLAY_HEIGHT: 1080
             envFrom:
               - secretRef:
                   name: ipmi-server-secret
