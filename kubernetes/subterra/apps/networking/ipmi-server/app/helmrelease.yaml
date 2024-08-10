@@ -65,7 +65,7 @@ spec:
     ingress:
       app:
         enabled: true
-        className: "external-nginx"
+        className: "internal-nginx"
         hosts:
           - host: ipmi-server.ur30.ru
             paths:
