@@ -5,6 +5,7 @@ metadata:
   name: minecraft-stacia2-expert
   namespace: games
 spec:
+  storageClassName: freenas-iscsi-csi
   accessModes:
     - ReadWriteOnce
   resources:
