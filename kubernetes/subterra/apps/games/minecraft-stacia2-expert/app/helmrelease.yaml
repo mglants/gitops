@@ -1,0 +1,49 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: minecraft-stacia2-expert
+  namespace: games
+spec:
+  chart:
+    spec:
+      # renovate: registryUrl=https://itzg.github.io/minecraft-server-charts/
+      chart: minecraft
+      version: 2.8.0
+      sourceRef:
+        kind: HelmRepository
+        name: itzg-charts
+        namespace: flux-system
+  interval: 5m
+  install:
+    remediation:
+      retries: 3
+  test:
+    # Fix problem where helm fails to uninstall
+    enable: false
+  # Default values
+  # https://github.com/itzg/minecraft-server-charts/blob/master/charts/minecraft-bedrock/values.yaml
+  values:
+    minecraftServer:
+      serverName: Stacia2-expert
+      eula: 'TRUE'
+      version: 1.19.2
+      type: FORGE
+      forgeVersion: 43.4.2
+      gameMode: survival
+      difficulty: normal
+      memory: 2048M
+      serviceType: LoadBalancer
+      loadBalancerIP: 192.168.40.15
+      jvmOpts: "-Xmx16G -Xms16G"
+    persistence:
+      dataDir:
+        enabled: true
+        existingClaim: minecraft-stacia2-expert
+    resources:
+      requests:
+        memory: 16Gi
+        cpu: 1
+      limits:
+        memory: 16Gi
+    serviceAnnotations: {}
