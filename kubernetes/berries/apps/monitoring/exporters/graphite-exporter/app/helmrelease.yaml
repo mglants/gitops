@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: prom/graphite-exporter
-              tag: v0.15.1
+              tag: v0.15.2
             args:
               - --graphite.mapping-config=/config/graphite-mapping.conf
             probes:
