@@ -110,7 +110,7 @@ spec:
         mikrotik:
           # renovate: dashboardName="Mikrotik MKTXP Exporter"
           gnetId: 13679
-          revision: 21
+          revision: 22
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
