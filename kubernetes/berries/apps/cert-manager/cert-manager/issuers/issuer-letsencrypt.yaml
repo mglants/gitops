@@ -5,7 +5,7 @@ metadata:
   name: letsencrypt-prod
 spec:
   acme:
-    email: m@gearage.ru
+    email: webmaster@glants.xyz
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-prod
@@ -14,7 +14,7 @@ spec:
       - selector: {}
         dns01:
           cloudflare:
-            email: m@gearage.ru
+            email: reg@glants.xyz
             apiTokenSecretRef:
               name: cloudflare-token
               key: api-token

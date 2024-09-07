@@ -22,12 +22,12 @@ spec:
       TEST: TEST
       DATA_FOLDER: config
       SMTP_HOST: mail.ur30.ru
-      SMTP_FROM: noreply@gearage.ru
+      SMTP_FROM: noreply@glants.xyz
       SMTP_FROM_NAME: Vaultwarden
       SMTP_PORT: '465'
       SMTP_SSL: 'true'
       SMTP_EXPLICIT_TLS: 'true'
-      SMTP_USERNAME: noreply@gearage.ru
+      SMTP_USERNAME: noreply@glants.xyz
       SMTP_TIMEOUT: 15
       SIGNUPS_ALLOWED: 'false'
       DOMAIN: https://bitwarden.ur30.ru

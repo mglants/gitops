@@ -47,11 +47,11 @@ spec:
     email:
       server: mail.ur30.ru
       port: 465
-      username: noreply@gearage.ru
+      username: noreply@glants.xyz
       useSSL: true
       useTLS: false
       timeout: 10
-      from: noreply@gearage.ru
+      from: noreply@glants.xyz
     redis:
       enabled: true
       architecture: standalone
