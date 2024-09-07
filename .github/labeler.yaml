@@ -13,3 +13,6 @@ cluster/subterra:
 cluster/berries:
   - changed-files:
       - any-glob-to-any-file: kubernetes/berries/**/*
+cluster/all:
+  - changed-files:
+      - any-glob-to-any-file: kubernetes/_global/**/*
