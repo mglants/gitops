@@ -5,7 +5,6 @@
     "github>mglants/renovate-config:automerge-github-actions",
     "github>mglants/gitops//.github/renovate/autoMerge.json5",
     "github>mglants/gitops//.github/renovate/groups.json5",
-    "github>mglants/gitops//.github/renovate/clusters.json5",
     "github>mglants/gitops//.github/renovate/grafanaDashboards.json5",
   ],
   ignorePaths: [".archive/**"],
