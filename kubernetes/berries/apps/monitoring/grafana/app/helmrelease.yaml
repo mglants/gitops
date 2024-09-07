@@ -106,7 +106,7 @@ spec:
         blocky:
           # renovate: dashboardName="blocky"
           gnetId: 13768
-          revision: 3
+          revision: 4
         mikrotik:
           # renovate: dashboardName="Mikrotik MKTXP Exporter"
           gnetId: 13679
