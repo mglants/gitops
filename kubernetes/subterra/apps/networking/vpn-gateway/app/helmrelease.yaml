@@ -56,18 +56,6 @@ spec:
             value: off
           - name: DOT
             value: off
-        # - name:  WIREGUARD_PUBLIC_KEY
-        #   value: set in secret
-        # - name:  WIREGUARD_PRIVATE_KEY
-        #   value: set in secret
-        # - name:  WIREGUARD_PRESHARED_KEY
-        #   value: set in secret
-        # - name:  WIREGUARD_ADDRESSES
-        #   value: set in secret
-        # - name: VPN_ENDPOINT_IP
-        #   value: set in secret
-        # - name: VPN_ENDPOINT_PORT
-        #   value: set in secret
         envFrom:
           - secretRef:
               name: vpn-gateway-secret
