@@ -31,8 +31,7 @@
       description: "Cilium image and chart",
       groupName: "cilium",
       matchPackageNames: [
-        "quay.io/cilium/cilium",
-        "quay.io/cilium/operator-generic",
+        "quay.io/cilium/**",
         "cilium",
       ],
       matchDatasources: ["helm", "docker"],
