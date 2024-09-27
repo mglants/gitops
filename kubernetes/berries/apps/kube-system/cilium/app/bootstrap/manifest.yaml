@@ -942,7 +942,7 @@ spec:
             - serve
           command:
             - hubble-relay
-          image: quay.io/cilium/hubble-relay:v1.16.0@sha256:33fca7776fc3d7b2abe08873319353806dc1c5e07e12011d7da4da05f836ce8d
+          image: quay.io/cilium/hubble-relay:v1.16.2@sha256:4b559907b378ac18af82541dafab430a857d94f1057f2598645624e6e7ea286c
           imagePullPolicy: IfNotPresent
           livenessProbe:
             tcpSocket:
