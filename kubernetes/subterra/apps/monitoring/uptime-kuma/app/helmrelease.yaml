@@ -21,7 +21,7 @@ spec:
     image:
       repository: louislam/uptime-kuma
       pullPolicy: IfNotPresent
-      tag: 1.23.14
+      tag: 1.23.15
     env:
       TZ: Europe/Moscow
     ingress:
