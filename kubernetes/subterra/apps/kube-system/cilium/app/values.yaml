@@ -19,7 +19,7 @@ cgroup:
     enabled: false
   hostRoot: /sys/fs/cgroup
 cluster:
-  id: 2
+  id: 1
   name: subterra
 cni:
   exclusive: false
