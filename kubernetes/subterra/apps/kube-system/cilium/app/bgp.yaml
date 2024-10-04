@@ -1,27 +1,51 @@
 ---
 apiVersion: cilium.io/v2alpha1
-kind: CiliumBGPPeeringPolicy
+kind: CiliumBGPClusterConfig
 metadata:
-  name: bgp-main
+  name: cilium-bgp
 spec:
-  nodeSelector:
-    matchExpressions:
-      - key: node-role.kubernetes.io/control-plane
-        operator: DoesNotExist
-  virtualRouters:
-    - localASN: 65005
-      exportPodCIDR: false
-      serviceSelector:
-        matchExpressions:
-          - {key: thisFakeSelector, operator: NotIn, values: [will-match-and-announce-all-services]}
-      neighbors:
-        - peerAddress: 192.168.48.1/32
+  bgpInstances:
+    - name: "instance-65005"
+      localASN: 65005
+      peers:
+        - name: "peer-default"
           peerASN: 65000
+          peerAddress: 192.168.48.1
+          peerConfigRef:
+            name: "cilium-peer"
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumBGPPeerConfig
+metadata:
+  name: cilium-peer
+spec:
+  families:
+    - afi: ipv4
+      safi: unicast
+      advertisements:
+        matchLabels:
+          advertise: main-pool
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumBGPAdvertisement
+metadata:
+  name: bgp-advertisements
+  labels:
+    advertise: main-pool
+spec:
+  advertisements:
+    - advertisementType: "Service"
+      service:
+        addresses:
+          - LoadBalancerIP
+      selector:             # <-- select all services
+        matchExpressions:
+          - {key: somekey, operator: NotIn, values: ['never-used-value']}
 ---
 apiVersion: cilium.io/v2alpha1
 kind: CiliumLoadBalancerIPPool
 metadata:
   name: main-pool
 spec:
-  cidrs:
-    - cidr: 192.168.40.0/21
+  blocks:
+    - cidr: "192.168.40.0/21"
