@@ -22,8 +22,8 @@ spec:
   # See https://github.com/angelnu/helm-charts/blob/main/charts/apps/pod-gateway/values.yaml
   values:
     image:
-      repository: ghcr.io/angelnu/pod-gateway
-      tag: v1.10.0
+      repository: ghcr.io/b-tuma/pod-gateway-udp
+      tag: v1.11.0
     webhook:
       image:
         repository: ghcr.io/angelnu/gateway-admision-controller
@@ -56,6 +56,8 @@ spec:
             value: off
           - name: DOT
             value: off
+          - name: VXLAN_PORT
+            value: "4789"
         envFrom:
           - secretRef:
               name: vpn-gateway-secret
