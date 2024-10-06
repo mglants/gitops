@@ -17,3 +17,4 @@ resources:
   - ./jackett/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./calibre-web/ks.yaml
+  - ./piped/ks.yaml

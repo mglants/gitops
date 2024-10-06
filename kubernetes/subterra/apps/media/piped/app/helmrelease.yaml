@@ -1,0 +1,194 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: piped
+  namespace: media
+spec:
+  chart:
+    spec:
+      chart: app-template
+      version: 3.5.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  interval: 30m
+  values:
+    defaultPodOptions:
+      automountServiceAccountToken: false
+
+    controllers:
+      backend:
+        strategy: RollingUpdate
+        annotations:
+          secret.reloader.stakater.com/reload: piped-secret
+
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+
+        containers:
+          app:
+            image:
+              repository: 1337kavin/piped
+              tag: latest@sha256:e9938cdda0745c4986d4add0f255777d3989849b851f290d94a4ab2b21c25384
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              requests:
+                cpu: 10m
+                memory: 500Mi
+              limits:
+                memory: 2000Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+              seccompProfile:
+                type: RuntimeDefault
+
+      frontend:
+        strategy: RollingUpdate
+        pod:
+          securityContext:
+            runAsUser: 101
+            runAsGroup: 101
+            fsGroup: 101
+            fsGroupChangePolicy: "OnRootMismatch"
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/bjw-s-labs/piped-frontend
+              tag: latest@sha256:90356f6cc6dc4eb70a1f248f2509898fb1a11d1b5094d6237afe993e4f018273
+            env:
+              HTTP_PORT: 8080
+              HTTP_WORKERS: 4
+              BACKEND_HOSTNAME: piped-api.ur30.ru
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+
+      ytproxy:
+        strategy: RollingUpdate
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+
+        containers:
+          app:
+            image:
+              repository: 1337kavin/piped-proxy
+              tag: latest@sha256:2a1c56d3dd9b290c914275f3fe19319d524c4e435d509155fd441e8ffd3356fd
+            command:
+              - /app/piped-proxy
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              requests:
+                cpu: 10m
+                memory: 500Mi
+              limits:
+                memory: 2000Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+              seccompProfile:
+                type: RuntimeDefault
+
+    service:
+      backend:
+        controller: backend
+        ports:
+          http:
+            port: 8080
+      frontend:
+        controller: frontend
+        ports:
+          http:
+            port: 8080
+      ytproxy:
+        controller: ytproxy
+        ports:
+          http:
+            port: 8080
+
+    ingress:
+      backend:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          nginx.ingress.kubernetes.io/enable-cors: "true"
+          nginx.ingress.kubernetes.io/cors-allow-origin: "https://piped.ur30.ru, https://piped-api.ur30.ru, https://piped-proxy.ur30.ru"
+        className: "external-nginx"
+        hosts:
+          - host: piped-api.ur30.ru
+            paths:
+              - path: /
+                service:
+                  identifier: backend
+                  port: http
+      frontend:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          nginx.ingress.kubernetes.io/enable-cors: "true"
+          nginx.ingress.kubernetes.io/cors-allow-origin: "https://piped.ur30.ru, https://piped-api.ur30.ru, https://piped-proxy.ur30.ru"
+        className: "external-nginx"
+        hosts:
+          - host: piped.ur30.ru
+            paths:
+              - path: /
+                service:
+                  identifier: frontend
+                  port: http
+      ytproxy:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          nginx.ingress.kubernetes.io/enable-cors: "true"
+          nginx.ingress.kubernetes.io/cors-allow-origin: "https://piped.ur30.ru, https://piped-api.ur30.ru, https://piped-proxy.ur30.ru"
+        className: "external-nginx"
+        hosts:
+          - host: piped-proxy.ur30.ru
+            paths:
+              - path: /
+                service:
+                  identifier: ytproxy
+                  port: http
+
+    persistence:
+      config:
+        type: secret
+        name: piped-secret
+        advancedMounts:
+          backend:
+            app:
+              - path: /app/config.properties
+                subPath: config.properties
+                readOnly: true
