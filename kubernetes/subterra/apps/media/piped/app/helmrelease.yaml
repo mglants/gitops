@@ -107,7 +107,7 @@ spec:
               - /app/piped-proxy
             envFrom:
               - secretRef:
-                  name: piped
+                  name: piped-env
             probes:
               liveness:
                 enabled: true
