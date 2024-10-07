@@ -105,6 +105,9 @@ spec:
               tag: latest@sha256:2a1c56d3dd9b290c914275f3fe19319d524c4e435d509155fd441e8ffd3356fd
             command:
               - /app/piped-proxy
+            envFrom:
+              - secretRef:
+                  name: piped
             probes:
               liveness:
                 enabled: true
