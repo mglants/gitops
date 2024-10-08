@@ -12,3 +12,4 @@ resources:
   - ./paperless/ks.yaml
   - ./zipline/ks.yaml
   - ./ocis/ks.yaml
+  - ./teamspeak/ks.yaml
