@@ -1,0 +1,203 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: piped
+  namespace: media
+spec:
+  chart:
+    spec:
+      chart: app-template
+      version: 3.5.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  interval: 30m
+  values:
+    controllers:
+      teamspeak:
+        containers:
+          server:
+            image:
+              # -- image repository
+              repository: teamspeak
+              # -- image tag
+              tag: '3.13.7'
+              # -- image pull policy
+              pullPolicy: IfNotPresent
+            # -- environment variables. See more environment variables in the [teamspeak image documentation](https://hub.docker.com/_/teamspeak).
+            # @default -- See below
+            env:
+              TZ: Europe/Moscow
+              TS3SERVER_LICENSE: accept
+              TS3SERVER_SERVERADMIN_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: teamspeak-secret
+                    key: SERVER_ADMIN_PASSWORD
+            ports:
+              - name: serverquery
+                containerPort: 10011
+              - name: filetransfer
+                containerPort: 30033
+              - name: voice
+                containerPort: 9987
+                protocol: UDP
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -o
+                      - pipefail
+                      - -c
+                      - echo quit | nc 127.0.0.1 10011 | grep -q TS3
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -o
+                      - pipefail
+                      - -c
+                      - echo quit | nc 127.0.0.1 10011 | grep -q TS3
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -o
+                      - pipefail
+                      - -c
+                      - echo quit | nc 127.0.0.1 10011 | grep -q TS3
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+          exporter:
+            enabled: false
+            image:
+              # -- image repository
+              repository: quay.io/ricardbejarano/ts3exporter
+              # -- image tag
+              tag: 0.0.7
+              # -- image pull policy
+              pullPolicy: IfNotPresent
+            args:
+              - -listen
+              - :9189
+              - -remote
+              - localhost:10011
+              - -enablechannelmetrics
+            ports:
+              - name: metrics
+                containerPort: 9189
+            probes:
+              liveness:
+                enabled: true
+                type: HTTP
+                path: /metrics
+                port: metrics
+              readiness:
+                enabled: true
+                type: HTTP
+                path: /metrics
+                port: metrics
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /metrics
+                    port: metrics
+                    scheme: HTTP
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+        pod:
+          # -- The TeamSpeak server binary is only available for x86_64.
+          nodeSelector:
+            kubernetes.io/arch: amd64
+
+    # -- Configures service settings for the chart.
+    # @default -- See values.yaml
+    service:
+      teamspeak:
+        primary: true
+        controller: teamspeak
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          io.cilium/lb-ipam-ips: 192.168.40.19
+        ports:
+          serverquery:
+            port: 10011
+            targetPort: serverquery
+          filetransfer:
+            port: 30033
+            targetPort: filetransfer
+          voice:
+            port: 9987
+            targetPort: voice
+            protocol: UDP
+      metrics:
+        enabled: false
+        controller: teamspeak
+        ports:
+          metrics:
+            port: 9189
+            targetPort: metrics
+
+    # -- Configure persistence settings for the chart under this key.
+    # @default -- See values.yaml
+    persistence:
+      data:
+        type: persistentVolumeClaim
+        existingClaim: teamspeak-data-v1
+        globalMounts:
+          - path: /var/ts3server
+
+    metrics:
+      # -- Enable and configure ts3exporter sidecar and Prometheus serviceMonitor.
+      # @default -- See values.yaml
+      enabled: false
+      serviceMonitor:
+        enabled: true
+        interval: 1m
+        scrapeTimeout: 30s
+        labels: {}
+      # -- Enable and configure Prometheus Rules for the chart under this key.
+      # @default -- See values.yaml
+      prometheusRule:
+        enabled: true
+        labels: {}
+        # -- Configure additionial rules for the chart under this key.
+        # @default -- See prometheusrules.yaml
+        rules: []
+          # - alert: TeamSpeakDown
+          #   annotations:
+          #     description: Teamspeak service is down.
+          #     summary: Teamspeak is down.
+          #   expr: |
+          #     ts3_serverinfo_online == 0
+          #   for: 5m
+          #   labels:
+          #     severity: critical
