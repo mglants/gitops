@@ -43,6 +43,20 @@ spec:
           verify_keys:
             "ed25519:auto": "Noi6WqcDj0QmPxCNQqgezwTlBKrfqehY1u2FyWP9uYw"
     extraConfig:
+      oidc_providers:
+        - idp_id: authentik
+          idp_name: SSO
+          discover: true
+          issuer: "https://authentik.glants.xyz/application/o/matrix/"
+          client_id: "matrix"
+          scopes:
+            - "openid"
+            - "profile"
+            - "email"
+          user_mapping_provider:
+            config:
+              localpart_template: "{{ user.nickname }}"
+              display_name_template: "{{ user.name | capitalize }}"
       presence:
         enabled: true
       enable_3pid_lookup: false
@@ -234,3 +248,8 @@ spec:
             - matrix.glants.xyz
 
       className: external-nginx
+  valuesFrom:
+    - kind: Secret
+      name: synapse-secret
+      valuesKey: oidc-secret
+      targetPath: extraConfig.oidc_providers[0].client_secret
