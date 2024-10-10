@@ -55,3 +55,4 @@ resources:
   - k8tz-charts.yaml
   - actions-runner-controller-charts.yaml
   - spegel-charts.yaml
+  - ananace-charts.yaml
