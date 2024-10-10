@@ -24,15 +24,15 @@ spec:
   #         region: us-east-1
   patroni:
     dynamicConfiguration:
+      bootstrap:
+        initdb:
+          - encoding=C
+          - locale=C
       synchronous_mode: true
       postgresql:
         synchronous_commit: on
         pg_hba:
           - hostnossl all all all md5
-      bootstrap:
-        initdb:
-          - locale: C
-          - encoding: C
   instances:
     - name: postgres
       replicas: 2
