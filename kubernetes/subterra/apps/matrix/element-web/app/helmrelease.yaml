@@ -59,7 +59,7 @@ spec:
       tls:
         - secretName: element-web-tls
           hosts:
-            - chart-example.local
+            - element.glants.xyz
       className: external-nginx
 
     resources:
