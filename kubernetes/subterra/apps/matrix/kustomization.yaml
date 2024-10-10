@@ -6,3 +6,4 @@ resources:
   - ./namespace.yaml
   # Flux-Kustomizations
   - ./synapse/ks.yaml
+  - ./element-web/ks.yaml
