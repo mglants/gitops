@@ -217,7 +217,13 @@ spec:
     postgresql:
       enabled: false
     externalPostgresql:
+      host: synapse-pgsql-ha.matrix.svc.cluster.local
+      port: 5432
+      username: synapse
+      database: synapse
       existingSecret: synapse-pgsql-pguser-synapse
+      existingSecretPasswordKey: password
+
     redis:
       enabled: true
       auth:
