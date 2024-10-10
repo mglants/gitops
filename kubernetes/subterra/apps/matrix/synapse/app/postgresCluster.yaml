@@ -29,6 +29,10 @@ spec:
         synchronous_commit: on
         pg_hba:
           - hostnossl all all all md5
+      bootstrap:
+        initdb:
+          - locale: C
+          - encoding: C
   instances:
     - name: postgres
       replicas: 2
