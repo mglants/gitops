@@ -35,7 +35,8 @@ spec:
     publicServerName: 'matrix.glants.xyz'
     signingkey:
       job:
-        enabled: true
+        enabled: false
+      existingSecret: synapse-secret
     config:
       trustedKeyServers:
         - server_name: matrix.org
@@ -53,18 +54,6 @@ spec:
     synapse:
       strategy:
         type: Recreate
-      podSecurityContext:
-        fsGroup: 666
-        runAsGroup: 666
-        runAsUser: 666
-
-      securityContext:
-        capabilities:
-          drop:
-            - ALL
-        readOnlyRootFilesystem: true
-        runAsNonRoot: true
-        runAsUser: 666
       resources:
         limits:
           cpu: 5
@@ -76,17 +65,6 @@ spec:
     workers:
       default:
         replicaCount: 1
-        podSecurityContext:
-          fsGroup: 666
-          runAsGroup: 666
-        securityContext:
-          capabilities:
-            drop:
-              - ALL
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-          runAsUser: 666
-
         resources:
           limits:
             cpu: 1
@@ -241,7 +219,7 @@ spec:
       existingClaim: synapse-data-v1
 
     volumePermissions:
-      enabled: true
+      enabled: false
     service:
       type: ClusterIP
       port: 8008
