@@ -43,10 +43,6 @@ spec:
           verify_keys:
             "ed25519:auto": "Noi6WqcDj0QmPxCNQqgezwTlBKrfqehY1u2FyWP9uYw"
     extraConfig:
-      email:
-        smtp_host: smtp-relay.default.svc.cluster.local
-        smtp_port: 587
-        notif_from: "Your Friendly %(app)s homeserver <noreply@${SECRET_DOMAIN}>"
       presence:
         enabled: true
       enable_3pid_lookup: false
