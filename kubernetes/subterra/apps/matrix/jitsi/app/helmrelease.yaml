@@ -9,7 +9,7 @@ spec:
   interval: 15m
   chart:
     spec:
-      chart: jitsi
+      chart: jitsi-meet
       version: 1.4.1
       sourceRef:
         kind: HelmRepository
