@@ -7,3 +7,4 @@ resources:
   # Flux-Kustomizations
   - ./synapse/ks.yaml
   - ./element-web/ks.yaml
+  - ./jitsi/ks.yaml
