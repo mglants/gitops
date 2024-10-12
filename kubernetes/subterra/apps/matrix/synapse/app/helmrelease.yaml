@@ -65,9 +65,6 @@ spec:
       strategy:
         type: Recreate
       resources:
-        limits:
-          cpu: 5
-          memory: 5Gi
         requests:
           cpu: 1
           memory: 2Gi
