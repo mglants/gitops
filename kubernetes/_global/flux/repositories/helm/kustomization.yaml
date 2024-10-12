@@ -56,3 +56,4 @@ resources:
   - actions-runner-controller-charts.yaml
   - spegel-charts.yaml
   - ananace-charts.yaml
+  - jitsi-charts.yaml
