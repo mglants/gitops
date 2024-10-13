@@ -213,7 +213,7 @@ spec:
         listeners: [client]
         resources:
           requests:
-            cpu: 5
+            cpu: 1
             memory: 128Mi
         csPaths:
           - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages"
