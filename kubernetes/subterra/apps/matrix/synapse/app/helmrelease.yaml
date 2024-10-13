@@ -37,8 +37,6 @@ spec:
       job:
         enabled: false
       existingSecret: synapse-secret
-    config:
-      useStructuredLogging: true
     extraConfig:
       max_upload_size: 100M
       url_preview_enabled: true
