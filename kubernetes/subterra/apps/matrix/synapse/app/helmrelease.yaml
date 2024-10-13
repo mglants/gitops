@@ -207,7 +207,7 @@ spec:
         - /_synapse/client/new_user_consent
         - /_synapse/client/sso_register
         - /_synapse/client/oidc/callback
-      mesages:
+      messages:
         enabled: true
         generic: true
         listeners: [client]
