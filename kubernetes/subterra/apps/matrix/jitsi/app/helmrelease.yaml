@@ -9,11 +9,11 @@ spec:
   interval: 15m
   chart:
     spec:
-      chart: jitsi-meet
-      version: 1.4.1
+      chart: jitsi
+      version: 0.8.1
       sourceRef:
         kind: HelmRepository
-        name: jitsi-charts
+        name: element-jitsi-charts
         namespace: flux-system
   maxHistory: 3
   install:
@@ -27,62 +27,29 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    enableAuth: false
-    enableGuests: true
-
-    publicURL: meet.glants.xyz
-    tz: Europe/Moscow
-
-    image:
-      pullPolicy: IfNotPresent
-
-    websockets:
-      colibri:
-        enabled: true
-      xmpp:
-        enabled: true
-
-    web:
-      replicaCount: 1
-      image:
-        repository: jitsi/web
-
-      ingress:
-        enabled: true
-        ingressClassName: external-nginx
-        annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-prod
-          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
-        hosts:
-          - host: meet.glants.xyz
-            paths: ['/']
-        tls:
-          - secretName: jitsi-tls
-            hosts:
-              - meet.glants.xyz
-    jicofo:
-      replicaCount: 1
-      image:
-        repository: jitsi/jicofo
-
-    jvb:
-      replicaCount: 1
-      image:
-        repository: jitsi/jvb
-      publicIPs:
-        - 193.41.79.236
-      UDPPort: 10000
-      service:
-        type: LoadBalancer
-        externalTrafficPolicy: Local
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
-          io.cilium/lb-ipam-ips: 192.168.40.21
-      metrics:
-        enabled: true
-    prosody:
+    shardCount: 1
+    ingress:
       enabled: true
-      persistence:
+      hosts:
+        - jitsi.glants.xyz
+      class: external-nginx
+      tls:
         enabled: true
-        size: 3G
-        storageClassName: freenas-iscsi-csi
+        secretName: jitsi-tls
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+    jvb:
+      sysctlDaemonSetEnable: false
+      advertiseIP: 193.41.79.236
+    web:
+      customConfig: false
+      customUi: false
+    uvs:
+      enable: true
+      homeserverUrl: https://matrix.glants.xyz
+    createSecret: false
+    TZ: Europe/Moscow
+
+    JVB_STUN_SERVERS: stun.l.google.com:19302,stun1.l.google.com:19302,stun2.l.google.com:19302
+    secretName: jitsi-secret

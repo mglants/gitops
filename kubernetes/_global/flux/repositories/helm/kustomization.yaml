@@ -57,3 +57,4 @@ resources:
   - spegel-charts.yaml
   - ananace-charts.yaml
   - jitsi-charts.yaml
+  - element-jitsi-charts.yaml
