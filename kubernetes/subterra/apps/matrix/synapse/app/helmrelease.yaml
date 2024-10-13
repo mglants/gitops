@@ -97,6 +97,7 @@ spec:
         listeners: [client, federation]
         csPaths:
         - "/_matrix/client/(api/v1|r0|v3|unstable)/publicRooms"
+        - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages"
         - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/joined_members"
         - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/context/.*"
         - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/members"
