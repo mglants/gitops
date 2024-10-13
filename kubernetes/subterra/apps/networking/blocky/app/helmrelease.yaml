@@ -106,6 +106,8 @@ spec:
           netbox.glants.xyz: 192.168.40.1
           mail.ur30.ru: 192.168.40.9
           files.glants.xyz: 192.168.40.1
+          matrix.glants.xyz: 192.168.40.1
+          glants.xyz: 192.168.40.1
       bootstrapDns: tcp+udp:1.1.1.1
       upstream:
         default:
