@@ -217,6 +217,8 @@ spec:
       media_repository:
         enabled: true
         listeners: [client, federation, media]
+        strategy:
+          type: Recreate
         csPaths:
           - "/_matrix/media/.*"
           - "/_matrix/client/v1/media/.*"
