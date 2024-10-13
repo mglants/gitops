@@ -31,7 +31,7 @@ spec:
     ingress:
       enabled: true
       hosts:
-        - jitsi.glants.xyz
+        - meet.glants.xyz
       class: external-nginx
       tls:
         enabled: true
