@@ -43,6 +43,26 @@ spec:
           verify_keys:
             "ed25519:auto": "Noi6WqcDj0QmPxCNQqgezwTlBKrfqehY1u2FyWP9uYw"
     extraConfig:
+      max_upload_size: 100M
+      url_preview_enabled: true
+      url_preview_ip_range_blacklist:
+      - '127.0.0.0/8'
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '100.64.0.0/10'
+      - '169.254.0.0/16'
+      - '::1/128'
+      - 'fe80::/64'
+      - 'fc00::/7'
+      max_spider_size: 10M
+      stream_writers:
+        events: event_persister1
+        typing: typing_persister
+        to_device: to_device_persister
+        account_data: account_data_persister
+        receipts: receipts_persister
+        presence: presence_persister
       oidc_providers:
         - idp_id: authentik
           idp_name: SSO
