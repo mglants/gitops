@@ -59,7 +59,7 @@ spec:
         receipts: receipts_persister
         presence: presence_persister
       password_config:
-        enabled: false
+        enabled: true
 
       oidc_providers:
         - idp_id: authentik
