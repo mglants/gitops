@@ -81,7 +81,7 @@ spec:
         type: Recreate
       resources:
         requests:
-          cpu: 1
+          cpu: 5
           memory: 2Gi
 
     workers:
