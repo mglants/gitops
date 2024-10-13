@@ -97,7 +97,7 @@ spec:
           pool_mode: session
           client_tls_sslmode: prefer
           default_pool_size: "100"
-          max_client_conn: "500"
+          max_client_conn: *connections
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: "kubernetes.io/hostname"
