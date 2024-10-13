@@ -35,7 +35,7 @@ spec:
           - hostnossl all all 10.244.0.0/16 md5
           - hostssl all all all md5
         parameters:
-          max_connections: &connections 500
+          max_connections: &connections "500"
   instances:
     - name: postgres
       replicas: &replica 2
@@ -97,7 +97,7 @@ spec:
           pool_mode: session
           client_tls_sslmode: prefer
           default_pool_size: "100"
-          max_client_conn: *connections
+          max_client_conn: "500"
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: "kubernetes.io/hostname"
