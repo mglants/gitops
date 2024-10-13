@@ -97,7 +97,6 @@ spec:
         listeners: [client, federation]
         csPaths:
         - "/_matrix/client/(api/v1|r0|v3|unstable)/publicRooms"
-        - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages"
         - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/joined_members"
         - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/context/.*"
         - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/members"
@@ -208,6 +207,16 @@ spec:
         - /_synapse/client/new_user_consent
         - /_synapse/client/sso_register
         - /_synapse/client/oidc/callback
+      mesages:
+        enabled: true
+        generic: true
+        listeners: [client]
+        resources:
+          requests:
+            cpu: 5
+            memory: 128Mi
+        csPaths:
+          - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages"
       pusher:
         enabled: true
       appservice:
