@@ -60,6 +60,8 @@ spec:
       databases:
         - synapse
       options: SUPERUSER
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
