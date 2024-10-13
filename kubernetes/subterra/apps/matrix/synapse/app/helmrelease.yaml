@@ -264,7 +264,8 @@ spec:
           base_url: https://matrix.glants.xyz
         jitsi:
           preferred_domain: jitsi.glants.xyz
-
+        im.vector.riot.jitsi:
+          preferredDomain: jitsi.glants.xyz
       resources:
         limits:
           cpu: 5m
