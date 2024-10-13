@@ -38,7 +38,9 @@ spec:
       name: glants.xyz
       identity_url: https://vector.im
 
-    config: {}
+    config:
+      jitsi:
+        preferred_domain: jitsi.glants.xyz
     nginxConfig: |-
       add_header X-Frame-Options SAMEORIGIN;
       add_header X-Content-Type-Options nosniff;
