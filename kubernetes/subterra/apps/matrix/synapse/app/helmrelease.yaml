@@ -279,7 +279,9 @@ spec:
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-prod
         external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
-
+        nginx.ingress.kubernetes.io/proxy-body-size: 32m
+        nginx.ingress.kubernetes.io/enable-cors: "true"
+        nginx.ingress.kubernetes.io/cors-allow-origin: "*"
       tls:
         - secretName: synapse-tls
           hosts:
