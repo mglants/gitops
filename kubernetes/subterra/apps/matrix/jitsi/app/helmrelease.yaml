@@ -40,9 +40,17 @@ spec:
         cert-manager.io/cluster-issuer: letsencrypt-prod
         external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
     jvb:
+      resources:
+        requests:
+          cpu: 1
+          memory: 1Gi
       sysctlDaemonSetEnable: false
       advertiseIP: 193.41.79.236
     web:
+      resources:
+        requests:
+          cpu: 200m
+          memory: 300Mi
       customConfig: false
       customUi: false
     uvs:

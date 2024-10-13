@@ -81,15 +81,15 @@ spec:
         type: Recreate
       resources:
         requests:
-          cpu: 1
-          memory: 2Gi
+          cpu: 500m
+          memory: 1Gi
 
     workers:
       default:
         replicaCount: 1
         resources:
           requests:
-            cpu: 500m
+            cpu: 200m
             memory: 128Mi
       generic_worker:
         enabled: true
