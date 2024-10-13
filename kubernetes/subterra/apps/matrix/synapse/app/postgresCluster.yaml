@@ -2,7 +2,7 @@
 apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
-  name: synapse-pgsql
+  name: &name synapse-pgsql
   namespace: matrix
 spec:
   postgresVersion: 15
@@ -32,10 +32,11 @@ spec:
       postgresql:
         synchronous_commit: on
         pg_hba:
-          - hostnossl all all all md5
+          - hostnossl all all 10.244.0.0/16 md5
+          - hostssl all all all md5
   instances:
     - name: postgres
-      replicas: 2
+      replicas: &replica 2
       dataVolumeClaimSpec:
         storageClassName: freenas-iscsi-csi
         accessModes:
@@ -43,6 +44,15 @@ spec:
         resources:
           requests:
             storage: 30Gi
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: "kubernetes.io/hostname"
+          whenUnsatisfiable: "DoNotSchedule"
+          labelSelector:
+            matchLabels:
+              postgres-operator.crunchydata.com/cluster: *name
+              postgres-operator.crunchydata.com/data: postgres
+
   users:
     - name: synapse
       databases:
@@ -73,3 +83,24 @@ spec:
             bucket: crunchy-postgres
             endpoint: nas.ur30.ru
             region: us-east-1
+  proxy:
+    pgBouncer:
+      port: 5432
+      replicas: *replica
+      metadata:
+        labels:
+          app.kubernetes.io/name: crunchy-postgres-pgbouncer
+      config:
+        global:
+          pool_mode: session
+          client_tls_sslmode: prefer
+          default_pool_size: "100"
+          max_client_conn: "500"
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: "kubernetes.io/hostname"
+          whenUnsatisfiable: "DoNotSchedule"
+          labelSelector:
+            matchLabels:
+              postgres-operator.crunchydata.com/cluster: *name
+              postgres-operator.crunchydata.com/role: "pgbouncer"
