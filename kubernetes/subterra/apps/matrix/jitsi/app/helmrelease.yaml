@@ -58,6 +58,7 @@ spec:
     uvs:
       enable: true
       homeserverUrl: https://matrix.glants.xyz
+      canQueryPrivateIps: true
     createSecret: false
     TZ: Europe/Moscow
 
