@@ -58,3 +58,4 @@ resources:
   - ananace-charts.yaml
   - jitsi-charts.yaml
   - element-jitsi-charts.yaml
+  - stunner-charts.yaml
