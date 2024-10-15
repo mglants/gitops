@@ -37,6 +37,10 @@ spec:
       job:
         enabled: false
       existingSecret: synapse-secret
+    config:
+      turnUris:
+        - turn:turn.glants.xyz:3478?transport=udp
+        - turn:turn.glants.xyz:3478?transport=tcp
     extraConfig:
       max_upload_size: 100M
       url_preview_enabled: true
@@ -50,6 +54,8 @@ spec:
       - '::1/128'
       - 'fe80::/64'
       - 'fc00::/7'
+      turn_username: matrix
+      turn_user_lifetime: 86400000
       max_spider_size: 10M
       stream_writers:
         events: event_persister1
@@ -323,3 +329,7 @@ spec:
       name: synapse-secret
       valuesKey: oidc-secret
       targetPath: extraConfig.oidc_providers[0].client_secret
+    - kind: Secret
+      name: stunner-secret
+      valuesKey: password
+      targetPath: extraConfig.turn_password
