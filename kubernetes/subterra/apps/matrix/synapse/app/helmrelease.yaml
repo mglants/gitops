@@ -225,12 +225,9 @@ spec:
         enabled: true
       media_repository:
         enabled: true
-        listeners: [client, federation, media]
-        strategy:
-          type: Recreate
+        listeners: [media]
         csPaths:
           - "/_matrix/media/.*"
-          - "/_matrix/client/v1/media/.*"
           - "/_synapse/admin/v1/purge_media_cache$"
           - "/_synapse/admin/v1/room/.*/media"
           - "/_synapse/admin/v1/user/.*/media"
@@ -239,7 +236,6 @@ spec:
           - "/_synapse/admin/v1/users/.*/media$"
         paths:
           - "/_matrix/media/.*"
-          - "/_matrix/federation/v1/media/.*"
       frontend_proxy:
         enabled: true
     wellknown:
