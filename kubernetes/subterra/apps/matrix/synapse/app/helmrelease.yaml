@@ -226,6 +226,8 @@ spec:
       media_repository:
         enabled: true
         listeners: [media]
+        strategy:
+          type: Recreate
         csPaths:
           - "/_matrix/media/.*"
           - "/_synapse/admin/v1/purge_media_cache$"
