@@ -224,7 +224,7 @@ spec:
       federation_sender:
         enabled: true
       media_repository:
-        enabled: true
+        enabled: false
         listeners: [media]
         strategy:
           type: Recreate
