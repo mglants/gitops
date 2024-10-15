@@ -57,12 +57,6 @@ spec:
       turn_username: matrix
       turn_user_lifetime: 86400000
       max_spider_size: 10M
-      stream_writers:
-        events: event_persister1
-        typing: typing_persister
-        to_device: to_device_persister
-        account_data: account_data_persister
-        presence: presence_persister
       password_config:
         enabled: true
 
@@ -124,6 +118,11 @@ spec:
         - "/_matrix/client/(api/v1|r0|v3|unstable)/profile/"
         - "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"
         - "/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers"
+        - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/typing"
+        - "/_matrix/client/(r0|v3|unstable)/sendToDevice/"
+        - "/_matrix/client/(r0|v3|unstable)/.*/tags"
+        - "/_matrix/client/(r0|v3|unstable)/.*/account_data"
+        - "/_matrix/client/(api/v1|r0|v3|unstable)/presence/"
         paths:
         - "/_matrix/federation/v1/event/"
         - "/_matrix/federation/v1/state/"
@@ -146,48 +145,6 @@ spec:
         - "/_matrix/federation/v1/user/devices/"
         - "/_matrix/federation/v1/get_groups_publicised"
         - "/_matrix/key/v2/query"
-      event_persister1:
-        enabled: true
-        generic: true
-        name: event_persister1
-        listeners: [replication]
-      typing_persister:
-        enabled: true
-        generic: true
-        name: typing_persister
-        listeners: [client, replication]
-        csPaths:
-        - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/typing"
-      to_device_persister:
-        enabled: true
-        generic: true
-        name: to_device_persister
-        listeners: [client, replication]
-        csPaths:
-        - "/_matrix/client/(r0|v3|unstable)/sendToDevice/"
-      account_data_persister:
-        enabled: true
-        generic: true
-        name: account_data_persister
-        listeners: [client, replication]
-        csPaths:
-        - "/_matrix/client/(r0|v3|unstable)/.*/tags"
-        - "/_matrix/client/(r0|v3|unstable)/.*/account_data"
-      # receipts_persister:
-      #   enabled: true
-      #   generic: true
-      #   name: receipts_persister
-      #   listeners: [client, replication]
-      #   csPaths:
-      #   - "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"
-      #   - "/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers"
-      presence_persister:
-        enabled: true
-        generic: true
-        name: presence_persister
-        listeners: [client, replication]
-        csPaths:
-        - "/_matrix/client/(api/v1|r0|v3|unstable)/presence/"
       federation_reader:
         enabled: true
         generic: true
