@@ -26,7 +26,7 @@ spec:
         enabled: true
         existingClaim: unifi-config-v1
     podAnnotations:
-      backup.velero.io/backup-volumes: data
+      setGateway: 'true'
     env:
       timezone: Europe/Moscow
       RUNAS_UID0: 'true'
