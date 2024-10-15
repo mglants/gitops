@@ -314,7 +314,13 @@ spec:
           hosts:
             - glants.xyz
             - matrix.glants.xyz
-
+      paths:
+        - path: /_matrix/media
+          pathType: Prefix
+          backend:
+            service:
+              name: matrix-media-repo
+              port: 8000
       className: external-nginx
   valuesFrom:
     - kind: Secret
