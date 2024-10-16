@@ -10,3 +10,5 @@ spec:
     name: letsencrypt-prod
     kind: ClusterIssuer
   commonName: turn.glants.xyz
+  dnsNames:
+    - turn.glants.xyz
