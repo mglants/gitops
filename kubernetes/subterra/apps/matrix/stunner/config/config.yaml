@@ -1,0 +1,74 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: stunner-gatewayclass
+spec:
+  controllerName: "stunner.l7mp.io/gateway-operator"
+  parametersRef:
+    group: "stunner.l7mp.io"
+    kind: GatewayConfig
+    name: stunner-gatewayconfig
+    namespace: matrix
+  description: "STUNner is a WebRTC ingress gateway for Kubernetes"
+
+---
+apiVersion: stunner.l7mp.io/v1
+kind: GatewayConfig
+metadata:
+  name: stunner-gatewayconfig
+  namespace: matrix
+spec:
+  realm: stunner.l7mp.io
+  authRef:
+    name: stunner-secret
+    namespace: matrix
+  loadBalancerServiceAnnotations:
+    io.cilium/lb-ipam-ips: 192.168.40.21
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: stunner-gateway
+  namespace: matrix
+  annotations:
+    stunner.l7mp.io/enable-mixed-protocol-lb: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  gatewayClassName: stunner-gatewayclass
+  listeners:
+    - name: tcp-listener
+      port: 3478
+      protocol: TURN-TCP
+    - name: udp-listener
+      port: 3478
+      protocol: TURN-UDP
+    - name: tls-listener
+      port: 5349
+      protocol: TURN-TLS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: stunner-tls
+    - name: dtls-listener
+      port: 5349
+      protocol: TURN-DTLS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: stunner-tls
+---
+apiVersion: stunner.l7mp.io/v1
+kind: UDPRoute
+metadata:
+  name: stunner-headless
+  namespace: matrix
+spec:
+  parentRefs:
+    - name: stunner-gateway
+  rules:
+    - backendRefs:
+        - name: stunner-gateway
+          namespace: matrix
