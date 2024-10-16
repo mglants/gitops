@@ -39,6 +39,8 @@ spec:
       existingSecret: synapse-secret
     config:
       turnUris:
+        - turns:turn.glants.xyz:5349?transport=udp
+        - turns:turn.glants.xyz:5349?transport=tcp
         - turn:turn.glants.xyz:3478?transport=udp
         - turn:turn.glants.xyz:3478?transport=tcp
     extraConfig:
