@@ -108,7 +108,7 @@ spec:
           files.glants.xyz: 192.168.40.1
           matrix.glants.xyz: 192.168.40.1
           glants.xyz: 192.168.40.1
-          jitsi.glants.xyz 192.168.40.1
+          jitsi.glants.xyz: 192.168.40.1
       bootstrapDns: tcp+udp:1.1.1.1
       upstream:
         default:
