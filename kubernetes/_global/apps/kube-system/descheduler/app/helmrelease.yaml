@@ -28,8 +28,8 @@ spec:
             - name: DefaultEvictor
               args:
                 evictFailedBarePods: true
-                evictLocalStoragePods: true
-                evictSystemCriticalPods: true
+                evictLocalStoragePods: false
+                evictSystemCriticalPods: false
                 nodeFit: true
             - name: RemovePodsViolatingInterPodAntiAffinity
             - name: RemovePodsViolatingNodeAffinity
@@ -48,6 +48,16 @@ spec:
                   cpu: 80
                   memory: 80
                   pods: 60
+                evictableNamespaces:
+                  exclude:
+                    - kube-system
+                    - democratic-csi
+            - name: PodLifeTime
+              args:
+                maxPodLifeTimeSeconds: 86400
+                states:
+                  - Pending
+                  - PodInitializing
           plugins:
             balance:
               enabled:
@@ -58,6 +68,7 @@ spec:
                 - RemovePodsViolatingInterPodAntiAffinity
                 - RemovePodsViolatingNodeAffinity
                 - RemovePodsViolatingNodeTaints
+                - PodLifeTime
     service:
       enabled: true
     serviceMonitor:
