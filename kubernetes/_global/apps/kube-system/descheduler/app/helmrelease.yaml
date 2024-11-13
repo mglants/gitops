@@ -28,8 +28,8 @@ spec:
             - name: DefaultEvictor
               args:
                 evictFailedBarePods: true
-                evictLocalStoragePods: false
-                evictSystemCriticalPods: false
+                evictLocalStoragePods: true
+                evictSystemCriticalPods: true
                 nodeFit: true
             - name: RemovePodsViolatingInterPodAntiAffinity
             - name: RemovePodsViolatingNodeAffinity
