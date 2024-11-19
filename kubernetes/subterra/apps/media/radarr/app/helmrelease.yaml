@@ -20,7 +20,7 @@ spec:
   values:
     image:
       repository: linuxserver/radarr
-      tag: 5.14.0
+      tag: 5.15.1
       # -- image pull policy
       pullPolicy: IfNotPresent
     podSecurityContext:
