@@ -28,7 +28,7 @@ spec:
   values:
     image:
       repository: teslamate/teslamate
-      tag: 1.31.1
+      tag: 1.32.0
     env:
       TZ: Europe/Moscow
       DISABLE_MQTT: 'false'
