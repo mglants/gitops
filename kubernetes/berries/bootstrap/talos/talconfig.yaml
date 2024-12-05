@@ -6,7 +6,7 @@ endpoint: https://${clusterEndpointIP}:6443
 # renovate: depName=ghcr.io/siderolabs/installer datasource=docker
 talosVersion: v1.7.7
 # renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker
-kubernetesVersion: v1.31.2
+kubernetesVersion: v1.30.1
 
 cniConfig:
   name: none
@@ -78,7 +78,7 @@ controlPlane:
     customization:
       extraKernelArgs:
         - net.ifnames=0
-
+        - usb-storage.quirks=174c:55aa:u
   patches:
     # Disable search domain everywhere
     - &machine_search_domain |-
@@ -163,6 +163,7 @@ worker:
     customization:
       extraKernelArgs:
         - net.ifnames=0
+        - usb-storage.quirks=174c:55aa:u
       systemExtensions:
         officialExtensions:
           - siderolabs/usb-modem-drivers
