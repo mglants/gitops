@@ -20,7 +20,7 @@ data:
     # Updates
     ###############
 
-    PrivateMirror clamavdb.c3sl.ufpr.br
+    PrivateMirror clamav.mirror.eterfund.ru
     ScriptedUpdates no
     NotifyClamd /etc/clamav/clamd.conf
     Bytecode yes
