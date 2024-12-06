@@ -167,6 +167,8 @@ spec:
           url: https://raw.githubusercontent.com/billimek/k8s-gitops/master/monitoring/grafana/dashboards/windows_node.json
           datasource: Prometheus
       teslamate:
+        battery-health:
+          url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/battery-health.json
         charge-level:
           url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/charge-level.json
           # datasource: TeslaMate
