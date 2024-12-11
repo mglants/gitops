@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: ghcr.io/mglants/kea-dhcp
-      tag: 2.6.0
+      tag: 2.7.5
     replicaCount: 1
     resources:
       limits:
