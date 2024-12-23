@@ -135,7 +135,7 @@ spec:
             subPath: config
       nfs-data:
         type: nfs
-        server: nas.ur30.ru
+        server: 192.168.48.150
         path: /mnt/Storinator/ocis
         globalMounts:
           - path: /var/lib/ocis
