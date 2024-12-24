@@ -62,7 +62,6 @@ spec:
               STORAGE_USERS_S3NG_ENDPOINT: https://nas.ur30.ru:30002
               STORAGE_USERS_S3NG_REGION: us-east-1
               STORAGE_USERS_S3NG_BUCKET: ocis
-              OIDC_DOMAIN: "authentik.glants.xyz"
               OCIS_OIDC_ISSUER: "https://authentik.glants.xyz/application/o/ocis/"
               WEB_OIDC_METADATA_URL: "https://authentik.glants.xyz/application/o/ocis/.well-known/openid-configuration"
               PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: "none"
@@ -71,6 +70,7 @@ spec:
               # Auto role assignment
               # docs: https://doc.owncloud.com/ocis/next/deployment/services/s-list/proxy.html#automatic-role-assignments
               PROXY_AUTOPROVISION_ACCOUNTS: true
+              PROXY_CSP_CONFIG_FILE_LOCATION: /etc/ocis/csp.yaml
               WEB_OIDC_SCOPE: "openid profile email offline_access groups"
               PROXY_USER_OIDC_CLAIM: "preferred_username"
               PROXY_ROLE_ASSIGNMENT_DRIVER: oidc
