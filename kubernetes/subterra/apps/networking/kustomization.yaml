@@ -8,6 +8,7 @@ resources:
   - ./bind9/ks.yaml
   - ./blocky/ks.yaml
   - ./externaldns/ks.yaml
+  - ./external-services/ks.yaml
   - ./kea/ks.yaml
   - ./uisp/ks.yaml
   - ./unifi/ks.yaml
