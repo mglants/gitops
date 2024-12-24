@@ -5,8 +5,7 @@ directives:
     - '''self'''
     - 'blob:'
     - 'https://raw.githubusercontent.com/owncloud/awesome-ocis/'
-    # In contrary to bash and docker the default is given after the | character
-    - 'https://${OIDC_DOMAIN}/'
+    - 'https://authentik.glants.xyz/'
   default-src:
     - '''none'''
   font-src:
