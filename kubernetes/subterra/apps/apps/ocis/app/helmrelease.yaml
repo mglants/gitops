@@ -62,6 +62,7 @@ spec:
               STORAGE_USERS_S3NG_ENDPOINT: https://nas.ur30.ru:30002
               STORAGE_USERS_S3NG_REGION: us-east-1
               STORAGE_USERS_S3NG_BUCKET: ocis
+              OIDC_DOMAIN: "authentik.glants.xyz"
               OCIS_OIDC_ISSUER: "https://authentik.glants.xyz/application/o/ocis/"
               WEB_OIDC_METADATA_URL: "https://authentik.glants.xyz/application/o/ocis/.well-known/openid-configuration"
               PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: "none"
@@ -127,6 +128,13 @@ spec:
         globalMounts:
           - path: /etc/ocis/web.yaml
             subPath: web.yaml
+            readOnly: true
+      csp-config:
+        type: configMap
+        name: ocis-configmap
+        globalMounts:
+          - path: /etc/ocis/csp.yaml
+            subPath: csp.yaml
             readOnly: true
       config:
         existingClaim: ocis-config-v1
