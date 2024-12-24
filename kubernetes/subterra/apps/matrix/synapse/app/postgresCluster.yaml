@@ -73,7 +73,7 @@ spec:
         repo1-retention-full-type: time
         repo1-path: /synapse/repo1
         repo1-s3-uri-style: path
-        repo1-storage-port: '9000'
+        repo1-storage-port: '30002'
       manual:
         repoName: repo1
         options:

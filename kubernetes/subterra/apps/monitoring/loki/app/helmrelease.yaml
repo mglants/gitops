@@ -90,7 +90,7 @@ spec:
         s3:
           s3ForcePathStyle: true
           insecure: false
-          endpoint: nas.ur30.ru:9000
+          endpoint: nas.ur30.ru:30000
           region: us-east-1
 
     gateway:

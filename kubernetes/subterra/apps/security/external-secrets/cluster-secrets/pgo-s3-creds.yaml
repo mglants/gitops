@@ -30,7 +30,7 @@ spec:
 
     dataFrom:
       - extract:
-          key: nas-s3
+          key: pgo-s3-creds
         rewrite:
           - regexp:
               source: (.*)
