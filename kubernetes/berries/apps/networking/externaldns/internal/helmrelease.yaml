@@ -18,25 +18,42 @@ spec:
 
   values:
     fullnameOverride: *name
+    podAnnotations:
+      secret.reloader.stakater.com/reload: externaldns-internal-secrets
     extraArgs:
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
     domainFilters:
       - home
       - glants.xyz
-    env:
-      - name: EXTERNAL_DNS_PIHOLE_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: externaldns-internal-secrets
-            key: pihole_api_key
-      - name: EXTERNAL_DNS_PIHOLE_SERVER
-        valueFrom:
-          secretKeyRef:
-            name: externaldns-internal-secrets
-            key: pihole_server
-    provider: pihole
-    registry: noop
+    provider:
+      name: webhook
+      webhook:
+        image:
+          repository: ghcr.io/muhlba91/external-dns-provider-adguard
+          tag: v8.0.0
+        env:
+          - name: ADGUARD_URL
+            value: http://172.16.30.1:3000
+          - name: ADGUARD_USER
+            value: adguard
+          - name: ADGUARD_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: externaldns-internal-secrets
+                key: password
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http-webhook
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: http-webhook
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
     serviceMonitor:
       enabled: true
 
@@ -44,6 +61,7 @@ spec:
       - ingress
       - service
     txtPrefix: k8s.
+    txtOwnerId: berries
   postRenderers:
     - kustomize:
         patches:
