@@ -44,18 +44,6 @@ spec:
               secretKeyRef:
                 name: externaldns-internal-secrets
                 key: password
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: http-webhook
-          initialDelaySeconds: 10
-          timeoutSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /readyz
-            port: http-webhook
-          initialDelaySeconds: 10
-          timeoutSeconds: 5
     serviceMonitor:
       enabled: true
 
