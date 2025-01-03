@@ -37,6 +37,8 @@ spec:
         value: 'true'
       - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET_ALG
         value: 'hmac-sha256'
+      - name: EXTERNAL_DNS_RFC2136_TSIG_KEYNAME
+        value: 'rndc-key'
       - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
         valueFrom:
           secretKeyRef:
