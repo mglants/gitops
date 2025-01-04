@@ -64,6 +64,7 @@ spec:
         ports:
           http:
             port: 8686
+            primary: true
           kubernetes-logs:
             port: 6000
           syslog-udp:
