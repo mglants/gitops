@@ -47,7 +47,7 @@ spec:
                 thresholds:
                   cpu: 80
                   memory: 80
-                  pods: 60
+                  pods: 100
                 evictableNamespaces:
                   exclude:
                     - kube-system
