@@ -59,3 +59,4 @@ resources:
   - jitsi-charts.yaml
   - element-jitsi-charts.yaml
   - stunner-charts.yaml
+  - windmill-charts.yaml

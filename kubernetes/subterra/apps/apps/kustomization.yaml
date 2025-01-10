@@ -13,3 +13,4 @@ resources:
   - ./zipline/ks.yaml
   - ./ocis/ks.yaml
   - ./teamspeak/ks.yaml
+  - ./windmill/ks.yaml
