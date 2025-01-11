@@ -49,7 +49,6 @@ spec:
               ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_LEGACY_ENTITY_ATTRIBUTES: false
               ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_LEGACY_TRIGGERS: false
               ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_STATUS_TOPIC: homeassistant/status
-              ZIGBEE2MQTT_CONFIG_HOMEASSISTANT: 'true'
               ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC: zigbee2mqtt
               ZIGBEE2MQTT_CONFIG_MQTT_INCLUDE_DEVICE_INFORMATION: 'true'
               ZIGBEE2MQTT_CONFIG_MQTT_KEEPALIVE: 60
@@ -59,6 +58,7 @@ spec:
               ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: 'false'
               ZIGBEE2MQTT_CONFIG_SERIAL_PORT: /dev/ttyUSBZigbee
               ZIGBEE2MQTT_CONFIG_SERIAL_DISABLE_LED: false
+              ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: zstack
             envFrom:
               - secretRef:
                   name: zigbee2mqtt-secret
