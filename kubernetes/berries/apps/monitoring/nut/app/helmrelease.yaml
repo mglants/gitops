@@ -82,7 +82,7 @@ spec:
         ups.conf: |
           [ups]
             driver = dummy-ups
-            port = ups@172.16.30.20
+            port = ups@172.16.30.200
             desc = "Crown CMUOA-300X-1.5K"
     metrics:
       # -- Enable and configure prometheus-nut-exporter sidecar and Prometheus serviceMonitor.
