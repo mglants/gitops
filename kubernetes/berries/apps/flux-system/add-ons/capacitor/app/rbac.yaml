@@ -13,7 +13,7 @@ rules:
     - pods/log
     - ingresses
     - deployments
-    - servicesЫ
+    - services
     - secrets
     - events
     - configmaps
@@ -26,12 +26,16 @@ rules:
     - kustomize.toolkit.fluxcd.io
     - helm.toolkit.fluxcd.io
   resources:
-    - gitrepositories
-    - ocirepositories
-    - helmrepositories
-    - buckets
-    - kustomizations
-    - helmreleases
+    - "*"
+  verbs:
+    - get
+    - watch
+    - list
+    - patch # to allow force reconciling by adding an annotation
+- apiGroups:
+    - infra.contrib.fluxcd.io
+  resources:
+    - "*"
   verbs:
     - get
     - watch
