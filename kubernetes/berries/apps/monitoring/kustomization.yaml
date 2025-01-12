@@ -9,7 +9,6 @@ resources:
   - ./botkube/ks.yaml
   - ./exporters/graphite-exporter/ks.yaml
   - ./exporters/ipmi-exporter/ks.yaml
-  - ./exporters/mikrotik-exporter/ks.yaml
   - ./exporters/mqtt-exporter/ks.yaml
   - ./exporters/smartctl-exporter/ks.yaml
   - ./exporters/snmp-exporter/ks.yaml
