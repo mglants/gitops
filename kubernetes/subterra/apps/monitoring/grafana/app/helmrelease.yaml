@@ -99,7 +99,7 @@ spec:
         blocky:
           # renovate: dashboardName="blocky"
           gnetId: 13768
-          revision: 4
+          revision: 5
         external-dns:
           # renovate: dashboardName="External-DNS"
           gnetId: 15038
