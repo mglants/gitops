@@ -169,7 +169,7 @@ spec:
               - hoarder.glants.xyz
     persistence:
       data:
-        existingClaim: hoarder-data
+        existingClaim: hoarder-data-v1
         advancedMounts:
           hoarder:
             app:
