@@ -14,3 +14,4 @@ resources:
   - ./ocis/ks.yaml
   - ./teamspeak/ks.yaml
   - ./windmill/ks.yaml
+  - ./vikunja/ks.yaml
