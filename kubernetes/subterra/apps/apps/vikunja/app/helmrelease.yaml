@@ -41,6 +41,14 @@ spec:
               VIKUNJA_SERVICE_ENABLELINKSHARING: false
               VIKUNJA_SERVICE_ENABLEREGISTRATION: false
               VIKUNJA_SERVICE_PUBLICURL: https://vikunja.glants.xyz/
+              VIKUNJA_AUTH_OPENID_ENABLED: true
+              VIKUNJA_AUTH_OPENID_PROVIDERS_SSO_NAME: SSO
+              VIKUNJA_AUTH_OPENID_PROVIDERS_SSO_AUTHURL: https://authentik.glants.xyz/application/o/vikunja/
+              VIKUNJA_AUTH_OPENID_PROVIDERS_SSO_LOGOUTURL: https://authentik.glants.xyz/application/o/vikunja/end-session/
+              VIKUNJA_AUTH_OPENID_PROVIDERS_SSO_CLIENTID: vikunja
+            envFrom:
+              - secretRef:
+                  name: vikunja-secret
             probes:
               liveness:
                 enabled: true
