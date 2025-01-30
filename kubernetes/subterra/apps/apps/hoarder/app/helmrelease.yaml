@@ -41,6 +41,7 @@ spec:
               DATA_DIR: /data
               DISABLE_SIGNUPS: true
               DISABLE_PASSWORD_AUTH: true
+              NEXTAUTH_URL_INTERNAL: http://localhost:3000
               OAUTH_PROVIDER_NAME: sso
               OAUTH_WELLKNOWN_URL: https://authentik.glants.xyz/application/o/hoarder/.well-known/openid-configuration
               OAUTH_CLIENT_ID: hoarder
