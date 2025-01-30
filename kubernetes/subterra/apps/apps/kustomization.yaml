@@ -15,3 +15,4 @@ resources:
   - ./teamspeak/ks.yaml
   - ./windmill/ks.yaml
   - ./vikunja/ks.yaml
+  - ./hoarder/ks.yaml
