@@ -14,7 +14,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: any-sync-mongodb-data=v1
+  name: any-sync-mongodb-data-v1
 spec:
   accessModes:
     - ReadWriteOnce

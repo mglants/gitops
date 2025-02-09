@@ -201,7 +201,7 @@ spec:
             app:
               - path: /storage
       mongodb-data:
-        existingClaim: any-sync-mongodb-data=v1
+        existingClaim: any-sync-mongodb-data-v1
         advancedMounts:
           mongodb:
             mongodb:
