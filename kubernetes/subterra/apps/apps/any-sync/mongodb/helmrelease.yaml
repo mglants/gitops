@@ -12,6 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: bitnami-charts
+        namespace: flux-system
   values:
     architecture: replicaset
     replicaCount: 1
