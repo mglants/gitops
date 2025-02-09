@@ -128,6 +128,7 @@ spec:
             port: 4530
           quic:
             port: 5530
+            protocol: UDP
       coordinator:
         controller: any-sync-coordinator
         type: LoadBalancer
@@ -139,6 +140,7 @@ spec:
             port: 4830
           quic:
             port: 5830
+            protocol: UDP
       filenode:
         controller: any-sync-filenode
         type: LoadBalancer
@@ -150,6 +152,7 @@ spec:
             port: 4730
           quic:
             port: 5730
+            protocol: UDP
       node-1:
         controller: any-sync-node-1
         type: LoadBalancer
@@ -161,6 +164,7 @@ spec:
             port: 4430
           quic:
             port: 5430
+            protocol: UDP
       redis:
         controller: redis
         ports:
