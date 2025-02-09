@@ -203,7 +203,7 @@ spec:
       data:
         existingClaim: any-sync-data-v1
         advancedMounts:
-          any-sync-node-1:
+          node-1:
             app:
               - path: /storage
       mongodb-data:
