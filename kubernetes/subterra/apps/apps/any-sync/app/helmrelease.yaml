@@ -173,26 +173,26 @@ spec:
             port: 27017
     persistence:
       config:
-        name: any-sync
+        name: any-sync-secret
         type: secret
         advancedMounts:
           any-sync-consensusnode:
             app:
-              - path: /etc/any-sync-consensusnode/config.yaml
+              - path: /etc/any-sync-consensusnode/config.yml
                 subPath: any-sync-consensusnode.yaml
           any-sync-coordinator:
             app:
-              - path: /etc/any-sync-coordinator/config.yaml
+              - path: /etc/any-sync-coordinator/config.yml
                 subPath: any-sync-coordinator.yaml
-              - path: /etc/any-sync-coordinator/network.yaml
+              - path: /etc/any-sync-coordinator/network.yml
                 subPath: network.yaml
           any-sync-filenode:
             app:
-              - path: /etc/any-sync-filenode/config.yaml
+              - path: /etc/any-sync-filenode/config.yml
                 subPath: any-sync-filenode.yaml
           any-sync-node-1:
             app:
-              - path: /etc/any-sync-node/config.yaml
+              - path: /etc/any-sync-node/config.yml
                 subPath: any-sync-node-1.yaml
       data:
         existingClaim: any-sync-data-v1
