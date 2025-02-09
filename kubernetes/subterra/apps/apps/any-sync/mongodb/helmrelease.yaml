@@ -5,9 +5,13 @@ metadata:
   name: any-sync-mongodb
 spec:
   interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: bitnami-mongodb
+  chart:
+    spec:
+      chart: mongodb
+      version: 16.4.3
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami-charts
   values:
     architecture: replicaset
     replicaCount: 1
