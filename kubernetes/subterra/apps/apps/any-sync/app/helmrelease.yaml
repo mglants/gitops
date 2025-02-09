@@ -92,30 +92,6 @@ spec:
                 memory: 32Mi
               limits:
                 memory: 128Mi
-      mongodb:
-        containers:
-          mongodb:
-            image:
-              repository: mongo
-              tag: 8.0.4
-            args:
-              - --noauth
-              - --replSet
-              - rs0
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
-            resources:
-              requests:
-                cpu: 100m
-                memory: 128Mi
-              limits:
-                cpu: 4
-                memory: 4096Mi
     service:
       consensusnode:
         controller: consensusnode
@@ -172,11 +148,6 @@ spec:
         ports:
           http:
             port: 6379
-      mongodb:
-        controller: mongodb
-        ports:
-          http:
-            port: 27017
     persistence:
       config:
         name: any-sync-secret
@@ -206,9 +177,3 @@ spec:
           node-1:
             app:
               - path: /storage
-      mongodb-data:
-        existingClaim: any-sync-mongodb-data-v1
-        advancedMounts:
-          mongodb:
-            mongodb:
-              - path: /data/db
