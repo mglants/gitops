@@ -1,0 +1,208 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: any-sync
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  values:
+    # defaultPodOptions:
+    #   securityContext:
+    #     runAsUser: 1000
+    #     runAsGroup: 1000
+    #     runAsNonRoot: true
+    #     fsGroup: 1000
+    #     fsGroupChangePolicy: "OnRootMismatch"
+
+    controllers:
+      any-sync-consensusnode:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/anyproto/any-sync-consensusnode
+              tag: v0.2.2
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 1Gi
+
+      any-sync-coordinator:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/anyproto/any-sync-coordinator
+              tag: v0.4.4
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 1Gi
+
+      any-sync-filenode:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/anyproto/any-sync-filenode
+              tag: v0.8.5
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 1Gi
+
+      any-sync-node-1:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/anyproto/any-sync-node
+              tag: v0.4.13
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 1Gi
+      redis:
+        containers:
+          redis:
+            image:
+              repository: docker.io/valkey/valkey
+              tag: 8.0.2
+            resources:
+              requests:
+                cpu: 5m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+      mongodb:
+        containers:
+          mongodb:
+            image:
+              repository: mongo
+              tag: 8.0.4
+            args:
+              - --noauth
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+            resources:
+              requests:
+                cpu: 0m
+                memory: 128Mi
+              limits:
+                cpu: 50m
+                memory: 1024Mi
+    service:
+      consensusnode:
+        controller: any-sync-consensusnode
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: 192.168.40.14
+          io.cilium/lb-ipam-sharing-key: any-sync
+          external-dns.alpha.kubernetes.io/hostname: any-sync.glants.xyz
+          external-dns.alpha.kubernetes.io/type: internal
+        ports:
+          yamux:
+            port: 4530
+          quic:
+            port: 5530
+      coordinator:
+        controller: any-sync-coordinator
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: 192.168.40.14
+          io.cilium/lb-ipam-sharing-key: any-sync
+        ports:
+          yamux:
+            port: 4830
+          quic:
+            port: 5830
+      filenode:
+        controller: any-sync-filenode
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: 192.168.40.14
+          io.cilium/lb-ipam-sharing-key: any-sync
+        ports:
+          yamux:
+            port: 4730
+          quic:
+            port: 5730
+      node-1:
+        controller: any-sync-node-1
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: 192.168.40.14
+          io.cilium/lb-ipam-sharing-key: any-sync
+        ports:
+          yamux:
+            port: 4430
+          quic:
+            port: 5430
+      redis:
+        controller: redis
+        ports:
+          http:
+            port: 6379
+      mongodb:
+        controller: mongodb
+        ports:
+          http:
+            port: 27017
+    persistence:
+      config:
+        name: any-sync
+        type: secret
+        advancedMounts:
+          any-sync-consensusnode:
+            app:
+              - path: /etc/any-sync-consensusnode/config.yaml
+                subPath: any-sync-consensusnode.yaml
+          any-sync-coordinator:
+            app:
+              - path: /etc/any-sync-coordinator/config.yaml
+                subPath: any-sync-coordinator.yaml
+              - path: /etc/any-sync-coordinator/network.yaml
+                subPath: network.yaml
+          any-sync-filenode:
+            app:
+              - path: /etc/any-sync-filenode/config.yaml
+                subPath: any-sync-filenode.yaml
+          any-sync-node-1:
+            app:
+              - path: /etc/any-sync-node/config.yaml
+                subPath: any-sync-node-1.yaml
+      data:
+        existingClaim: any-sync-data-v1
+        advancedMounts:
+          any-sync-node-1:
+            app:
+              - path: /storage
+      mongodb-data:
+        existingClaim: any-sync-mongodb-data=v1
+        advancedMounts:
+          mongodb:
+            mongodb:
+              - path: /data/db

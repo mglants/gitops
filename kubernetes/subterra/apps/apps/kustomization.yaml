@@ -16,3 +16,4 @@ resources:
   - ./windmill/ks.yaml
   - ./vikunja/ks.yaml
   - ./hoarder/ks.yaml
+  - ./any-sync/ks.yaml
