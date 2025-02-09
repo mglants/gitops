@@ -167,6 +167,9 @@ spec:
             app:
               - path: /etc/any-sync-filenode/config.yml
                 subPath: any-sync-filenode.yaml
+              - path: /root/.aws
+                subPath: AWS
+                readOnly: true
           node-1:
             app:
               - path: /etc/any-sync-node/config.yml
