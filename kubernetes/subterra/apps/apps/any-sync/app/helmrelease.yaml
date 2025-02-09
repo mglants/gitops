@@ -25,7 +25,7 @@ spec:
     #     fsGroupChangePolicy: "OnRootMismatch"
 
     controllers:
-      any-sync-consensusnode:
+      consensusnode:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -39,7 +39,7 @@ spec:
               limits:
                 memory: 1Gi
 
-      any-sync-coordinator:
+      coordinator:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -53,7 +53,7 @@ spec:
               limits:
                 memory: 1Gi
 
-      any-sync-filenode:
+      filenode:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -67,7 +67,7 @@ spec:
               limits:
                 memory: 1Gi
 
-      any-sync-node-1:
+      node-1:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -116,7 +116,7 @@ spec:
                 memory: 4096Mi
     service:
       consensusnode:
-        controller: any-sync-consensusnode
+        controller: consensusnode
         type: LoadBalancer
         annotations:
           io.cilium/lb-ipam-ips: 192.168.40.14
@@ -130,7 +130,7 @@ spec:
             port: 5530
             protocol: UDP
       coordinator:
-        controller: any-sync-coordinator
+        controller: coordinator
         type: LoadBalancer
         annotations:
           io.cilium/lb-ipam-ips: 192.168.40.14
@@ -142,7 +142,7 @@ spec:
             port: 5830
             protocol: UDP
       filenode:
-        controller: any-sync-filenode
+        controller: filenode
         type: LoadBalancer
         annotations:
           io.cilium/lb-ipam-ips: 192.168.40.14
@@ -154,7 +154,7 @@ spec:
             port: 5730
             protocol: UDP
       node-1:
-        controller: any-sync-node-1
+        controller: node-1
         type: LoadBalancer
         annotations:
           io.cilium/lb-ipam-ips: 192.168.40.14
@@ -180,21 +180,21 @@ spec:
         name: any-sync-secret
         type: secret
         advancedMounts:
-          any-sync-consensusnode:
+          consensusnode:
             app:
               - path: /etc/any-sync-consensusnode/config.yml
                 subPath: any-sync-consensusnode.yaml
-          any-sync-coordinator:
+          coordinator:
             app:
               - path: /etc/any-sync-coordinator/config.yml
                 subPath: any-sync-coordinator.yaml
               - path: /etc/any-sync-coordinator/network.yml
                 subPath: network.yaml
-          any-sync-filenode:
+          filenode:
             app:
               - path: /etc/any-sync-filenode/config.yml
                 subPath: any-sync-filenode.yaml
-          any-sync-node-1:
+          node-1:
             app:
               - path: /etc/any-sync-node/config.yml
                 subPath: any-sync-node-1.yaml
