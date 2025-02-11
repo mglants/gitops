@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: matrix-synapse
-      version: 3.11.1
+      version: 3.11.3
       sourceRef:
         kind: HelmRepository
         name: ananace-charts
