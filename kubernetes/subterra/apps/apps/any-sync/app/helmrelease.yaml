@@ -168,7 +168,7 @@ spec:
               - path: /etc/any-sync-filenode/config.yml
                 subPath: any-sync-filenode.yaml
               - path: /root/.aws/credentials
-                subPath: AWS
+                subPath: s3.conf
                 readOnly: true
           node-1:
             app:
