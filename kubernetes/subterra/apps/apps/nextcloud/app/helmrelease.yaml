@@ -163,7 +163,7 @@ spec:
             deny all;
           }
       tls:
-        - secretName: gearage-crt-secret
+        - secretName: cloud-glants-tls
           hosts:
             - cloud.glants.xyz
     redis:
