@@ -11,7 +11,7 @@ spec:
     spec:
       # renovate: registryUrl=https://nextcloud.github.io/helm
       chart: nextcloud
-      version: 4.6.11
+      version: 6.6.4
       sourceRef:
         kind: HelmRepository
         name: nextcloud-charts
@@ -142,7 +142,10 @@ spec:
         external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
         nginx.ingress.kubernetes.io/proxy-body-size: 4G
         nginx.ingress.kubernetes.io/server-snippet: |-
-          rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
+          server_tokens off;
+          proxy_hide_header X-Powered-By;
+          rewrite ^/.well-known/webfinger /index.php/.well-known/webfinger last;
+          rewrite ^/.well-known/nodeinfo /index.php/.well-known/nodeinfo last;
           rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
           rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
           location = /.well-known/carddav {
