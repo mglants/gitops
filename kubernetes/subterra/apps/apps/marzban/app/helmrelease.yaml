@@ -36,6 +36,8 @@ spec:
             env:
               SQLALCHEMY_DATABASE_URL: 'sqlite:////data/db.sqlite3'
               UVICORN_HOST: 0.0.0.0
+              UVICORN_SSL_CERTFILE: /tls/tls.crt
+              UVICORN_SSL_KEYFILE: /tls/tls.key
               SUDO_USERNAME:
                 valueFrom:
                   secretKeyRef:
@@ -48,9 +50,9 @@ spec:
                     key: sudo_password
             probes:
               liveness:
-                enabled: true
+                enabled: false
               readiness:
-                enabled: true
+                enabled: false
             resources:
               requests:
                 cpu: 10m
@@ -88,3 +90,13 @@ spec:
           marzban:
             app:
               - path: /data
+      certificate:
+        name: any-sync-secret
+        type: secret
+        advancedMounts:
+          marzban:
+            app:
+              - path: /tls/tls.crt
+                subPath: tls.crt
+              - path: /tls/tls.key
+                subPath: tls.key
