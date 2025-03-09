@@ -35,7 +35,7 @@ spec:
               tag: v0.8.4
             env:
               SQLALCHEMY_DATABASE_URL: 'sqlite:////data/db.sqlite3'
-
+              UVICORN_HOST: 0.0.0.0
               SUDO_USERNAME:
                 valueFrom:
                   secretKeyRef:
