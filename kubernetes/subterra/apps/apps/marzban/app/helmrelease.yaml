@@ -1,0 +1,90 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: marzban
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  values:
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+
+    controllers:
+      marzban:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/gozargah/marzban
+              tag: v0.8.4
+            env:
+              SQLALCHEMY_DATABASE_URL: 'sqlite:////data/db.sqlite3'
+
+              SUDO_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: marzban-secret
+                    key: sudo_username
+              SUDO_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: marzban-secret
+                    key: sudo_password
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 1Gi
+
+    service:
+      app:
+        controller: marzban
+        ports:
+          http:
+            port: 8000
+
+    ingress:
+      app:
+        className: "external-nginx"
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+        hosts:
+          - host: marzban.glants.xyz
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - secretName: marzban-tls
+            hosts:
+              - marzban.glants.xyz
+    persistence:
+      data:
+        existingClaim: marzban-data-v1
+        advancedMounts:
+          marzban:
+            app:
+              - path: /data

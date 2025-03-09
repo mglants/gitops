@@ -17,3 +17,4 @@ resources:
   - ./vikunja/ks.yaml
   - ./hoarder/ks.yaml
   - ./any-sync/ks.yaml
+  - ./marzban/ks.yaml
