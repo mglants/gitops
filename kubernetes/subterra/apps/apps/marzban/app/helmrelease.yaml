@@ -72,6 +72,7 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-prod
           external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
         hosts:
           - host: marzban.glants.xyz
             paths:
