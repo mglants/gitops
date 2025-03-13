@@ -91,7 +91,7 @@ spec:
             app:
               - path: /data
       certificate:
-        name: any-sync-secret
+        name: marzban-tls
         type: secret
         advancedMounts:
           marzban:
