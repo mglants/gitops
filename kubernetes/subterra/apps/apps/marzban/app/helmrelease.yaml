@@ -49,6 +49,16 @@ spec:
                   secretKeyRef:
                     name: marzban-secret
                     key: sudo_password
+              TELEGRAM_API_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: marzban-secret
+                    key: telegram_api_token
+              TELEGRAM_ADMIN_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: marzban-secret
+                    key: telegram_admin_id
             probes:
               liveness:
                 enabled: false
