@@ -38,6 +38,7 @@ spec:
               UVICORN_HOST: 0.0.0.0
               UVICORN_SSL_CERTFILE: /tls/tls.crt
               UVICORN_SSL_KEYFILE: /tls/tls.key
+              XRAY_JSON: /data/xray_config.json
               SUDO_USERNAME:
                 valueFrom:
                   secretKeyRef:
