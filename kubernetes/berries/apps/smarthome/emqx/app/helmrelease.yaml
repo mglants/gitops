@@ -45,6 +45,14 @@ spec:
       {allow, {ipaddr, "127.0.0.1"}, pubsub, ["$SYS/#", "#"]}.
       {allow, all, subscribe, ["$SYS/#", {eq, "#"}]}.
       {allow, all}.
+    ssl:
+      enabled: true
+      commonName: emqx.home
+      dnsnames:
+        - emqx.home
+      issuer:
+        name: home-ca
+        kind: ClusterIssuer
     resources:
       limits:
         memory: 256Mi
@@ -79,3 +87,11 @@ spec:
       kind: Secret
       name: emqx-secret
       valuesKey: MQTT_PASSWORD
+    - targetPath: emqxConfig.EMQX_AUTH__USER__2__USERNAME
+      kind: Secret
+      name: emqx-secret
+      valuesKey: MQTT_USERNAME_2
+    - targetPath: emqxConfig.EMQX_AUTH__USER__2__PASSWORD
+      kind: Secret
+      name: emqx-secret
+      valuesKey: MQTT_PASSWORD_2
