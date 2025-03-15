@@ -85,6 +85,11 @@ spec:
           external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
           nginx.ingress.kubernetes.io/backend-protocol: HTTPS
           nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
+          nginx.ingress.kubernetes.io/server-snippet: |
+            location /sub {
+              allow all;
+              proxy_pass https://upstream_balancer;
+            }
         hosts:
           - host: marzban.glants.xyz
             paths:
