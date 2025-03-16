@@ -75,6 +75,7 @@ spec:
     routed_namespaces:
       - vpn
       - media
+      - apps
     DNSPolicy: ClusterFirst
     settings:
       # -- If using a VPN, interface name created by it
