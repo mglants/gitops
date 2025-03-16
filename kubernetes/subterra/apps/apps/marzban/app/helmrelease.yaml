@@ -85,15 +85,27 @@ spec:
           external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
           nginx.ingress.kubernetes.io/backend-protocol: HTTPS
           nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16
-          nginx.ingress.kubernetes.io/server-snippet: |
-            location /sub {
-              allow all;
-              proxy_pass https://upstream_balancer;
-            }
         hosts:
           - host: marzban.glants.xyz
             paths:
               - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - secretName: marzban-tls
+            hosts:
+              - marzban.glants.xyz
+      sub:
+        className: "external-nginx"
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+        hosts:
+          - host: marzban.glants.xyz
+            paths:
+              - path: /sub
                 service:
                   identifier: app
                   port: http
