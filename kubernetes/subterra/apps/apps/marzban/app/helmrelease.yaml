@@ -17,6 +17,8 @@ spec:
         namespace: flux-system
   values:
     defaultPodOptions:
+      annotations:
+        setGateway: 'true'
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
