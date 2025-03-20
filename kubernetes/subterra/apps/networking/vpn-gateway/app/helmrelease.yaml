@@ -36,29 +36,16 @@ spec:
       vpn:
         enabled: true
         type: gluetun
+        configFileSecret: vpn-gateway
         securityContext:
           capabilities:
             add:
               - NET_ADMIN
         gluetun:
           image:
-            repository: qmcgaw/gluetun
-            tag: v3.40.0
+            repository: wiktorbgu/amneziawg-mikrotik
+            tag: latest
             pullPolicy: Always
-        env:
-          - name: VPN_SERVICE_PROVIDER
-            value: custom
-          - name: VPN_TYPE
-            value: wireguard
-          - name: VPN_INTERFACE
-            value: wg0
-          - name: FIREWALL_ENABLED_DISABLING_IT_SHOOTS_YOU_IN_YOUR_FOOT
-            value: off
-          - name: DOT
-            value: off
-        envFrom:
-          - secretRef:
-              name: vpn-gateway-secret
         # livenessProbe:
         #   exec:
         #     command:
@@ -68,7 +55,10 @@ spec:
         #   initialDelaySeconds: 30
         #   periodSeconds: 60
         #   failureThreshold: 3
-
+        additionalVolumeMounts:
+          - name: vpnconfig
+            mountPath: /etc/amnezia/amneziawg
+            subPath: vpnConfigfile
         networkPolicy:
           enabled: false
 
