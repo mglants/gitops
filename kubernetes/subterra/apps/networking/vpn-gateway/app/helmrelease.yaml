@@ -36,7 +36,7 @@ spec:
       vpn:
         enabled: true
         type: gluetun
-        configFileSecret: vpn-gateway
+        configFileSecret: vpn-gateway-secret
         securityContext:
           capabilities:
             add:
