@@ -57,7 +57,7 @@ spec:
         #   failureThreshold: 3
         additionalVolumeMounts:
           - name: vpnconfig
-            mountPath: /etc/amnezia/amneziawg
+            mountPath: /etc/amnezia/amneziawg/awg.conf
             subPath: vpnConfigfile
         networkPolicy:
           enabled: false
