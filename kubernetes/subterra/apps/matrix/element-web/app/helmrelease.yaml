@@ -31,7 +31,7 @@ spec:
     image:
       repository: vectorim/element-web
       pullPolicy: IfNotPresent
-      tag: "v1.11.92"
+      tag: "v1.11.95"
 
     defaultServer:
       url: https://matrix.glants.xyz
