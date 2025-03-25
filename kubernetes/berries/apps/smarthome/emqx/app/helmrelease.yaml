@@ -55,7 +55,7 @@ spec:
         kind: ClusterIssuer
     resources:
       limits:
-        memory: 256Mi
+        memory: 512Mi
       requests:
         cpu: 100m
         memory: 150Mi
