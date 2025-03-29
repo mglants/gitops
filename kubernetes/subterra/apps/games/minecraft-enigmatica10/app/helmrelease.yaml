@@ -35,7 +35,7 @@ spec:
       difficulty: normal
       memory: 8192M
       serviceType: LoadBalancer
-      loadBalancerIP: 192.168.40.19
+      loadBalancerIP: 192.168.40.18
       jvmOpts: "-Xmx16G -Xms16G"
       # autoCurseForge:
       #   slug: enigmatica10
