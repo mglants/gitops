@@ -30,18 +30,18 @@ spec:
       serverName: enigmatica10
       eula: 'TRUE'
       version: 1.21.1
-      type: AUTO_CURSEFORGE
+      type: NEOFORGE
       gameMode: survival
       difficulty: normal
       memory: 8192M
       serviceType: LoadBalancer
       loadBalancerIP: 192.168.40.19
       jvmOpts: "-Xmx16G -Xms16G"
-      autoCurseForge:
-        slug: enigmatica10
-        apiKey:
-          existingSecret: minecraft-enigmatica10-secret
-          secretKey: api-key
+      # autoCurseForge:
+      #   slug: enigmatica10
+      #   apiKey:
+      #     existingSecret: minecraft-enigmatica10-secret
+      #     secretKey: api-key
     persistence:
       dataDir:
         enabled: true
