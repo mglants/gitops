@@ -7,3 +7,4 @@ resources:
   # Flux-Kustomizations
   - ./minecraft-bedrock/ks.yaml
   - ./minecraft-stacia2-expert/ks.yaml
+  - ./minecraft-enigmatica10/ks.yaml
