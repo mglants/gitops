@@ -2,14 +2,14 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: minecraft-stacia2-expert
+  name: minecraft-enigmatica10
   namespace: games
 spec:
   chart:
     spec:
       # renovate: registryUrl=https://itzg.github.io/minecraft-server-charts/
       chart: minecraft
-      version: 4.23.7
+      version: 4.26.1
       sourceRef:
         kind: HelmRepository
         name: itzg-charts
@@ -27,21 +27,26 @@ spec:
     livenessProbe:
       initialDelaySeconds: 300
     minecraftServer:
-      serverName: Stacia2-expert
+      serverName: enigmatica10
       eula: 'TRUE'
-      version: 1.19.2
-      type: FORGE
-      forgeVersion: 43.4.2
+      version: 1.21.1
+      type: AUTO_CURSEFORGE
       gameMode: survival
       difficulty: normal
-      memory: 2048M
+      memory: 8192M
       serviceType: LoadBalancer
-      loadBalancerIP: 192.168.40.22
+      loadBalancerIP: 192.168.40.19
       jvmOpts: "-Xmx16G -Xms16G"
+      autoCurseForge:
+        # CurseForge API key obtained from developer console
+        apiKey:
+          existingSecret: minecraft-enigmatica10-secret
+          secretKey: api-key
+          slug: enigmatica10
     persistence:
       dataDir:
         enabled: true
-        existingClaim: minecraft-stacia2-expert
+        existingClaim: minecraft-enigmatica10
     resources:
       requests:
         memory: 16Gi
