@@ -28,7 +28,7 @@ spec:
       image:
         repository: ghcr.io/angelnu/gateway-admision-controller
         pullPolicy: Always
-        tag: v3.10.0
+        tag: v3.12.0
       gatewayAnnotation: setGateway
       gatewayDefault: false
       gatewayLabel: setGateway
