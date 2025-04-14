@@ -106,8 +106,9 @@ spec:
           existingSecret: gitea-secret
           autoDiscoverUrl: https://authentik.glants.xyz/application/o/gitea/.well-known/openid-configuration
           iconUrl: https://authentik.glants.xyz/static/dist/assets/icons/icon.svg
-          scopes: email profile
-          adminGroup: gitea_admins
+          scopes: email profile gitea
+          adminGroup: admin
+          groupClaimName: gitea
     containerSecurityContext:
       allowPrivilegeEscalation: false
       capabilities:
