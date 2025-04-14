@@ -95,6 +95,14 @@ spec:
             secretKeyRef:
               name: gitea-secret
               key: SMTP_PASSWORD
+      oauth:
+        - name: Authentik
+          provider: openidConnect
+          existingSecret: gitea-secret
+          autoDiscoverUrl: https://authentik.glants.xyz/application/o/gitea/.well-known/openid-configuration
+          iconUrl: https://authentik.glants.xyz/static/dist/assets/icons/icon.svg
+          scopes: email profile
+          adminGroup: gitea_admins
     containerSecurityContext:
       allowPrivilegeEscalation: false
       capabilities:
@@ -109,14 +117,6 @@ spec:
       ssh:
         type: ClusterIP
         port: 22
-    oauth:
-      - name: Authentik
-        provider: openidConnect
-        existingSecret: gitea-secret
-        autoDiscoverUrl: https://authentik.glants.xyz/application/o/gitea/.well-known/openid-configuration
-        iconUrl: https://authentik.glants.xyz/static/dist/assets/icons/icon.svg
-        scopes: email profile
-        adminGroup: gitea_admins
     ingress:
       enabled: true
       className: external-nginx
