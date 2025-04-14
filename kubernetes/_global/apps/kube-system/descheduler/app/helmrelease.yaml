@@ -41,7 +41,6 @@ spec:
               args:
                 constraints:
                   - DoNotSchedule
-                  - ScheduleAnyway
             - name: HighNodeUtilization
               args:
                 thresholds:
