@@ -23,6 +23,11 @@ spec:
       repository: gitea
       # Overrides the image tag whose default is the chart appVersion.
       tag: "1.23.7"
+    strategy:
+      type: "RollingUpdate"
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
     gitea:
       admin:
         existingSecret: gitea-secret
