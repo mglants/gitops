@@ -71,20 +71,13 @@ spec:
       username: netbox
     ingress:
       enabled: true
-      className: external-nginx
+      className: internal-nginx
       annotations:
-        kubernetes.io/tls-acme: 'true'
-        cert-manager.io/cluster-issuer: letsencrypt-prod
         external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
-        nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16,77.37.244.8/32,94.141.170.143/32
       hosts:
-        - host: netbox.gearage.ru
+        - host: netbox.glants.xyz
           paths:
             - /
-      tls:
-        - secretName: netbox-tls
-          hosts:
-            - netbox.gearage.ru
 
     remoteAuth:
       enabled: true
