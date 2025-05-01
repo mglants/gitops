@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: rclone/rclone
-      tag: 1.69.1
+      tag: 1.69.2
     controller:
       type: cronjob
       cronjob:
