@@ -5,13 +5,12 @@ bandwidthManager:
   enabled: true
 bpf:
   masquerade: true
-  tproxy: true
 bgp:
   enabled: false
   announce:
     loadbalancerIP: true
     podCIDR: false
-
+bpfClockProbe: true
 bgpControlPlane:
   enabled: true
 cgroup:
@@ -23,6 +22,10 @@ cluster:
   name: berries
 cni:
   exclusive: false
+dashboards:
+  enabled: true
+  annotations:
+    grafana_folder: Cilium
 enableRuntimeDeviceDetection: true
 endpointRoutes:
   enabled: true
