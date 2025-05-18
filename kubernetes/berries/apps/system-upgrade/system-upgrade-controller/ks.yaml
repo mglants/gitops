@@ -4,9 +4,9 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &appname system-upgrade-controller
-  namespace: &namespace system-upgrade
+  namespace: flux-system
 spec:
-  targetNamespace: *namespace
+  targetNamespace: system-upgrade
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
@@ -25,9 +25,9 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &appname system-upgrade-controller-plans
-  namespace: &namespace system-upgrade
+  namespace: flux-system
 spec:
-  targetNamespace: *namespace
+  targetNamespace: system-upgrade
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
