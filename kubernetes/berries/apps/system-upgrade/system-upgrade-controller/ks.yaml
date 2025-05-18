@@ -42,7 +42,7 @@ spec:
   wait: false
   dependsOn:
     - name: system-upgrade-controller
-      namespace: system-upgrade
+      namespace: flux-system
   postBuild:
     substitute:
       # renovate: depName=ghcr.io/siderolabs/installer datasource=docker
