@@ -33,7 +33,7 @@ spec:
           main:
             image:
               repository: nico640/docker-unms
-              tag: 2.4.206
+              tag: 2.4.211
             env:
               TZ: Europe/Moscow
             resources:
