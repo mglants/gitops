@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: element-web
-      version: 1.4.10
+      version: 1.4.14
       sourceRef:
         kind: HelmRepository
         name: ananace-charts
