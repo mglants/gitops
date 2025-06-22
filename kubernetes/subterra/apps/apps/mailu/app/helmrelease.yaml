@@ -161,7 +161,7 @@ spec:
       ## @param front.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/nginx
-        tag: 2024.06.36
+        tag: 2024.06.37
         pullPolicy: IfNotPresent
 
       ## front.controller.kind Deployment only supported for now
@@ -222,7 +222,7 @@ spec:
       ## @param admin.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/admin
-        tag: 2024.06.36
+        tag: 2024.06.37
         pullPolicy: IfNotPresent
       resources:
         requests:
@@ -245,7 +245,7 @@ spec:
       ## @param postfix.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/postfix
-        tag: 2024.06.36
+        tag: 2024.06.37
         pullPolicy: IfNotPresent
       updateStrategy:
         type: Recreate
@@ -269,7 +269,7 @@ spec:
       ## @param dovecot.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/dovecot
-        tag: 2024.06.36
+        tag: 2024.06.37
         pullPolicy: IfNotPresent
 
       resources:
@@ -293,7 +293,7 @@ spec:
       ## @param rspamd.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/rspamd
-        tag: 2024.06.36
+        tag: 2024.06.37
         pullPolicy: IfNotPresent
 
       resources:
@@ -371,7 +371,7 @@ spec:
       ## @param webmail.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/webmail
-        tag: 2024.06.36
+        tag: 2024.06.37
         pullPolicy: IfNotPresent
 
       resources:
@@ -395,7 +395,7 @@ spec:
       ## @param oletools.image.pullPolicy Pod image pull policy
       image:
         repository: mailu/oletools
-        tag: 2024.06.36
+        tag: 2024.06.37
         pullPolicy: IfNotPresent
 
       resources:
@@ -409,7 +409,7 @@ spec:
       logLevel: ''
       image:
         repository: mailu/radicale
-        tag: 2024.06.36
+        tag: 2024.06.37
         pullPolicy: IfNotPresent
 
       resources:
@@ -424,7 +424,7 @@ spec:
 
       image:
         repository: mailu/fetchmail
-        tag: 2024.06.36
+        tag: 2024.06.37
         pullPolicy: IfNotPresent
 
       resources:
