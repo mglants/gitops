@@ -17,18 +17,6 @@ spec:
         namespace: flux-system
       interval: 30m
   values:
-    image:
-      repository: ghcr.io/onedr0p/volsync
-    rclone:
-      repository: ghcr.io/onedr0p/volsync
-    restic:
-      repository: ghcr.io/onedr0p/volsync
-    rsync:
-      repository: ghcr.io/onedr0p/volsync
-    rsync-tls:
-      repository: ghcr.io/onedr0p/volsync
-    syncthing:
-      repository: ghcr.io/onedr0p/volsync
     manageCRDs: true
     metrics:
       disableAuth: true
