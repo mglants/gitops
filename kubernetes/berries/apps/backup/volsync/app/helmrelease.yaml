@@ -17,6 +17,18 @@ spec:
         namespace: flux-system
       interval: 30m
   values:
+    image:
+      tag: 0.13.0-rc.3
+    rclone:
+      tag: 0.13.0-rc.3
+    restic:
+      tag: 0.13.0-rc.3
+    rsync:
+      tag: 0.13.0-rc.3
+    rsync-tls:
+      tag: 0.13.0-rc.3
+    syncthing:
+      tag: 0.13.0-rc.3
     manageCRDs: true
     metrics:
       disableAuth: true
