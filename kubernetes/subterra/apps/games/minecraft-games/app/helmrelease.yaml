@@ -1,0 +1,66 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: minecraft-games
+  namespace: games
+spec:
+  chart:
+    spec:
+      # renovate: registryUrl=https://itzg.github.io/minecraft-server-charts/
+      chart: minecraft
+      version: 4.26.3
+      sourceRef:
+        kind: HelmRepository
+        name: itzg-charts
+        namespace: flux-system
+  interval: 5m
+  install:
+    remediation:
+      retries: 3
+  test:
+    # Fix problem where helm fails to uninstall
+    enable: false
+  # Default values
+  # https://github.com/itzg/minecraft-server-charts/blob/master/charts/minecraft-bedrock/values.yaml
+  values:
+    livenessProbe:
+      initialDelaySeconds: 300
+    extraEnv:
+      ENABLE_AUTOPAUSE: FALSE
+      PAPER_CHANNEL: "experimental"
+      # MODRINTH_DOWNLOAD_DEPENDENCIES: "required"
+      # MODRINTH_PROJECTS: |-
+      #   coreprotect
+      #   essentialsx
+    minecraftServer:
+      spigetResources:
+        - 65942
+      serverName: Minecraft-games
+      eula: 'TRUE'
+      version: 1.21.6
+      type: PAPER
+      forceReDownload: true
+      onlineMode: false
+      gameMode: survival
+      difficulty: normal
+      memory: 8192M
+      serviceType: LoadBalancer
+      loadBalancerIP: 192.168.40.23
+      jvmOpts: "-Xmx16G -Xms16G"
+      # autoCurseForge:
+      #   slug: enigmatica10
+      #   apiKey:
+      #     existingSecret: minecraft-enigmatica10-secret
+      #     secretKey: api-key
+    persistence:
+      dataDir:
+        enabled: true
+        existingClaim: minecraft-games
+    resources:
+      requests:
+        memory: 16Gi
+        cpu: 1
+      limits:
+        memory: 16Gi
+    serviceAnnotations: {}

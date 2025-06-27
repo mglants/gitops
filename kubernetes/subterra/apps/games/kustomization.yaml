@@ -8,3 +8,4 @@ resources:
   - ./minecraft-bedrock/ks.yaml
   - ./minecraft-stacia2-expert/ks.yaml
   - ./minecraft-enigmatica10/ks.yaml
+  - ./minecraft-games/ks.yaml
