@@ -31,7 +31,7 @@ spec:
           main:
             image:
               repository: ghcr.io/diced/zipline
-              tag: 4.1.2
+              tag: 4.2.0
             env:
               # Core config
               CORE_SECRET:
