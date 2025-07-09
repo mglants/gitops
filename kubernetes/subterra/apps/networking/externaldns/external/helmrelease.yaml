@@ -23,7 +23,7 @@ spec:
     image:
       registry: docker.io
       repository: bitnami/external-dns
-      tag: 0.16.1
+      tag: 0.18.0
     sources:
       - crd
       - service
