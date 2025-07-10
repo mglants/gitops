@@ -34,9 +34,9 @@ spec:
           app:
             image:
               repository: ghcr.io/gozargah/marzban
-              tag: v0.8.4
+              tag: v1.0.0-beta-1
             env:
-              SQLALCHEMY_DATABASE_URL: 'sqlite:////data/db.sqlite3'
+              SQLALCHEMY_DATABASE_URL: 'sqlite+aiosqlite:////data/db.sqlite3'
               UVICORN_HOST: 0.0.0.0
               UVICORN_SSL_CERTFILE: /tls/tls.crt
               UVICORN_SSL_KEYFILE: /tls/tls.key
