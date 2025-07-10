@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: marzban-data-v2
+  name: marzban-next-data-v1
   namespace: apps
 spec:
   accessModes:
