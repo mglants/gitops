@@ -2,19 +2,19 @@
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: hoarder-restic
+  name: karakeep-restic
   namespace: apps
 spec:
   secretStoreRef:
     kind: ClusterSecretStore
     name: onepassword-connect
   target:
-    name: hoarder-restic-secret
+    name: karakeep-restic-secret
     creationPolicy: Owner
     template:
       engineVersion: v2
       data:
-        RESTIC_REPOSITORY: '{{ .REPOSITORY_TEMPLATE }}/hoarder'
+        RESTIC_REPOSITORY: '{{ .REPOSITORY_TEMPLATE }}/karakeep'
         RESTIC_PASSWORD: '{{ .RESTIC_PASSWORD }}'
         AWS_ACCESS_KEY_ID: '{{ .AWS_ACCESS_KEY_ID }}'
         AWS_SECRET_ACCESS_KEY: '{{ .AWS_SECRET_ACCESS_KEY }}'
@@ -25,16 +25,16 @@ spec:
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  name: hoarder
+  name: karakeep
   namespace: apps
 spec:
-  sourcePVC: hoarder-data-v1
+  sourcePVC: karakeep-data-v1
   trigger:
     schedule: 0 */12 * * *
   restic:
     copyMethod: Clone
     pruneIntervalDays: 7
-    repository: hoarder-restic-secret
+    repository: karakeep-restic-secret
     retain:
       hourly: 24
       daily: 7
