@@ -38,7 +38,6 @@ spec:
     retain:
       hourly: 24
       daily: 7
-      weekly: 5
     volumeSnapshotClassName: freenas-iscsi-csi
     storageClassName: freenas-iscsi-csi
     cacheStorageClassName: freenas-iscsi-csi
