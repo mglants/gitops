@@ -36,7 +36,7 @@ spec:
     pruneIntervalDays: 7
     repository: prowlarr-restic-secret
     retain:
-      hourly: 24
+      hourly: 3
       daily: 7
     volumeSnapshotClassName: freenas-nfs-csi
     storageClassName: freenas-nfs-csi
