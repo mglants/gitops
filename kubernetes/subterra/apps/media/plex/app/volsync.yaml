@@ -41,3 +41,4 @@ spec:
     volumeSnapshotClassName: freenas-nfs-csi
     storageClassName: freenas-nfs-csi
     cacheStorageClassName: freenas-iscsi-csi
+    cacheCapacity: 2Gi
