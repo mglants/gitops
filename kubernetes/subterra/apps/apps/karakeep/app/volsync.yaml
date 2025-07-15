@@ -42,3 +42,7 @@ spec:
     volumeSnapshotClassName: freenas-iscsi-csi
     storageClassName: freenas-iscsi-csi
     cacheStorageClassName: freenas-iscsi-csi
+    moverSecurityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
