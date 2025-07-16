@@ -60,6 +60,8 @@ spec:
           - name: vpnconfig
             mountPath: /root/.config/mihomo/config.yaml
             subPath: vpnConfigfile
+          - name: tun
+            mountPath: /dev/net/tun
         networkPolicy:
           enabled: false
 
