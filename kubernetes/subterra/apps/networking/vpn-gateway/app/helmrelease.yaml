@@ -43,7 +43,7 @@ spec:
               - NET_ADMIN
         gluetun:
           image:
-            repository: wiktorbgu/amneziawg-mikrotik
+            repository: metacubex/mihomo
             tag: latest
             pullPolicy: Always
         # livenessProbe:
@@ -57,7 +57,7 @@ spec:
         #   failureThreshold: 3
         additionalVolumeMounts:
           - name: vpnconfig
-            mountPath: /etc/amnezia/amneziawg/awg.conf
+            mountPath: /root/.config/mihomo/config.yaml
             subPath: vpnConfigfile
         networkPolicy:
           enabled: false
