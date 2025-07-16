@@ -38,6 +38,7 @@ spec:
         type: gluetun
         configFileSecret: vpn-gateway-secret
         securityContext:
+          privileged: true
           capabilities:
             add:
               - NET_ADMIN
@@ -92,3 +93,9 @@ spec:
             port: 57047
           - type: tcp
             port: 57047
+    persistence:
+      tun:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/net/tun
+        hostPathType: CharDevice
