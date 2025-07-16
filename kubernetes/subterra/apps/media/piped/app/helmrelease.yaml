@@ -92,6 +92,8 @@ spec:
       ytproxy:
         strategy: RollingUpdate
         pod:
+          annotations:
+            setGateway: 'true'
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
