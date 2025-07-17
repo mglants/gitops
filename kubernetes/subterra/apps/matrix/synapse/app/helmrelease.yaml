@@ -80,6 +80,8 @@ spec:
     synapse:
       strategy:
         type: Recreate
+        annotations:
+          setGateway: "true"
       resources:
         requests:
           cpu: 500m
