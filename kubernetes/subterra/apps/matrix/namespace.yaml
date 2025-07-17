@@ -7,3 +7,4 @@ metadata:
     kustomize.toolkit.fluxcd.io/prune: disabled
     pod-security.kubernetes.io/enforce: privileged
     pgo-enabled: 'true'
+    routed-gateway: 'true'
