@@ -30,7 +30,7 @@ spec:
     enableAuth: false
     enableGuests: true
 
-    publicURL: meet.glants.xyz
+    publicURL: jitsi.glants.xyz
     tz: Europe/Moscow
 
     image:
