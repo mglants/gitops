@@ -76,6 +76,7 @@ spec:
       - vpn
       - media
       - apps
+      - matrix
     DNSPolicy: ClusterFirst
     settings:
       # -- If using a VPN, interface name created by it
