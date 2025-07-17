@@ -36,17 +36,29 @@ spec:
       vpn:
         enabled: true
         type: gluetun
-        configFileSecret: vpn-gateway-secret
         securityContext:
-          privileged: true
           capabilities:
             add:
               - NET_ADMIN
         gluetun:
           image:
-            repository: metacubex/mihomo
-            tag: latest
+            repository: qmcgaw/gluetun
+            tag: v3.40.0
             pullPolicy: Always
+        env:
+          - name: VPN_SERVICE_PROVIDER
+            value: custom
+          - name: VPN_TYPE
+            value: wireguard
+          - name: VPN_INTERFACE
+            value: wg0
+          - name: FIREWALL_ENABLED_DISABLING_IT_SHOOTS_YOU_IN_YOUR_FOOT
+            value: off
+          - name: DOT
+            value: off
+        envFrom:
+          - secretRef:
+              name: vpn-gateway-secret
         # livenessProbe:
         #   exec:
         #     command:
@@ -56,12 +68,7 @@ spec:
         #   initialDelaySeconds: 30
         #   periodSeconds: 60
         #   failureThreshold: 3
-        additionalVolumeMounts:
-          - name: vpnconfig
-            mountPath: /root/.config/mihomo/config.yaml
-            subPath: vpnConfigfile
-          - name: tun
-            mountPath: /dev/net/tun
+
         networkPolicy:
           enabled: false
 
@@ -72,11 +79,11 @@ spec:
     DNSPolicy: ClusterFirst
     settings:
       # -- If using a VPN, interface name created by it
-      VPN_INTERFACE: tun0
+      VPN_INTERFACE: wg0
       # -- Prevent non VPN traffic to leave the gateway
       VPN_BLOCK_OTHER_TRAFFIC: true
       # -- If VPN_BLOCK_OTHER_TRAFFIC is true, allow VPN traffic over this port
-      VPN_TRAFFIC_PORT: 443
+      VPN_TRAFFIC_PORT: 115
       # -- Traffic to these IPs will be send through the K8S gateway
       VPN_LOCAL_CIDRS: 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
       NOT_ROUTED_TO_GATEWAY_CIDRS: 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
