@@ -36,7 +36,7 @@ spec:
     defaultServer:
       url: https://matrix.glants.xyz
       name: glants.xyz
-      identity_url: https://vector.im
+      identity_url: https://matrix.org
 
     config:
       jitsi:
