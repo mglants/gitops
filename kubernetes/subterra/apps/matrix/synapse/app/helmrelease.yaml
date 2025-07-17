@@ -150,6 +150,8 @@ spec:
       federation_reader:
         enabled: true
         generic: true
+        annotations:
+          setGateway: "true"
         listeners: [federation]
         paths:
         - "/_matrix/federation/v1/send/"
@@ -189,6 +191,8 @@ spec:
         enabled: true
       federation_sender:
         enabled: true
+        annotations:
+          setGateway: "true"
       media_repository:
         enabled: false
         listeners: [media]
