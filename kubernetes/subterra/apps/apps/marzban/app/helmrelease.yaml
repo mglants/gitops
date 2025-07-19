@@ -38,6 +38,7 @@ spec:
             env:
               SQLALCHEMY_DATABASE_URL: 'sqlite+aiosqlite:////data/db.sqlite3'
               UVICORN_HOST: 0.0.0.0
+              DOCS: "True"
               UVICORN_SSL_CERTFILE: /tls/tls.crt
               UVICORN_SSL_KEYFILE: /tls/tls.key
               XRAY_JSON: /data/xray_config.json
