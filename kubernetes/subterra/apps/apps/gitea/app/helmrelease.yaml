@@ -22,7 +22,7 @@ spec:
       registry: "docker.gitea.com"
       repository: gitea
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "1.24.2"
+      tag: "1.24.4"
     strategy:
       type: "RollingUpdate"
       rollingUpdate:
