@@ -42,7 +42,7 @@ spec:
     image:
       repository: vaultwarden/server
       pullPolicy: IfNotPresent
-      tag: 1.34.1
+      tag: 1.34.3
     ingress:
       main:
         enabled: true
