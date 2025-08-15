@@ -9,7 +9,7 @@ spec:
     spec:
       # renovate: registryUrl=https://helm.cilium.io
       chart: cilium
-      version: 1.17.5
+      version: 1.17.7
       interval: 30m
       sourceRef:
         kind: HelmRepository
