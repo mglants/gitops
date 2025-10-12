@@ -189,7 +189,7 @@ spec:
       timeout: 5s
       image:
         repository: xperimental/nextcloud-exporter
-        tag: 0.8.0
+        tag: 0.9.0
         pullPolicy: IfNotPresent
       service:
         type: ClusterIP
