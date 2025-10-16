@@ -46,7 +46,7 @@ spec:
           app:
             image:
               repository: ghcr.io/anyproto/any-sync-coordinator
-              tag: v0.6.1
+              tag: v0.7.3
             resources:
               requests:
                 cpu: 10m
