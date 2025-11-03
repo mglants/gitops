@@ -69,8 +69,8 @@ spec:
         type: secret
         name: mautrix-telegram-secret
         globalMounts:
-          # - subPath: registration.yaml
-          #   path: /data/registration.yaml
+          - subPath: registration.yaml
+            path: /data/registration.yaml
           - subPath: config.yaml
             path: /data/config.yaml
       tmp:
