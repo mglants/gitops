@@ -76,7 +76,8 @@ spec:
             config:
               localpart_template: "{{ user.nickname }}"
               display_name_template: "{{ user.name | capitalize }}"
-
+      app_service_config_files:
+        - /synapse/appservice/telegram/registration.yaml
     synapse:
       strategy:
         type: Recreate
@@ -86,7 +87,15 @@ spec:
         requests:
           cpu: 500m
           memory: 1Gi
-
+      extraVolumes:
+        - name: mautrix-telegram
+          secret:
+            secretName: mautrix-telegram-secret
+            optional: true
+      extraVolumeMounts:
+        - name: mautrix-telegram
+          mountPath: /synapse/appservice/telegram/registration.yaml
+          subPath: registration.yaml
     workers:
       default:
         replicaCount: 1
