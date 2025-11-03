@@ -62,6 +62,12 @@ spec:
       options: SUPERUSER
       password:
         type: AlphaNumeric
+    - name: telegram
+      databases:
+        - telegram
+      options: SUPERUSER
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
