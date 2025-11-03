@@ -9,3 +9,4 @@ resources:
   - ./element-web/ks.yaml
   - ./jitsi/ks.yaml
   - ./stunner/ks.yaml
+  - ./bridge/ks.yaml

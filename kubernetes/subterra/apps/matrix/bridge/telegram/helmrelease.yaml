@@ -1,0 +1,79 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app mautrix-telegram
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.4.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  values:
+    controllers:
+      mautrix-telegram:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          main:
+            image:
+              repository: dock.mau.dev/mautrix/telegram
+              tag: v0.15.3
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /_matrix/mau/live
+                    port: &port 29317
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /_matrix/mau/ready
+                    port: *port
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+
+    service:
+      app:
+        controller: *app
+        type: ClusterIP
+        publishNotReadyAddresses: true
+        ports:
+          http:
+            port: *port
+
+
+    persistence:
+      data:
+        existingClaim: mautrix-telegram-data-v1
+        globalMounts:
+          - path: /data
+      config:
+        type: secret
+        name: mautrix-telegram-secret
+        globalMounts:
+          # - subPath: registration.yaml
+          #   path: /data/registration.yaml
+          - subPath: config.yaml
+            path: /data/config.yaml
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
