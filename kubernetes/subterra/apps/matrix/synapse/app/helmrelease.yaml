@@ -92,9 +92,16 @@ spec:
           secret:
             secretName: mautrix-telegram-secret
             optional: true
+        - name: mautrix-gmessages
+          secret:
+            secretName: mautrix-gmessages-secret
+            optional: true
       extraVolumeMounts:
         - name: mautrix-telegram
           mountPath: /synapse/appservice/telegram/registration.yaml
+          subPath: registration.yaml
+        - name: mautrix-gmessages
+          mountPath: /synapse/appservice/gmessages/registration.yaml
           subPath: registration.yaml
     workers:
       default:
@@ -108,9 +115,16 @@ spec:
             secret:
               secretName: mautrix-telegram-secret
               optional: true
+          - name: mautrix-gmessages
+            secret:
+              secretName: mautrix-gmessages-secret
+              optional: true
         volumeMounts:
           - name: mautrix-telegram
             mountPath: /synapse/appservice/telegram/registration.yaml
+            subPath: registration.yaml
+          - name: mautrix-gmessages
+            mountPath: /synapse/appservice/gmessages/registration.yaml
             subPath: registration.yaml
       generic_worker:
         enabled: true

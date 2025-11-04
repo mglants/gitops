@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app mautrix-telegram
+  name: &app mautrix-gmessages
 spec:
   interval: 30m
   chart:
@@ -17,7 +17,7 @@ spec:
         namespace: flux-system
   values:
     controllers:
-      mautrix-telegram:
+      mautrix-gmessages:
         type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
@@ -25,9 +25,8 @@ spec:
         containers:
           main:
             image:
-              repository: dock.mau.dev/mautrix/telegram
-              tag: v0.15.3
-
+              repository: dock.mau.dev/mautrix/gmessages
+              tag: v0.2510.0
             probes:
               liveness:
                 enabled: true
@@ -35,7 +34,7 @@ spec:
                 spec:
                   httpGet:
                     path: /_matrix/mau/live
-                    port: &port 29317
+                    port: &port 29336
               readiness:
                 enabled: true
                 custom: true
@@ -63,7 +62,7 @@ spec:
     persistence:
       config:
         type: secret
-        name: mautrix-telegram-secret
+        name: mautrix-gmessages-secret
         globalMounts:
           - subPath: registration.yaml
             path: /data/registration.yaml
