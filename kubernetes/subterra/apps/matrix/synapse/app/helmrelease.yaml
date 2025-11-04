@@ -78,6 +78,7 @@ spec:
               display_name_template: "{{ user.name | capitalize }}"
       app_service_config_files:
         - /synapse/appservice/telegram/registration.yaml
+        - /synapse/appservice/gmessages/registration.yaml
     synapse:
       strategy:
         type: Recreate
