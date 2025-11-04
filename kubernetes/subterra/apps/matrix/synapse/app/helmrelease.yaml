@@ -103,6 +103,15 @@ spec:
           requests:
             cpu: 200m
             memory: 128Mi
+        volumes:
+          - name: mautrix-telegram
+            secret:
+              secretName: mautrix-telegram-secret
+              optional: true
+        volumeMounts:
+          - name: mautrix-telegram
+            mountPath: /synapse/appservice/telegram/registration.yaml
+            subPath: registration.yaml
       generic_worker:
         enabled: true
         replicaCount: 3
