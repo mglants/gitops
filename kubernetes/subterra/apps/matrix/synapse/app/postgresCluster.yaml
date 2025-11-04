@@ -68,6 +68,12 @@ spec:
       options: SUPERUSER
       password:
         type: AlphaNumeric
+    - name: gmessages
+      databases:
+        - gmessages
+      options: SUPERUSER
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
