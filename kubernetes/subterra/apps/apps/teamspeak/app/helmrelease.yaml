@@ -48,48 +48,9 @@ spec:
                 protocol: UDP
             probes:
               liveness:
-                enabled: true
-                custom: true
-                spec:
-                  exec:
-                    command:
-                      - sh
-                      - -o
-                      - pipefail
-                      - -c
-                      - echo quit | nc 127.0.0.1 10011 | grep -q TS3
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
+                enabled: false
               readiness:
-                enabled: true
-                custom: true
-                spec:
-                  exec:
-                    command:
-                      - sh
-                      - -o
-                      - pipefail
-                      - -c
-                      - echo quit | nc 127.0.0.1 10011 | grep -q TS3
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              startup:
-                enabled: true
-                custom: true
-                spec:
-                  exec:
-                    command:
-                      - sh
-                      - -o
-                      - pipefail
-                      - -c
-                      - echo quit | nc 127.0.0.1 10011 | grep -q TS3
-                  initialDelaySeconds: 10
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
+                enabled: false
           exporter:
             enabled: false
             image:
