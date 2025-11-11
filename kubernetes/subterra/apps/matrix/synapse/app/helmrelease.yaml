@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: ghcr.io/element-hq/synapse
-      tag: 'v1.141.0'
+      tag: 'v1.142.0'
       pullPolicy: IfNotPresent
     serverName: 'glants.xyz'
     publicServerName: 'matrix.glants.xyz'
