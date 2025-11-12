@@ -17,6 +17,5 @@ resources:
   - ./vikunja/ks.yaml
   - ./karakeep/ks.yaml
   - ./any-sync/ks.yaml
-  - ./marzban/ks.yaml
   - ./gitea/ks.yaml
   - ./pasarguard/ks.yaml

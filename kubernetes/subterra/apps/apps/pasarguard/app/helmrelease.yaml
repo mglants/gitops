@@ -95,10 +95,17 @@ spec:
                 service:
                   identifier: app
                   port: http
+          - host: marzban.glants.xyz
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
         tls:
           - secretName: pasarguard-tls
             hosts:
               - access.glants.xyz
+              - marzban.glants.xyz
       sub:
         className: "external-nginx"
         annotations:
@@ -112,10 +119,17 @@ spec:
                 service:
                   identifier: app
                   port: http
+          - host: marzban.glants.xyz
+            paths:
+              - path: /sub
+                service:
+                  identifier: app
+                  port: http
         tls:
           - secretName: pasarguard-tls
             hosts:
               - access.glants.xyz
+              - marzban.glants.xyz
     persistence:
       data:
         existingClaim: pasarguard-data-v1
