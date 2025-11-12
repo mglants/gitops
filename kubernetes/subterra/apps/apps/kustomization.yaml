@@ -19,3 +19,4 @@ resources:
   - ./any-sync/ks.yaml
   - ./marzban/ks.yaml
   - ./gitea/ks.yaml
+  - ./pasarguard/ks.yaml
