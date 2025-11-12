@@ -25,7 +25,7 @@ spec:
   values:
     crds:
       enabled: true
-    dns01RecursiveNameservers: https://77.88.8.8:443/dns-query
+    dns01RecursiveNameservers: 77.88.8.8:53
     dns01RecursiveNameserversOnly: true
     prometheus:
       enabled: true
