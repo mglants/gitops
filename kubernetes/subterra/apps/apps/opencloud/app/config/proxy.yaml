@@ -1,0 +1,13 @@
+role_assignment:
+  driver: oidc
+  oidc_role_mapper:
+    role_claim: groups
+    role_mapping:
+      - role_name: admin
+        claim_value: Cloud Admins
+      - role_name: spaceadmin
+        claim_value: Cloud Admins
+      - role_name: user
+        claim_value: Cloud Users
+      - role_name: guest
+        claim_value: Cloud Guests

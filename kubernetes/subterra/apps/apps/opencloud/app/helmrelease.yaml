@@ -1,0 +1,154 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: opencloud
+spec:
+  chart:
+    spec:
+      chart: app-template
+      version: 4.5.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  interval: 30m
+
+  values:
+    controllers:
+      opencloud:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            fsGroup: 2000
+            fsGroupChangePolicy: OnRootMismatch
+            runAsNonRoot: true
+        initContainers:
+          init-config:
+            image:
+              repository: docker.io/opencloudeu/opencloud-rolling
+              tag: 4.0.0@sha256:1cbce735bfdde97d38422a52b92104dfd2fd320e2e3febc05314b00d6d115d7e
+            command:
+              - /bin/sh
+              - -c
+              - test -f /etc/opencloud/opencloud.yaml || opencloud init --insecure=true
+            envFrom:
+              - secretRef:
+                  name: opencloud-secret
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+        containers:
+          opencloud:
+            image:
+              repository: docker.io/opencloudeu/opencloud-rolling
+              tag: 4.0.0@sha256:1cbce735bfdde97d38422a52b92104dfd2fd320e2e3febc05314b00d6d115d7e
+            command:
+              - opencloud
+              - server
+            env:
+              OC_OIDC_ISSUER: https://authentik.glants.xyz/application/o/opencloud/
+              PROXY_AUTOPROVISION_ACCOUNTS: true
+              PROXY_ROLE_ASSIGNMENT_DRIVER: "oidc"
+              PROXY_OIDC_REWRITE_WELLKNOWN: "true"
+              PROXY_USER_OIDC_CLAIM: "preferred_username"
+              PROXY_USER_CS3_CLAIM: "username"
+              OC_EXCLUDE_RUN_SERVICES: idp
+              WEB_OIDC_SCOPE: openid profile email groups
+              PROXY_ROLE_ASSIGNMENT_OIDC_CLAIM: groups
+              GRAPH_ASSIGN_DEFAULT_USER_ROLE: false
+              GRAPH_USERNAME_MATCH: "none"
+              PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: none
+              PROXY_CSP_CONFIG_FILE_LOCATION: /etc/opencloud/csp.yaml
+              OC_ENABLE_OCM: false
+              OC_INSECURE: false
+              OC_LOG_LEVEL: info
+              OC_URL: https://files.glants.xyz
+              PROXY_TLS: false
+              STORAGE_USERS_DRIVER: decomposeds3
+              STORAGE_SYSTEM_DRIVER: decomposed
+              STORAGE_USERS_DECOMPOSEDS3_ENDPOINT: https://nas.ur30.ru:30002
+              STORAGE_USERS_DECOMPOSEDS3_REGION: us-east-1
+              STORAGE_USERS_DECOMPOSEDS3_BUCKET: opencloud
+              STORAGE_USERS_EVENTS_NUM_CONSUMERS: 5
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 1024Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+    service:
+      app:
+        ports:
+          http:
+            port: 9200
+
+    ingress:
+      app:
+        className: external-nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+        hosts:
+          - host: files.glants.xyz
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - secretName: opencloud-tls
+            hosts:
+              - files.glants.xyz
+
+    persistence:
+      data:
+        existingClaim: opencloud-data-v1
+        globalMounts:
+          - path: /var/lib/opencloud
+            subPath: data
+          - path: /etc/opencloud
+            subPath: config
+      proxy-config:
+        type: configMap
+        name: opencloud-configmap
+        globalMounts:
+          - path: /etc/opencloud/proxy.yaml
+            subPath: proxy.yaml
+            readOnly: true
+      csp-config:
+        type: configMap
+        name: opencloud-configmap
+        globalMounts:
+          - path: /etc/opencloud/csp.yaml
+            subPath: csp.yaml
+            readOnly: true
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+            subPath: tmp
+    route:
+      app:
+        hostnames:
+          - files.bjw-s.dev
+        parentRefs:
+          - name: envoy-external
+            namespace: network

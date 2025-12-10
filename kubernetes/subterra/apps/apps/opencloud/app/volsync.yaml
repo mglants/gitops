@@ -1,0 +1,41 @@
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: opencloud-restic
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword-connect
+  target:
+    name: opencloud-restic-secret
+    creationPolicy: Owner
+    template:
+      engineVersion: v2
+      data:
+        RESTIC_REPOSITORY: '{{ .REPOSITORY_TEMPLATE }}/opencloud'
+        RESTIC_PASSWORD: '{{ .RESTIC_PASSWORD }}'
+        AWS_ACCESS_KEY_ID: '{{ .AWS_ACCESS_KEY_ID }}'
+        AWS_SECRET_ACCESS_KEY: '{{ .AWS_SECRET_ACCESS_KEY }}'
+  dataFrom:
+    - extract:
+        key: volsync-restic-template
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: opencloud
+spec:
+  sourcePVC: opencloud-data-v1
+  trigger:
+    schedule: 0 */12 * * *
+  restic:
+    copyMethod: Clone
+    pruneIntervalDays: 7
+    repository: opencloud-restic-secret
+    retain:
+      hourly: 3
+      daily: 7
+    volumeSnapshotClassName: freenas-iscsi-csi
+    storageClassName: freenas-iscsi-csi
+    cacheStorageClassName: freenas-iscsi-csi
