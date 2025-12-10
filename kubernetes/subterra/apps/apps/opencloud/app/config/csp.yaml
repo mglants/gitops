@@ -5,7 +5,7 @@ directives:
     - '''self'''
     - 'blob:'
     - 'https://raw.githubusercontent.com/opencloud-eu/awesome-apps/'
-    - 'https://auth.domain.com/'
+    - 'https://authentik.glants.xyz/'
   default-src:
     - '''none'''
   font-src:
