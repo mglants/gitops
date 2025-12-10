@@ -77,6 +77,9 @@ spec:
               STORAGE_USERS_DECOMPOSEDS3_REGION: us-east-1
               STORAGE_USERS_DECOMPOSEDS3_BUCKET: opencloud
               STORAGE_USERS_EVENTS_NUM_CONSUMERS: 5
+            envFrom:
+              - secretRef:
+                  name: opencloud-secret
             probes:
               liveness:
                 enabled: true
