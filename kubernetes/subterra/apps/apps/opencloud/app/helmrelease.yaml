@@ -145,10 +145,3 @@ spec:
         globalMounts:
           - path: /tmp
             subPath: tmp
-    route:
-      app:
-        hostnames:
-          - files.bjw-s.dev
-        parentRefs:
-          - name: envoy-external
-            namespace: network
