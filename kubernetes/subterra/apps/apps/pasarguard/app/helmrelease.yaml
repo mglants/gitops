@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: pasarguard/panel
-              tag: v1.7.2
+              tag: v1.10.0
             env:
               SQLALCHEMY_DATABASE_URL: 'sqlite+aiosqlite:////data/db.sqlite3'
               UVICORN_HOST: 0.0.0.0
