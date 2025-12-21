@@ -165,10 +165,10 @@ spec:
           external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
           nginx.ingress.kubernetes.io/enable-cors: "true"
           nginx.ingress.kubernetes.io/cors-allow-origin: "https://piped.ur30.ru, https://piped-api.ur30.ru, https://piped-proxy.ur30.ru"
-          nginx.ingress.kubernetes.io/auth-response-headers: Set-Cookie,X-authentik-username
-          nginx.ingress.kubernetes.io/auth-signin: /outpost.goauthentik.io/start?rd=$escaped_request_uri
-          nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Host $http_host;
-          nginx.ingress.kubernetes.io/auth-url: http://ak-outpost-authentik-embedded-outpost.infra.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
+          #nginx.ingress.kubernetes.io/auth-response-headers: Set-Cookie,X-authentik-username
+          #nginx.ingress.kubernetes.io/auth-signin: /outpost.goauthentik.io/start?rd=$escaped_request_uri
+          #nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Host $http_host;
+         # nginx.ingress.kubernetes.io/auth-url: http://ak-outpost-authentik-embedded-outpost.infra.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
         className: "external-nginx"
         hosts:
           - host: piped.ur30.ru
