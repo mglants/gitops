@@ -10,6 +10,5 @@ resources:
   - ./frigate/ks.yaml
   - ./homeassistant/ks.yaml
   - ./node-red/ks.yaml
-  - ./teslamate/ks.yaml
   - ./zigbee2mqtt/ks.yaml
   - ./database/ks.yaml
