@@ -54,7 +54,7 @@ spec:
                   secretKeyRef:
                     name: remnawave-secret
                     key: METRICS_PASSWORD
-              POSTGRES_DB:
+              DATABASE_URL:
                 valueFrom:
                   secretKeyRef:
                     name: remnawave-pgsql-pguser-remnawave
