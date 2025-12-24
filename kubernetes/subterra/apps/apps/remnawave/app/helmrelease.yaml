@@ -1,0 +1,126 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: remnawave
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.5.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  values:
+    controllers:
+      remnawave:
+        forceRename: remnawave
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/remnawave-ngx/remnawave-ngx
+              tag: 2.20.3
+            env:
+              # Configure application
+              JWT_AUTH_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-secret
+                    key: JWT_AUTH_SECRET
+              JWT_API_TOKENS_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-secret
+                    key: JWT_API_TOKENS_SECRET
+              WEBHOOK_SECRET_HEADER:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-secret
+                    key: WEBHOOK_SECRET_HEADER
+              METRICS_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-secret
+                    key: METRICS_USERNAME
+              METRICS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-secret
+                    key: METRICS_PASSWORD
+              POSTGRES_DB:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-pgsql-pguser-remnawave
+                    key: uri
+              FRONT_END_DOMAIN: "*"
+              SUB_PUBLIC_DOMAIN: "remnawave.glants.xyz/sub"
+              REDIS_HOST: remnawave-redis.apps.svc.cluster.local
+              REDIS_PORT: 6379
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 25m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
+
+      redis:
+        containers:
+          redis:
+            image:
+              repository: ghcr.io/valkey-io/valkey
+              tag: 9.0.1
+            resources:
+              requests:
+                cpu: 5m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+
+    service:
+      app:
+        forceRename: remnawave
+        primary: true
+        controller: remnawave
+        ports:
+          http:
+            port: 3000
+      redis:
+        controller: redis
+        ports:
+          http:
+            port: 6379
+
+    ingress:
+      app:
+        className: external-nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+        hosts:
+          - host: remnawave.glants.xyz
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - secretName: remnawave-tls
+            hosts:
+              - remnawave.glants.xyz

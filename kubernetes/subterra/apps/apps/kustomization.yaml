@@ -20,3 +20,4 @@ resources:
   - ./gitea/ks.yaml
   - ./pasarguard/ks.yaml
   - ./opencloud/ks.yaml
+  - ./remnawave/ks.yaml
