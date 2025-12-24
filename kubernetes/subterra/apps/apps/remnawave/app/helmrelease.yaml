@@ -25,8 +25,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/remnawave-ngx/remnawave-ngx
-              tag: 2.20.3
+              repository: remnawave/backend
+              tag: 2.4.4
             env:
               # Configure application
               JWT_AUTH_SECRET:
