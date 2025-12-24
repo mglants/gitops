@@ -28,32 +28,6 @@ spec:
               repository: remnawave/backend
               tag: 2.4.4
             env:
-              # Configure application
-              JWT_AUTH_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: remnawave-secret
-                    key: JWT_AUTH_SECRET
-              JWT_API_TOKENS_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: remnawave-secret
-                    key: JWT_API_TOKENS_SECRET
-              WEBHOOK_SECRET_HEADER:
-                valueFrom:
-                  secretKeyRef:
-                    name: remnawave-secret
-                    key: WEBHOOK_SECRET_HEADER
-              METRICS_USERNAME:
-                valueFrom:
-                  secretKeyRef:
-                    name: remnawave-secret
-                    key: METRICS_USERNAME
-              METRICS_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: remnawave-secret
-                    key: METRICS_PASSWORD
               DATABASE_URL:
                 valueFrom:
                   secretKeyRef:
@@ -63,6 +37,9 @@ spec:
               SUB_PUBLIC_DOMAIN: "remnawave.glants.xyz/sub"
               REDIS_HOST: remnawave-redis.apps.svc.cluster.local
               REDIS_PORT: 6379
+            envFrom:
+              - secretRef:
+                  name: remnawave-secret
             probes:
               liveness:
                 enabled: true
