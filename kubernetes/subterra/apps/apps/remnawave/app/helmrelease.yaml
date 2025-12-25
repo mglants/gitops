@@ -34,7 +34,6 @@ spec:
                     name: remnawave-pgsql-pguser-remnawave
                     key: uri
               FRONT_END_DOMAIN: "*"
-              SUB_PUBLIC_DOMAIN: "remnawave.glants.xyz/sub"
               REDIS_HOST: remnawave-redis.apps.svc.cluster.local
               REDIS_PORT: 6379
             envFrom:
@@ -69,7 +68,37 @@ spec:
                 memory: 32Mi
               limits:
                 memory: 128Mi
-
+      subscription-page:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: remnawave/subscription-page
+              tag: 7.0.5
+            env:
+              REMNAWAVE_PANEL_URL: http://remnawave.apps.svc.cluster.local:3000
+              CUSTOM_SUB_PREFIX: sub
+              MARZBAN_LEGACY_LINK_ENABLED: true
+            envFrom:
+              - secretRef:
+                  name: remnawave-secret
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 25m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
     service:
       app:
         forceRename: remnawave
@@ -83,6 +112,11 @@ spec:
         ports:
           http:
             port: 6379
+      subscription-page:
+        controller: subscription-page
+        ports:
+          http:
+            port: 3100
 
     ingress:
       app:
@@ -96,6 +130,12 @@ spec:
               - path: /
                 service:
                   identifier: app
+                  port: http
+          - host: remnawave.glants.xyz
+            paths:
+              - path: /sub
+                service:
+                  identifier: subscription-page
                   port: http
         tls:
           - secretName: remnawave-tls
