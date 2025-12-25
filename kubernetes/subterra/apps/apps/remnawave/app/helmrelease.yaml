@@ -141,6 +141,7 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-prod
           external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12
         hosts:
           - host: panel.remnawave.glants.xyz
             paths:
