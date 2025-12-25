@@ -34,7 +34,7 @@ spec:
                     name: remnawave-pgsql-pguser-remnawave
                     key: uri
               FRONT_END_DOMAIN: "*"
-              SUB_PUBLIC_DOMAIN: "remnawave.glants.xyz"
+              SUB_PUBLIC_DOMAIN: "remnawave.glants.xyz/sub"
               REDIS_HOST: remnawave-redis.apps.svc.cluster.local
               REDIS_PORT: 6379
             envFrom:
@@ -130,15 +130,25 @@ spec:
             paths:
               - path: /
                 service:
-                  identifier: app
-                  port: http
-          - host: remnawave.glants.xyz
-            paths:
-              - path: /sub
-                service:
                   identifier: subscription-page
                   port: http
         tls:
           - secretName: remnawave-tls
             hosts:
               - remnawave.glants.xyz
+      panel:
+        className: external-nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+        hosts:
+          - host: panel.remnawave.glants.xyz
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - secretName: remnawave-panel-tls
+            hosts:
+              - panel.remnawave.glants.xyz
