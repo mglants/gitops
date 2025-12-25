@@ -34,6 +34,7 @@ spec:
                     name: remnawave-pgsql-pguser-remnawave
                     key: uri
               FRONT_END_DOMAIN: "*"
+              SUB_PUBLIC_DOMAIN: "*"
               REDIS_HOST: remnawave-redis.apps.svc.cluster.local
               REDIS_PORT: 6379
             envFrom:
