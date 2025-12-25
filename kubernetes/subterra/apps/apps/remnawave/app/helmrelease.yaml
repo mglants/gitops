@@ -117,7 +117,7 @@ spec:
         controller: subscription-page
         ports:
           http:
-            port: 3100
+            port: 3010
 
     ingress:
       app:
