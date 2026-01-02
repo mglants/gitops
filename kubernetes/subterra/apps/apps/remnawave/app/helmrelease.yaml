@@ -132,10 +132,24 @@ spec:
                 service:
                   identifier: subscription-page
                   port: http
+          - host: access.glants.xyz
+            paths:
+              - path: /
+                service:
+                  identifier: subscription-page
+                  port: http
+          - host: marzban.glants.xyz
+            paths:
+              - path: /
+                service:
+                  identifier: subscription-page
+                  port: http
         tls:
           - secretName: remnawave-tls
             hosts:
               - remnawave.glants.xyz
+              - access.glants.xyz
+              - marzban.glants.xyz
       panel:
         className: external-nginx
         annotations:
