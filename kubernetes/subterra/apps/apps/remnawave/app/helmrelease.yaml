@@ -100,6 +100,72 @@ spec:
                 memory: 512Mi
               limits:
                 memory: 1Gi
+      bot:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: fr1ngg/remnawave-bedolaga-telegram-bot
+              tag: v2.9.4
+            env:
+              DOCKER_ENV: "true"
+              REMNAWAVE_API_URL: http://remnawave.apps.svc.cluster.local:3000
+              BOT_RUN_MODE: webhook
+              WEBHOOK_URL: https://bot.remnawave.glants.xyz
+              WEBHOOK_PATH: /webhook
+              WEB_API_ENABLED: true
+              WEB_API_HOST: 0.0.0.0
+              WEB_API_PORT: 8080
+              WEB_API_ALLOWED_ORIGINS: https://bot.remnawave.glants.xyz
+              REDIS_URL: "redis://remnawave-redis.apps.svc.cluster.local:6379/1"
+              DATABASE_MODE: "auto"
+              ADMIN_NOTIFICATIONS_ENABLED: true
+
+              POSTGRES_HOST:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-pgsql-pguser-remnawave-bot
+                    key: host
+              POSTGRES_PORT:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-pgsql-pguser-remnawave-bot
+                    key: port
+              POSTGRES_DB:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-pgsql-pguser-remnawave-bot
+                    key: dbname
+              POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-pgsql-pguser-remnawave-bot
+                    key: user
+              POSTGRES_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-pgsql-pguser-remnawave-bot
+                    key: password
+            envFrom:
+              - secretRef:
+                  name: remnawave-bot-secret
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 25m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
     service:
       app:
         forceRename: remnawave
@@ -118,7 +184,11 @@ spec:
         ports:
           http:
             port: 3010
-
+      bot:
+        controller: bot
+        ports:
+          http:
+            port: 8080
     ingress:
       app:
         className: external-nginx
@@ -126,12 +196,6 @@ spec:
           cert-manager.io/cluster-issuer: letsencrypt-prod
           external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
         hosts:
-          - host: remnawave.glants.xyz
-            paths:
-              - path: /
-                service:
-                  identifier: subscription-page
-                  port: http
           - host: access.glants.xyz
             paths:
               - path: /
@@ -147,7 +211,6 @@ spec:
         tls:
           - secretName: remnawave-tls
             hosts:
-              - remnawave.glants.xyz
               - access.glants.xyz
               - marzban.glants.xyz
       panel:
@@ -157,7 +220,7 @@ spec:
           external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
           nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12
         hosts:
-          - host: panel.remnawave.glants.xyz
+          - host: remnawave.glants.xyz
             paths:
               - path: /
                 service:
@@ -166,4 +229,20 @@ spec:
         tls:
           - secretName: remnawave-panel-tls
             hosts:
-              - panel.remnawave.glants.xyz
+              - remnawave.glants.xyz
+      bot:
+        className: external-nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+        hosts:
+          - host: bot.remnawave.glants.xyz
+            paths:
+              - path: /
+                service:
+                  identifier: bot
+                  port: http
+        tls:
+          - secretName: remnawave-bot-tls
+            hosts:
+              - bot.remnawave.glants.xyz

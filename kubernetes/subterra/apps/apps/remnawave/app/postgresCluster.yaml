@@ -44,6 +44,10 @@ spec:
       databases:
         - remnawave
       options: SUPERUSER
+    - name: remnawave-bot
+      databases:
+        - remnawave-bot
+      options: SUPERUSER
   backups:
     pgbackrest:
       configuration:
