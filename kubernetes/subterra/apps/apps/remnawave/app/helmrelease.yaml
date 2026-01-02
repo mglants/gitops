@@ -243,6 +243,12 @@ spec:
                 service:
                   identifier: bot
                   port: http
+          - host: app.bot.remnawave.glants.xyz
+            paths:
+              - path: /
+                service:
+                  identifier: bot
+                  port: http
         tls:
           - secretName: remnawave-bot-tls
             hosts:
