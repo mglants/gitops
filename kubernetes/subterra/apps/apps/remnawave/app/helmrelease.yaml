@@ -110,6 +110,7 @@ spec:
               tag: v2.9.4
             env:
               DOCKER_ENV: "true"
+              BACKUP_AUTO_ENABLED: "false"
               REMNAWAVE_API_URL: http://remnawave.apps.svc.cluster.local:3000
               BOT_RUN_MODE: webhook
               WEBHOOK_URL: https://bot.remnawave.glants.xyz
