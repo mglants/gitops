@@ -118,7 +118,7 @@ spec:
               WEB_API_ENABLED: true
               WEB_API_HOST: 0.0.0.0
               WEB_API_PORT: 8080
-              WEB_API_ALLOWED_ORIGINS: https://app.bot.remnawave.glants.xyz
+              WEB_API_ALLOWED_ORIGINS: https://bot.remnawave.glants.xyz
               REDIS_URL: "redis://remnawave-redis.apps.svc.cluster.local:6379/1"
               DATABASE_MODE: "auto"
               ADMIN_NOTIFICATIONS_ENABLED: true
@@ -243,14 +243,7 @@ spec:
                 service:
                   identifier: bot
                   port: http
-          - host: app.bot.remnawave.glants.xyz
-            paths:
-              - path: /
-                service:
-                  identifier: bot
-                  port: http
         tls:
           - secretName: remnawave-bot-tls
             hosts:
               - bot.remnawave.glants.xyz
-              - app.bot.remnawave.glants.xyz
