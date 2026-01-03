@@ -290,6 +290,16 @@ spec:
                 subPath: logs
               - path: /opt/remnashop/assets
                 subPath: data
+            taskiq-scheduler:
+              - path: /opt/remnashop/logs
+                subPath: logs
+              - path: /opt/remnashop/assets
+                subPath: data
+            taskiq-worker:
+              - path: /opt/remnashop/logs
+                subPath: logs
+              - path: /opt/remnashop/assets
+                subPath: data
       logs:
         enabled: true
         type: emptyDir
