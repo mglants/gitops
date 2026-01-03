@@ -115,7 +115,7 @@ spec:
               repository: ghcr.io/snoups/remnashop
               tag: v0.6.4
             env:
-              APP_DOMAIN: https://bot.remnawave.glants.xyz
+              APP_DOMAIN: bot.remnawave.glants.xyz
               APP_HOST: 0.0.0.0
               # Port number for the bot web server.
               APP_PORT: 5000
