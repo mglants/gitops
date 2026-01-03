@@ -5,3 +5,4 @@ resources:
   - helmrelease.yaml
   - postgresCluster.yaml
   - externalsecret.yaml
+  - pvc.yaml

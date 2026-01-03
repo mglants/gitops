@@ -279,6 +279,17 @@ spec:
             hosts:
               - bot.remnawave.glants.xyz
     persistence:
+      bot-data:
+        enabled: true
+        type: persistentVolumeClaim
+        existingClaim: remnawave-bot-data-v1
+        advancedMounts:
+          bot:
+            app:
+              - path: /opt/remnashop/logs
+                subPath: logs
+              - path: /opt/remnashop/assets
+                subPath: data
       logs:
         enabled: true
         type: emptyDir
