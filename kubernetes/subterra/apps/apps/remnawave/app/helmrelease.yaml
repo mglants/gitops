@@ -270,3 +270,10 @@ spec:
           - secretName: remnawave-bot-tls
             hosts:
               - bot.remnawave.glants.xyz
+    persistence:
+      logs:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /opt/remnashop/logs
+            readOnly: false
