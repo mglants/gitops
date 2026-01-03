@@ -121,6 +121,10 @@ spec:
               REDIS_HOST: remnawave-redis.apps.svc.cluster.local
               REDIS_PORT: 6379
               REDIS_NAME: 1
+              APP_LOCALES: ru
+              APP_DEFAULT_LOCALE: ru
+              BOT_MINI_APP: "false"
+              BOT_RESET_WEBHOOK: "false"
               DATABASE_HOST:
                 valueFrom:
                   secretKeyRef:
