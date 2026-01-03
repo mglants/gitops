@@ -37,6 +37,8 @@ spec:
               SUB_PUBLIC_DOMAIN: "remnawave.glants.xyz/sub"
               REDIS_HOST: remnawave-redis.apps.svc.cluster.local
               REDIS_PORT: 6379
+              WEBHOOK_ENABLED: "true"
+              WEBHOOK_URL: http://remnawave-bot:5000/api/v1/remnawave
             envFrom:
               - secretRef:
                   name: remnawave-secret
@@ -105,49 +107,50 @@ spec:
           reloader.stakater.com/auto: "true"
         containers:
           app:
+            &bot
             image:
-              repository: fr1ngg/remnawave-bedolaga-telegram-bot
-              tag: v2.9.4
+              repository: ghcr.io/snoups/remnashop
+              tag: v0.6.4
             env:
-              DOCKER_ENV: "true"
-              BACKUP_AUTO_ENABLED: "false"
-              REMNAWAVE_API_URL: http://remnawave.apps.svc.cluster.local:3000
-              BOT_RUN_MODE: webhook
-              WEBHOOK_URL: https://bot.remnawave.glants.xyz
-              WEBHOOK_PATH: /webhook
-              WEB_API_ENABLED: true
-              WEB_API_HOST: 0.0.0.0
-              WEB_API_PORT: 8080
-              WEB_API_ALLOWED_ORIGINS: https://bot.remnawave.glants.xyz
-              REDIS_URL: "redis://remnawave-redis.apps.svc.cluster.local:6379/1"
-              DATABASE_MODE: "auto"
-              ADMIN_NOTIFICATIONS_ENABLED: true
-
-              POSTGRES_HOST:
+              APP_DOMAIN: https://bot.remnawave.glants.xyz
+              APP_HOST: 0.0.0.0
+              # Port number for the bot web server.
+              APP_PORT: 5000
+              REMNAWAVE_HOST: remnawave.apps.svc.cluster.local
+              REMNAWAVE_PORT: 3000
+              REDIS_HOST: remnawave-redis.apps.svc.cluster.local
+              REDIS_PORT: 6379
+              REDIS_NAME: 1
+              DATABASE_HOST:
                 valueFrom:
                   secretKeyRef:
                     name: remnawave-pgsql-pguser-remnawave-bot
                     key: host
-              POSTGRES_PORT:
+              DATABASE_PORT:
                 valueFrom:
                   secretKeyRef:
                     name: remnawave-pgsql-pguser-remnawave-bot
                     key: port
-              POSTGRES_DB:
+              DATABASE_NAME:
                 valueFrom:
                   secretKeyRef:
                     name: remnawave-pgsql-pguser-remnawave-bot
                     key: dbname
-              POSTGRES_USER:
+              DATABASE_USER:
                 valueFrom:
                   secretKeyRef:
                     name: remnawave-pgsql-pguser-remnawave-bot
                     key: user
-              POSTGRES_PASSWORD:
+              DATABASE_PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: remnawave-pgsql-pguser-remnawave-bot
                     key: password
+              REMNAWAVE_WEBHOOK_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-secret
+                    key: WEBHOOK_SECRET_HEADER
             envFrom:
               - secretRef:
                   name: remnawave-bot-secret
@@ -164,9 +167,29 @@ spec:
             resources:
               requests:
                 cpu: 25m
-                memory: 512Mi
+                memory: 128Mi
               limits:
                 memory: 1Gi
+          taskiq-worker:
+            <<: *bot
+            command:
+              - taskiq
+            args:
+              - worker
+              - src.infrastructure.taskiq.worker:worker
+              - --tasks-pattern
+              - src/infrastructure/taskiq/tasks
+              - -fsd
+          taskiq-scheduler:
+            <<: *bot
+            command:
+              - taskiq
+            args:
+              - scheduler
+              - src.infrastructure.taskiq.scheduler:scheduler
+              - --tasks-pattern
+              - src/infrastructure/taskiq/tasks
+              - -fsd
     service:
       app:
         forceRename: remnawave
@@ -189,7 +212,7 @@ spec:
         controller: bot
         ports:
           http:
-            port: 8080
+            port: 5000
     ingress:
       app:
         className: external-nginx
