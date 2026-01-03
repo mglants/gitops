@@ -119,7 +119,7 @@ spec:
               APP_HOST: 0.0.0.0
               # Port number for the bot web server.
               APP_PORT: 5000
-              REMNAWAVE_HOST: remnawave.apps.svc.cluster.local
+              REMNAWAVE_HOST: remnawave
               REMNAWAVE_PORT: 3000
               REDIS_HOST: remnawave-redis.apps.svc.cluster.local
               REDIS_PORT: 6379
