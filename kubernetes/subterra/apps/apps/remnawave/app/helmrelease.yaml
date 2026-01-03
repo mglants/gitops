@@ -37,6 +37,7 @@ spec:
               SUB_PUBLIC_DOMAIN: "remnawave.glants.xyz/sub"
               REDIS_HOST: remnawave-redis.apps.svc.cluster.local
               REDIS_PORT: 6379
+              REDIS_PASSWORD: valkey
               WEBHOOK_ENABLED: "true"
               WEBHOOK_URL: http://remnawave-bot:5000/api/v1/remnawave
             envFrom:
@@ -65,6 +66,8 @@ spec:
             image:
               repository: ghcr.io/valkey-io/valkey
               tag: 9.0.1
+            env:
+              VALKEY_EXTRA_FLAGS: "--requirepass valkey"
             resources:
               requests:
                 cpu: 5m
@@ -121,6 +124,7 @@ spec:
               REDIS_HOST: remnawave-redis.apps.svc.cluster.local
               REDIS_PORT: 6379
               REDIS_NAME: 1
+              REDIS_PASSWORD: valkey
               APP_LOCALES: ru
               APP_DEFAULT_LOCALE: ru
               BOT_MINI_APP: "false"
