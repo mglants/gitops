@@ -130,7 +130,7 @@ spec:
               REDIS_PASSWORD: valkey
               APP_LOCALES: ru
               APP_DEFAULT_LOCALE: ru
-              BOT_MINI_APP: "false"
+              BOT_MINI_APP: "true"
               BOT_RESET_WEBHOOK: "false"
               DATABASE_HOST:
                 valueFrom:
