@@ -17,7 +17,7 @@ spec:
       interval: 30m
 
   values:
-    runnerScaleSetName: arc-runner-set-containers
+    runnerScaleSetName: arc-runner-set-openwrt-nikki
 
     githubConfigUrl: https://github.com/mglants/OpenWrt-nikki
 
