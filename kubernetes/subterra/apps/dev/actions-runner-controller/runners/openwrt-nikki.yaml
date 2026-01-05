@@ -34,15 +34,22 @@ spec:
     listenerTemplate:
       metadata:
         labels:
-          app.kubernetes.io/name: arc-containers-listener
+          app.kubernetes.io/name: arc-openwrt-nikki-listener
       spec:
         containers: []
 
     template:
       metadata:
         labels:
-          app.kubernetes.io/name: arc-containers-runner
+          app.kubernetes.io/name: arc-openwrt-nikki-runner
       spec:
+        topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: kubernetes.io/hostname
+            whenUnsatisfiable: ScheduleAnyway
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: arc-openwrt-nikki-runner
         containers:
           - name: runner
             image: ghcr.io/home-operations/actions-runner:2.330.0

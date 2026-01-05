@@ -34,14 +34,14 @@ spec:
     listenerTemplate:
       metadata:
         labels:
-          app.kubernetes.io/name: arc-containers-listener
+          app.kubernetes.io/name: arc-openwrt-custom-listener
       spec:
         containers: []
 
     template:
       metadata:
         labels:
-          app.kubernetes.io/name: arc-containers-runner
+          app.kubernetes.io/name: arc-openwrt-custom-runner
       spec:
         containers:
           - name: runner
