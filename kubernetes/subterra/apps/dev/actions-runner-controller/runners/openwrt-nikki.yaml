@@ -50,6 +50,10 @@ spec:
         labels:
           app.kubernetes.io/name: arc-openwrt-nikki-runner
       spec:
+        securityContext:
+          fsGroup: 1001
+          fsGroupChangePolicy: "OnRootMismatch"
+
         topologySpreadConstraints:
           - maxSkew: 1
             topologyKey: kubernetes.io/hostname
