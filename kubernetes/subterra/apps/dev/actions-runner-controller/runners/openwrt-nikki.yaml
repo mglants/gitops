@@ -26,6 +26,13 @@ spec:
 
     containerMode:
       type: kubernetes
+      kubernetesModeWorkVolumeClaim:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: freenas-iscsi-csi
+        resources:
+          requests:
+            storage: 5Gi
 
     controllerServiceAccount:
       name: actions-runner-controller-gha-rs-controller
