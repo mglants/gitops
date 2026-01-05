@@ -22,7 +22,7 @@ spec:
     githubConfigUrl: https://github.com/mglants/OpenWrt-nikki
 
     minRunners: 1
-    maxRunners: 6
+    maxRunners: 10
 
     containerMode:
       type: dind
