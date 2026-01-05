@@ -25,15 +25,7 @@ spec:
     maxRunners: 10
 
     containerMode:
-      type: kubernetes
-      kubernetesModeWorkVolumeClaim:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: freenas-iscsi-csi
-        resources:
-          requests:
-            storage: 5Gi
-
+      type: dind
     controllerServiceAccount:
       name: actions-runner-controller-gha-rs-controller
       namespace: dev
@@ -65,9 +57,6 @@ spec:
           - name: runner
             image: ghcr.io/home-operations/actions-runner:2.330.0
             command: [/home/runner/run.sh]
-            env:
-              - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
-                value: "false"
   valuesFrom:
     - kind: Secret
       name: actions-runner-controller-auth
