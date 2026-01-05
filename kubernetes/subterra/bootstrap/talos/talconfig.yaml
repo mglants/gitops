@@ -18,7 +18,7 @@ additionalMachineCertSans: *san
 
 nodes:
   - hostname: subterra-cp3
-    ipAddress: 192.168.48.40
+    ipAddress: 192.168.48.112
     controlPlane: true
     installDisk: /dev/sda
     networkInterfaces:
@@ -28,13 +28,13 @@ nodes:
         vip:
           ip: ${clusterEndpointIP}
   - hostname: subterra-cp2
-    ipAddress: 192.168.48.41
+    ipAddress: 192.168.48.111
     controlPlane: true
     installDisk: /dev/sda
     networkInterfaces:
       - *cp_interface
   - hostname: subterra-cp1
-    ipAddress: 192.168.48.42
+    ipAddress: 192.168.48.110
     controlPlane: true
     installDiskSelector:
       size: '>100GB'
@@ -83,6 +83,7 @@ controlPlane:
           - siderolabs/iscsi-tools
           - siderolabs/intel-ucode
           - siderolabs/util-linux-tools
+          - siderolabs/binfmt-misc
   patches:
     # Disable search domain everywhere
     - &machine_search_domain |-
@@ -127,6 +128,8 @@ controlPlane:
                 [plugins."io.containerd.grpc.v1.cri"]
                   enable_unprivileged_ports = true
                   enable_unprivileged_icmp = true
+              [plugins."io.containerd.cri.v1.images"]
+                discard_unpacked_layers = false
 
     # Enable K8s Talos API Access
     - |-
