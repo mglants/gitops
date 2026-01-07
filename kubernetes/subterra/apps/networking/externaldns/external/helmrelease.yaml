@@ -55,8 +55,7 @@ spec:
       - ingress
       - crd
       - service
-    txtOwnerId: main
-    txtPrefix: k8s.
+    txtOwnerId: default
   postRenderers:
     - kustomize:
         patches:
