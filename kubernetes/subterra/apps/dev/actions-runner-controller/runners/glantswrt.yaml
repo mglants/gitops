@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: arc-openwrt-custom
+  name: arc-glantswrt
 spec:
   interval: 30m
   chart:
@@ -17,9 +17,9 @@ spec:
       interval: 30m
 
   values:
-    runnerScaleSetName: arc-runner-set-openwrt-custom
+    runnerScaleSetName: arc-runner-set-glantswrt
 
-    githubConfigUrl: https://github.com/mglants/openwrt-custom
+    githubConfigUrl: https://github.com/mglants/glantswrt
 
     minRunners: 1
     maxRunners: 6
@@ -34,14 +34,14 @@ spec:
     listenerTemplate:
       metadata:
         labels:
-          app.kubernetes.io/name: arc-openwrt-custom-listener
+          app.kubernetes.io/name: arc-glantswrt-listener
       spec:
         containers: []
 
     template:
       metadata:
         labels:
-          app.kubernetes.io/name: arc-openwrt-custom-runner
+          app.kubernetes.io/name: arc-glantswrt-runner
       spec:
         containers:
           - name: runner
