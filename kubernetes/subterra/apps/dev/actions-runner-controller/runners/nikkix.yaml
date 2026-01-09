@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: arc-openwrt-nikki
+  name: arc-nikkix
 spec:
   interval: 30m
   chart:
@@ -33,14 +33,14 @@ spec:
     listenerTemplate:
       metadata:
         labels:
-          app.kubernetes.io/name: arc-openwrt-nikki-listener
+          app.kubernetes.io/name: arc-nikkix-listener
       spec:
         containers: []
 
     template:
       metadata:
         labels:
-          app.kubernetes.io/name: arc-openwrt-nikki-runner
+          app.kubernetes.io/name: arc-nikkix-runner
       spec:
         securityContext:
           fsGroup: 1001
@@ -52,7 +52,7 @@ spec:
             whenUnsatisfiable: ScheduleAnyway
             labelSelector:
               matchLabels:
-                app.kubernetes.io/name: arc-openwrt-nikki-runner
+                app.kubernetes.io/name: arc-nikkix-runner
         containers:
           - name: runner
             image: ghcr.io/home-operations/actions-runner:2.330.0
