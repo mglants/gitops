@@ -5,4 +5,4 @@ kind: Kustomization
 resources:
   - ./containers.yaml
   - ./glantswrt.yaml
-  - ./openwrt-nikki.yaml
+  - ./nikkix.yaml
