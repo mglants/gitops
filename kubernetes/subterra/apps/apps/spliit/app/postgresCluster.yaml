@@ -5,22 +5,22 @@ metadata:
   name: spliit-pgsql
 spec:
   postgresVersion: 15
-  # dataSource:
-  #   pgbackrest:
-  #     stanza: db
-  #     configuration:
-  #       - secret:
-  #           name: pgo-s3-creds
-  #     global:
-  #       repo1-path: /spliit/repo1
-  #       repo1-s3-uri-style: path
-  #       repo1-storage-port: '30002'
-  #     repo:
-  #       name: repo1
-  #       s3:
-  #         bucket: crunchy-postgres
-  #         endpoint: nas.ur30.ru
-  #         region: us-east-1
+  dataSource:
+    pgbackrest:
+      stanza: db
+      configuration:
+        - secret:
+            name: pgo-s3-creds
+      global:
+        repo1-path: /spliit/repo1
+        repo1-s3-uri-style: path
+        repo1-storage-port: '30002'
+      repo:
+        name: repo1
+        s3:
+          bucket: crunchy-postgres
+          endpoint: nas.ur30.ru
+          region: us-east-1
   patroni:
     dynamicConfiguration:
       synchronous_mode: true
