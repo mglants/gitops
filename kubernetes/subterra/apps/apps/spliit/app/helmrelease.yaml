@@ -1,0 +1,89 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: spliit
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.5.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  values:
+    controllers:
+      spliit:
+        forceRename: spliit
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/spliit-app/spliit
+              tag: 1.19.0
+            env:
+              POSTGRES_PRISMA_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: spliit-pgsql-pguser-spliit
+                    key: uri
+              POSTGRES_URL_NON_POOLING:
+                valueFrom:
+                  secretKeyRef:
+                    name: spliit-pgsql-pguser-spliit
+                    key: uri
+              NEXT_PUBLIC_ENABLE_RECEIPT_EXTRACT: true
+              NEXT_PUBLIC_ENABLE_CATEGORY_EXTRACT: true
+              NEXT_PUBLIC_ENABLE_EXPENSE_DOCUMENTS: true
+              S3_UPLOAD_BUCKET: spliit
+              S3_UPLOAD_ENDPOINT: s3://nas.ur30.ru:30002
+              S3_UPLOAD_KEY: spliit
+            envFrom:
+              - secretRef:
+                  name: spliit-secret
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 25m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
+    service:
+      app:
+        forceRename: spliit
+        primary: true
+        controller: spliit
+        ports:
+          http:
+            port: 3000
+    ingress:
+      app:
+        className: external-nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+        hosts:
+          - host: spliit.glants.xyz
+            paths:
+              - path: /
+                service:
+                  identifier: subscription-page
+                  port: http
+        tls:
+          - secretName: spliit-tls
+            hosts:
+              - spliit.glants.xyz
