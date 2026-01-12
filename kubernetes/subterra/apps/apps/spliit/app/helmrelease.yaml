@@ -81,7 +81,7 @@ spec:
             paths:
               - path: /
                 service:
-                  identifier: subscription-page
+                  identifier: app
                   port: http
         tls:
           - secretName: spliit-tls
