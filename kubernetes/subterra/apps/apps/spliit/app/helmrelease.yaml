@@ -42,6 +42,7 @@ spec:
               NEXT_PUBLIC_ENABLE_EXPENSE_DOCUMENTS: true
               S3_UPLOAD_BUCKET: spliit
               S3_UPLOAD_ENDPOINT: s3://nas.ur30.ru:30002
+              S3_UPLOAD_REGION: us-east-1
               S3_UPLOAD_KEY: spliit
             envFrom:
               - secretRef:
