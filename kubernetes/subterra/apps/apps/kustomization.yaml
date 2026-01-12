@@ -21,3 +21,4 @@ resources:
   - ./pasarguard/ks.yaml
   - ./opencloud/ks.yaml
   - ./remnawave/ks.yaml
+  - ./spliit/ks.yaml
