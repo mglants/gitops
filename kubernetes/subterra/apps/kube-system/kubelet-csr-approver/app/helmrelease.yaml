@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://postfinance.github.io/kubelet-csr-approver
       chart: kubelet-csr-approver
-      version: 1.2.12
+      version: 1.2.13
       sourceRef:
         kind: HelmRepository
         name: postfinance-charts
