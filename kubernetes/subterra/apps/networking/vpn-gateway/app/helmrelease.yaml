@@ -43,7 +43,7 @@ spec:
         gluetun:
           image:
             repository: qmcgaw/gluetun
-            tag: v3.40.3
+            tag: v3.41.1
             pullPolicy: Always
         env:
           - name: VPN_SERVICE_PROVIDER
