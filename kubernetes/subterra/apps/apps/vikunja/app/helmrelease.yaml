@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: docker.io/vikunja/vikunja
-              tag: 0.24.6
+              tag: 1.1.0
             env:
               VIKUNJA_DATABASE_TYPE: sqlite
               VIKUNJA_DATABASE_PATH: /db/vikunja.db
