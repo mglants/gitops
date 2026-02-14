@@ -19,4 +19,4 @@ spec:
   wait: false
   dependsOn:
     - name: cluster-apps-external-secrets-stores
-    - name: nginx-external
+    - name: external-nginx
