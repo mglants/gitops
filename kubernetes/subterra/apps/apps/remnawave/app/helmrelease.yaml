@@ -115,7 +115,7 @@ spec:
               repository: ghcr.io/snoups/remnashop
               tag: v0.6.6
             env:
-              APP_DOMAIN: bot.remnawave.ur30.ru
+              APP_DOMAIN: remnabot.ur30.ru
               APP_HOST: 0.0.0.0
               # Port number for the bot web server.
               APP_PORT: 5000
@@ -269,7 +269,7 @@ spec:
           external-dns.alpha.kubernetes.io/target: ingress-ext.ur30.ru
           external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
         hosts:
-          - host: bot.remnawave.ur30.ru
+          - host: remnabot.ur30.ru
             paths:
               - path: /
                 service:
@@ -278,7 +278,7 @@ spec:
         tls:
           - secretName: remnawave-bot-tls
             hosts:
-              - bot.remnawave.ur30.ru
+              - remnabot.ur30.ru
     persistence:
       bot-data:
         enabled: true
