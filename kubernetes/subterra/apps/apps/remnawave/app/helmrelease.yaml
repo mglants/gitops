@@ -113,7 +113,7 @@ spec:
             &bot
             image:
               repository: ghcr.io/snoups/remnashop
-              tag: v0.6.4
+              tag: v0.6.6
             env:
               APP_DOMAIN: bot.remnawave.glants.xyz
               APP_HOST: 0.0.0.0
