@@ -1,0 +1,10 @@
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: cloudflared-tunnel
+spec:
+  endpoints:
+    - dnsName: ingress-ext.ur30.ru
+      recordType: CNAME
+      targets: [ee49894b-19c9-486d-a59d-216d941e6028.cfargotunnel.com]

@@ -1,0 +1,15 @@
+---
+ingress:
+  - hostname: ur30.ru
+    service: https://external-nginx-controller.networking.svc.cluster.local:443
+    originRequest:
+      originServerName: ingress-ext.ur30.ru
+  - hostname: '*.ur30.ru'
+    service: https://external-nginx-controller.networking.svc.cluster.local:443
+    originRequest:
+      originServerName: ingress-ext.ur30.ru
+  - hostname: '*.glants.xyz'
+    service: https://external-nginx-controller.networking.svc.cluster.local:443
+    originRequest:
+      originServerName: ingress-ext.ur30.ru
+  - service: http_status:404

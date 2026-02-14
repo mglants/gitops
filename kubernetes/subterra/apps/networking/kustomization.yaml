@@ -13,3 +13,4 @@ resources:
   - ./echo-server/ks.yaml
   - ./ingress-nginx/ks.yaml
   - ./ipmi-server/ks.yaml
+  - ./cloudflared/ks.yaml
