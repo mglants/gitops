@@ -60,7 +60,7 @@ spec:
           app:
             image:
               repository: ghcr.io/anyproto/any-sync-filenode
-              tag: v0.10.1
+              tag: v0.10.6
             resources:
               requests:
                 cpu: 10m
