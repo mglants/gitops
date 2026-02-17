@@ -10,7 +10,6 @@ resources:
   - ./nextcloud/ks.yaml
   - ./vaultwarden/ks.yaml
   - ./paperless/ks.yaml
-  - ./ocis/ks.yaml
   - ./teamspeak/ks.yaml
   - ./windmill/ks.yaml
   - ./vikunja/ks.yaml
