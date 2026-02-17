@@ -34,7 +34,7 @@ spec:
           main:
             image:
               repository: ghcr.io/linuxserver/jackett
-              tag: 0.24.241
+              tag: 0.24.1140
             env:
               TZ: Europe/Moscow
             probes:
