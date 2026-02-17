@@ -18,7 +18,6 @@ resources:
   - ./karakeep/ks.yaml
   - ./any-sync/ks.yaml
   - ./gitea/ks.yaml
-  - ./pasarguard/ks.yaml
   - ./opencloud/ks.yaml
   - ./remnawave/ks.yaml
   - ./spliit/ks.yaml
