@@ -57,6 +57,7 @@ spec:
               PROXY_AUTOPROVISION_ACCOUNTS: true
               PROXY_ROLE_ASSIGNMENT_DRIVER: "oidc"
               PROXY_OIDC_REWRITE_WELLKNOWN: "true"
+              OC_SHARING_PUBLIC_SHARE_MUST_HAVE_PASSWORD: "false"
               PROXY_USER_OIDC_CLAIM: "preferred_username"
               PROXY_USER_CS3_CLAIM: "username"
               OC_EXCLUDE_RUN_SERVICES: idp
