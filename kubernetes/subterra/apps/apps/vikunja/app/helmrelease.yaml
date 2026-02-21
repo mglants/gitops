@@ -37,10 +37,11 @@ spec:
               VIKUNJA_DATABASE_TYPE: sqlite
               VIKUNJA_DATABASE_PATH: /db/vikunja.db
               VIKUNJA_FILES_BASEPATH: /files
-              VIKUNJA_SERVICE_ENABLECALDAV: false
+              VIKUNJA_SERVICE_ENABLECALDAV: true
               VIKUNJA_SERVICE_ENABLELINKSHARING: false
               VIKUNJA_SERVICE_ENABLEREGISTRATION: false
               VIKUNJA_SERVICE_PUBLICURL: https://vikunja.glants.xyz/
+              VIKUNJA_AUTH_LOCAL_ENABLED: true
               VIKUNJA_AUTH_OPENID_ENABLED: true
               VIKUNJA_AUTH_OPENID_PROVIDERS_SSO_NAME: SSO
               VIKUNJA_AUTH_OPENID_PROVIDERS_SSO_AUTHURL: https://authentik.glants.xyz/application/o/vikunja/
