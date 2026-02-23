@@ -13,7 +13,6 @@ resources:
   - ./sonarr/ks.yaml
   - ./xteve/ks.yaml
   - ./jellyseerr/ks.yaml
-  - ./jackett/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./calibre-web/ks.yaml
   - ./piped/ks.yaml
