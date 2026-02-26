@@ -1,0 +1,123 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.6.2/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rustdesk
+  namespace: apps
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.6.2
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  values:
+    service:
+      main:
+        controller: main
+        type: LoadBalancer
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: rustdesk.ur30.ru
+          external-dns.alpha.kubernetes.io/type: internal
+          io.cilium/lb-ipam-ips: 192.168.40.24
+        externalTrafficPolicy: Local
+        ports:
+          rustdesk-1:
+            port: 21114
+          rustdesk-2:
+            port: 21115
+          rustdesk-3:
+            port: &port 21116
+          rustdesk-4:
+            port: *port
+            protocol: UDP
+          rustdesk-5-relay:
+            port: 21117
+          rustdesk-6:
+            port: 21118
+          rustdesk-7-relay:
+            port: 21119
+
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 777
+        runAsGroup: 777
+        fsGroup: 777
+        fsGroupChangePolicy: "OnRootMismatch"
+
+    persistence:
+      data:
+        storageClass: freenas-iscsi-csi
+        accessMode: ReadWriteOnce
+        size: 100M
+        globalMounts:
+          - path: /db
+            subPath: hbbs
+      keys:
+        enabled: true
+        type: secret
+        name: rustdesk-secret
+        globalMounts:
+          - path: /root/id_ed25519
+            subPath: id_ed25519
+          - path: /root/id_ed25519.pub
+            subPath: id_ed25519.pub
+
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              repository: ghcr.io/rustdesk/rustdesk-server
+              tag: 1.1.15
+            command:
+              - hbbs
+              - -r localhost:21117
+            env:
+              ENCRYPTED_ONLY: "1"
+              DB_URL: /db/db_v2.sqlite3
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100Mi
+              limits:
+                memory: 1000Mi
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 21116
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+          relay:
+            image:
+              repository: ghcr.io/rustdesk/rustdesk-server
+              tag: 1.1.15
+            command:
+              - hbbr
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100Mi
+              limits:
+                memory: 1000Mi
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 21117
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3

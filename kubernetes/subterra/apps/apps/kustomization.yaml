@@ -19,3 +19,4 @@ resources:
   - ./opencloud/ks.yaml
   - ./remnawave/ks.yaml
   - ./spliit/ks.yaml
+  - ./rustdesk/ks.yaml
