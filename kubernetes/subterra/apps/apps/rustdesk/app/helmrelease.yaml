@@ -166,10 +166,10 @@ spec:
                 service:
                   identifier: main
                   port: hbbs-ws
-              - path: /ws/id
+              - path: /ws/relay
                 service:
                   identifier: main
-                  port: hbbs-ws
+                  port: hbbr-ws
               - path: /
                 service:
                   identifier: main
