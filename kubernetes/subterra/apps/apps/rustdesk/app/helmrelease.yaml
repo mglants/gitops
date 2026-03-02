@@ -51,6 +51,10 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
 
     persistence:
+      log:
+        type: emptyDir
+        globalMounts:
+          - path: /app/runtime
       data:
         existingClaim: rustdesk-data-v1
         globalMounts:
