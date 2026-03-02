@@ -27,20 +27,20 @@ spec:
           io.cilium/lb-ipam-ips: 192.168.40.24
         externalTrafficPolicy: Local
         ports:
-          rustdesk-1:
+          api:
             port: 21114
-          rustdesk-2:
+          hbbs-nat:
             port: 21115
-          rustdesk-3:
+          hbbs-id:
             port: &port 21116
-          rustdesk-4:
+          hbbs-id-udp:
             port: *port
             protocol: UDP
-          rustdesk-5-relay:
+          hbbr-relay:
             port: 21117
-          rustdesk-6:
+          hbbs-ws:
             port: 21118
-          rustdesk-7-relay:
+          hbbr-ws:
             port: 21119
 
     defaultPodOptions:
@@ -152,3 +152,29 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 3
+    ingress:
+      app:
+        className: external-nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
+        hosts:
+          - host: rustdesk.ur30.ru
+            paths:
+              - path: /ws/id
+                service:
+                  identifier: main
+                  port: hbbs-ws
+              - path: /ws/id
+                service:
+                  identifier: main
+                  port: hbbs-ws
+              - path: /
+                service:
+                  identifier: main
+                  port: api
+        tls:
+          - secretName: rustdesk-tls
+            hosts:
+              - rustdesk.ur30.ru
