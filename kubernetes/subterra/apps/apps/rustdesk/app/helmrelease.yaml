@@ -74,7 +74,7 @@ spec:
           main:
             image:
               repository: ghcr.io/wy414012/rustdesk-server
-              tag: 1.4.3
+              tag: 1.12.1
             command:
               - hbbs
               - -r localhost:21117
@@ -101,7 +101,7 @@ spec:
           relay:
             image:
               repository: ghcr.io/wy414012/rustdesk-server
-              tag: 1.4.3
+              tag: 1.12.1
             command:
               - hbbr
             resources:
