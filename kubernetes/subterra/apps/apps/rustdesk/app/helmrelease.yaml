@@ -56,6 +56,8 @@ spec:
         globalMounts:
           - path: /db
             subPath: hbbs
+          - path: /app/data
+            subPath: api
       keys:
         enabled: true
         type: secret
