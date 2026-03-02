@@ -119,31 +119,30 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 3
-          # api:
-          #   image:
-          #     repository: ghcr.io/lejianwen/rustdesk-api
-          #     tag: 2.7
-          #   env:
-          #     ENCRYPTED_ONLY: "1"
-          #     DB_URL: /db/db_v2.sqlite3
-          #     RUSTDESK_API_RUSTDESK_ID_SERVER: 192.168.1.66:21116
-          #     RUSTDESK_API_RUSTDESK_RELAY_SERVER: 192.168.1.66:21117
-          #     RUSTDESK_API_RUSTDESK_API_SERVER: http://192.168.1.66:21114
+          api:
+            image:
+              repository: ghcr.io/lejianwen/rustdesk-api
+              tag: 2.7
+            env:
+              RUSTDESK_API_LANG: en
+              RUSTDESK_API_RUSTDESK_ID_SERVER: 127.0.0.1:21116
+              RUSTDESK_API_RUSTDESK_RELAY_SERVER: 127.0.0.1:21117
+              RUSTDESK_API_RUSTDESK_API_SERVER: http://127.0.0.1:21114
 
-          #   resources:
-          #     requests:
-          #       cpu: 100m
-          #       memory: 100Mi
-          #     limits:
-          #       memory: 1000Mi
-          #   probes:
-          #     liveness:
-          #       enabled: true
-          #       custom: true
-          #       spec:
-          #         tcpSocket:
-          #           port: 21117
-          #         initialDelaySeconds: 30
-          #         periodSeconds: 10
-          #         timeoutSeconds: 5
-          #         failureThreshold: 3
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100Mi
+              limits:
+                memory: 1000Mi
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 21114
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
