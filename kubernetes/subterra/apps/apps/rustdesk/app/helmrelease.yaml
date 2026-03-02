@@ -122,7 +122,7 @@ spec:
           api:
             image:
               repository: ghcr.io/lejianwen/rustdesk-api
-              tag: 2.7
+              tag: v2.7
             env:
               RUSTDESK_API_LANG: en
               RUSTDESK_API_RUSTDESK_ID_SERVER: 127.0.0.1:21116
