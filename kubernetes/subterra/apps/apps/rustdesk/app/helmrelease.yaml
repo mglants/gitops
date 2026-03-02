@@ -133,7 +133,7 @@ spec:
               RUSTDESK_API_LANG: en
               RUSTDESK_API_RUSTDESK_ID_SERVER: 127.0.0.1:21116
               RUSTDESK_API_RUSTDESK_RELAY_SERVER: 127.0.0.1:21117
-              RUSTDESK_API_RUSTDESK_API_SERVER: http://127.0.0.1:21114
+              RUSTDESK_API_RUSTDESK_API_SERVER: https://rustdesk-api.ur30.ru
 
             resources:
               requests:
@@ -160,7 +160,7 @@ spec:
           nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
           nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
         hosts:
-          - host: rustdesk.ur30.ru
+          - host: rustdesk-api.ur30.ru
             paths:
               - path: /ws/id
                 service:
@@ -177,4 +177,4 @@ spec:
         tls:
           - secretName: rustdesk-tls
             hosts:
-              - rustdesk.ur30.ru
+              - rustdesk-api.ur30.ru
