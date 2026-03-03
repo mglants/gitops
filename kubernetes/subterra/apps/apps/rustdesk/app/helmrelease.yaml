@@ -67,9 +67,9 @@ spec:
         type: secret
         name: rustdesk-secret
         globalMounts:
-          - path: /root/id_ed25519
+          - path: /data/id_ed25519
             subPath: id_ed25519
-          - path: /root/id_ed25519.pub
+          - path: /data/id_ed25519.pub
             subPath: id_ed25519.pub
 
     controllers:
