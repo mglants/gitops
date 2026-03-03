@@ -161,6 +161,20 @@ spec:
           nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
           nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
         hosts:
+          - host: rustdesk.ur30.ru
+            paths:
+              - path: /ws/id
+                service:
+                  identifier: main
+                  port: hbbs-ws
+              - path: /ws/relay
+                service:
+                  identifier: main
+                  port: hbbr-ws
+              - path: /
+                service:
+                  identifier: main
+                  port: api
           - host: rustdesk-api.ur30.ru
             paths:
               - path: /ws/id
@@ -179,3 +193,4 @@ spec:
           - secretName: rustdesk-tls
             hosts:
               - rustdesk-api.ur30.ru
+              - rustdesk.ur30.ru
