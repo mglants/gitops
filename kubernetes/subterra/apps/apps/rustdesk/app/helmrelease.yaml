@@ -75,57 +75,7 @@ spec:
     controllers:
       main:
         containers:
-          # main:
-          #   image:
-          #     repository: ghcr.io/wy414012/rustdesk-server
-          #     tag: 1.4.3
-          #   command:
-          #     - hbbs
-          #     - -r localhost:21117
-          #   env:
-          #     ENCRYPTED_ONLY: "1"
-          #     DB_URL: /db/db_v2.sqlite3
-          #   resources:
-          #     requests:
-          #       cpu: 100m
-          #       memory: 100Mi
-          #     limits:
-          #       memory: 1000Mi
-          #   probes:
-          #     liveness:
-          #       enabled: true
-          #       custom: true
-          #       spec:
-          #         tcpSocket:
-          #           port: 21116
-          #         initialDelaySeconds: 30
-          #         periodSeconds: 10
-          #         timeoutSeconds: 5
-          #         failureThreshold: 3
-          # relay:
-          #   image:
-          #     repository: ghcr.io/wy414012/rustdesk-server
-          #     tag: 1.4.3
-          #   command:
-          #     - hbbr
-          #   resources:
-          #     requests:
-          #       cpu: 100m
-          #       memory: 100Mi
-          #     limits:
-          #       memory: 1000Mi
-          #   probes:
-          #     liveness:
-          #       enabled: true
-          #       custom: true
-          #       spec:
-          #         tcpSocket:
-          #           port: 21117
-          #         initialDelaySeconds: 30
-          #         periodSeconds: 10
-          #         timeoutSeconds: 5
-          #         failureThreshold: 3
-          api:
+          app:
             image:
               repository: lejianwen/rustdesk-server-s6
               tag: v0.1.2
