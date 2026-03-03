@@ -75,66 +75,66 @@ spec:
     controllers:
       main:
         containers:
-          main:
-            image:
-              repository: ghcr.io/wy414012/rustdesk-server
-              tag: 1.4.3
-            command:
-              - hbbs
-              - -r localhost:21117
-            env:
-              ENCRYPTED_ONLY: "1"
-              DB_URL: /db/db_v2.sqlite3
-            resources:
-              requests:
-                cpu: 100m
-                memory: 100Mi
-              limits:
-                memory: 1000Mi
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  tcpSocket:
-                    port: 21116
-                  initialDelaySeconds: 30
-                  periodSeconds: 10
-                  timeoutSeconds: 5
-                  failureThreshold: 3
-          relay:
-            image:
-              repository: ghcr.io/wy414012/rustdesk-server
-              tag: 1.4.3
-            command:
-              - hbbr
-            resources:
-              requests:
-                cpu: 100m
-                memory: 100Mi
-              limits:
-                memory: 1000Mi
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  tcpSocket:
-                    port: 21117
-                  initialDelaySeconds: 30
-                  periodSeconds: 10
-                  timeoutSeconds: 5
-                  failureThreshold: 3
+          # main:
+          #   image:
+          #     repository: ghcr.io/wy414012/rustdesk-server
+          #     tag: 1.4.3
+          #   command:
+          #     - hbbs
+          #     - -r localhost:21117
+          #   env:
+          #     ENCRYPTED_ONLY: "1"
+          #     DB_URL: /db/db_v2.sqlite3
+          #   resources:
+          #     requests:
+          #       cpu: 100m
+          #       memory: 100Mi
+          #     limits:
+          #       memory: 1000Mi
+          #   probes:
+          #     liveness:
+          #       enabled: true
+          #       custom: true
+          #       spec:
+          #         tcpSocket:
+          #           port: 21116
+          #         initialDelaySeconds: 30
+          #         periodSeconds: 10
+          #         timeoutSeconds: 5
+          #         failureThreshold: 3
+          # relay:
+          #   image:
+          #     repository: ghcr.io/wy414012/rustdesk-server
+          #     tag: 1.4.3
+          #   command:
+          #     - hbbr
+          #   resources:
+          #     requests:
+          #       cpu: 100m
+          #       memory: 100Mi
+          #     limits:
+          #       memory: 1000Mi
+          #   probes:
+          #     liveness:
+          #       enabled: true
+          #       custom: true
+          #       spec:
+          #         tcpSocket:
+          #           port: 21117
+          #         initialDelaySeconds: 30
+          #         periodSeconds: 10
+          #         timeoutSeconds: 5
+          #         failureThreshold: 3
           api:
             image:
-              repository: ghcr.io/lejianwen/rustdesk-api
+              repository: lejianwen/rustdesk-server-s6
               tag: v2.7
             env:
               RUSTDESK_API_LANG: en
-              RUSTDESK_API_RUSTDESK_ID_SERVER: 127.0.0.1:21116
-              RUSTDESK_API_RUSTDESK_RELAY_SERVER: 127.0.0.1:21117
+              RUSTDESK_API_RUSTDESK_ID_SERVER: rustdesk.ur30.ru:21116
+              RUSTDESK_API_RUSTDESK_RELAY_SERVER: rustdesk.ur30.ru:21117
               RUSTDESK_API_RUSTDESK_API_SERVER: https://rustdesk-api.ur30.ru
-
+              ENCRYPTED_ONLY: 1
             resources:
               requests:
                 cpu: 100m
