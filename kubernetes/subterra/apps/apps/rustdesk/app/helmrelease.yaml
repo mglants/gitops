@@ -134,6 +134,7 @@ spec:
               RUSTDESK_API_RUSTDESK_ID_SERVER: rustdesk.ur30.ru:21116
               RUSTDESK_API_RUSTDESK_RELAY_SERVER: rustdesk.ur30.ru:21117
               RUSTDESK_API_RUSTDESK_API_SERVER: https://rustdesk-api.ur30.ru
+              DB_URL: /db/db_v2.sqlite3
               ENCRYPTED_ONLY: 1
             resources:
               requests:
