@@ -128,7 +128,7 @@ spec:
           api:
             image:
               repository: lejianwen/rustdesk-server-s6
-              tag: v2.7
+              tag: v0.1.2
             env:
               RUSTDESK_API_LANG: en
               RUSTDESK_API_RUSTDESK_ID_SERVER: rustdesk.ur30.ru:21116
