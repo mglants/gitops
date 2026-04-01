@@ -112,10 +112,9 @@ spec:
           app:
             image:
               repository: ghcr.io/mglants/rw-temporary-subscription-app
-              tag: v0.0.1
+              tag: v0.0.3
             env:
-              RW_API_BASE_URL: http://remnawave.apps.svc.cluster.local:3000
-              VITE_API_BASE_URL: https://temposub.glants.xyz
+              RW_API_BASE_URL: https://remnawave.glants.xyz
             envFrom:
               - secretRef:
                   name: remnawave-temporary-subscription-secret
