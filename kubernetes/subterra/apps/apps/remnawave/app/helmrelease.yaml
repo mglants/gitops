@@ -112,7 +112,7 @@ spec:
           app:
             image:
               repository: ghcr.io/mglants/rw-temporary-subscription-app
-              tag: v0.0.3
+              tag: v0.0.4
             env:
               RW_API_BASE_URL: https://remnawave.glants.xyz
             envFrom:
