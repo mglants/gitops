@@ -74,6 +74,33 @@ spec:
                 memory: 32Mi
               limits:
                 memory: 128Mi
+      node:
+        containers:
+          app:
+            image:
+              repository: remnawave/node
+              tag: 2.7.0
+            env:
+              NODE_PORT: 2233
+            envFrom:
+              - secretRef:
+                  name: remnawave-node-secret
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 5m
+                memory: 32Mi
+              limits:
+                memory: 1024Mi
       subscription-page:
         annotations:
           reloader.stakater.com/auto: "true"
@@ -254,6 +281,13 @@ spec:
         ports:
           http:
             port: 3001
+      node:
+        controller: node
+        ports:
+          node:
+            port: 2233
+          http:
+            port: 5443
       bot:
         controller: bot
         ports:
@@ -324,6 +358,23 @@ spec:
           - secretName: remnawave-bot-tls
             hosts:
               - remnabot.ur30.ru
+      node:
+        className: external-nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
+        hosts:
+          - host: runet.ur30.ru
+            paths:
+              - path: /
+                service:
+                  identifier: node
+                  port: http
+        tls:
+          - secretName: remnawave-node-tls
+            hosts:
+              - runet.ur30.ru
     persistence:
       bot-data:
         enabled: true
