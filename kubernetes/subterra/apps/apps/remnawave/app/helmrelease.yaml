@@ -85,16 +85,6 @@ spec:
             envFrom:
               - secretRef:
                   name: remnawave-node-secret
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
             resources:
               requests:
                 cpu: 5m
