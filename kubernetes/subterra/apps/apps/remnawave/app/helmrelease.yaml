@@ -367,7 +367,7 @@ spec:
         hosts:
           - host: runet.ur30.ru
             paths:
-              - path: /
+              - path: /blahblah
                 service:
                   identifier: node
                   port: http
