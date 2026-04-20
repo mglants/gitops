@@ -398,3 +398,10 @@ spec:
           temporary-subscription:
             app:
               - path: /app/server/data
+      node-logs:
+        enabled: true
+        type: emptyDir
+        advancedMounts:
+          node:
+            app:
+              - path: /var/log/remnanode
