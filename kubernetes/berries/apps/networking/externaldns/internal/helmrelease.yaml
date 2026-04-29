@@ -31,7 +31,7 @@ spec:
       webhook:
         image:
           repository: ghcr.io/muhlba91/external-dns-provider-adguard
-          tag: v11.0.2
+          tag: v11.1.1
         env:
           - name: LOG_LEVEL
             value: debug
