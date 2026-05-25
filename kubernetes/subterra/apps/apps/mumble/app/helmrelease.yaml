@@ -1,0 +1,73 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-5.0.1/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mumble
+  namespace: apps
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 5.0.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  values:
+    controllers:
+      mumble:
+        type: deployment
+        containers:
+          server:
+            image:
+              repository: ghcr.io/mumble-voip/mumble-server
+              tag: "v1.5.901"
+              pullPolicy: IfNotPresent
+
+            env:
+              MUMBLE_SUPERUSER_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: mumble-secret
+                    key: MUMBLE_SUPERUSER_PASSWORD
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+    service:
+      mumble:
+        primary: true
+        controller: mumble
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          io.cilium/lb-ipam-ips: 192.168.40.25
+        ports:
+          control:
+            port: 64738
+            protocol: TCP
+          voice:
+            port: 64738
+            protocol: UDP
+
+      metrics:
+        enabled: false
+        controller: mumble
+        ports:
+          metrics:
+            port: 9189
+            protocol: TCP
+
+    persistence:
+      data:
+        type: persistentVolumeClaim
+        existingClaim: mumble-data-v1
+        globalMounts:
+          - path: /data
