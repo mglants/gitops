@@ -74,7 +74,7 @@ spec:
           app:
             image:
               repository: ghcr.io/anyproto/any-sync-node
-              tag: v0.10.5
+              tag: v0.11.1
             resources:
               requests:
                 cpu: 10m
