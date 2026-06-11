@@ -30,7 +30,7 @@ spec:
           init-config:
             image:
               repository: docker.io/opencloudeu/opencloud-rolling
-              tag: 5.2.0@sha256:c840de29b7287da070ffc9d5eb52a1b291a046877402bf70f387ccf56c820aee
+              tag: 7.1.0@sha256:0bb29038affb1b58655bb8d4fd3dc78b26fb7c0c7e994bda72e6e4e58e6e54b3
             command:
               - /bin/sh
               - -c
@@ -48,7 +48,7 @@ spec:
           opencloud:
             image:
               repository: docker.io/opencloudeu/opencloud-rolling
-              tag: 5.2.0@sha256:c840de29b7287da070ffc9d5eb52a1b291a046877402bf70f387ccf56c820aee
+              tag: 7.1.0@sha256:0bb29038affb1b58655bb8d4fd3dc78b26fb7c0c7e994bda72e6e4e58e6e54b3
             command:
               - opencloud
               - server
