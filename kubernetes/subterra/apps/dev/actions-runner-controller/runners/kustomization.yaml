@@ -6,3 +6,4 @@ resources:
   - ./containers.yaml
   - ./glantswrt.yaml
   - ./nikkix.yaml
+  - ./purewrt.yaml
