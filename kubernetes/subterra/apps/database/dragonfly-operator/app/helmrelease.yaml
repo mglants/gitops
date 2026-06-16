@@ -14,7 +14,7 @@ spec:
       image:
         repository: ghcr.io/dragonflydb/operator
     grafanaDashboard:
-      enabled: true
+      enabled: false
       grafanaOperator:
-        enabled: true
+        enabled: false
       folder: Dragonfly
