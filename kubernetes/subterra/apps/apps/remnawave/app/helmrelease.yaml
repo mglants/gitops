@@ -170,7 +170,7 @@ spec:
             &bot
             image:
               repository: ghcr.io/snoups/remnashop
-              tag: v0.7.5
+              tag: v0.8.2
             env:
               APP_DOMAIN: remnabot.ur30.ru
               APP_HOST: 0.0.0.0
