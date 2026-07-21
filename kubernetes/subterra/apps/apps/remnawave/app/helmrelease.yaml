@@ -79,7 +79,7 @@ spec:
           app:
             image:
               repository: remnawave/node
-              tag: 2.7.0
+              tag: 2.8.0
             env:
               NODE_PORT: 2233
             envFrom:
