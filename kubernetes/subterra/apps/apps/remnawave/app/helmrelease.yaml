@@ -295,6 +295,7 @@ spec:
               tag: go-build
             env:
               CHECKER_URL: "http://localhost:2112"
+              PORT: "8080"
               DB_DRIVER: "postgres"
               DB_DSN:
                 valueFrom:
