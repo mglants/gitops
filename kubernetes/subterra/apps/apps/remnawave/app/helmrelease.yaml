@@ -296,12 +296,12 @@ spec:
             env:
               CHECKER_URL: "http://localhost:2112"
               PORT: "8080"
-              DB_DRIVER: "postgres"
-              DB_DSN:
-                valueFrom:
-                  secretKeyRef:
-                    name: remnawave-pgsql-pguser-remnawave-statuspage
-                    key: uri
+              # DB_DRIVER: "postgres"
+              # DB_DSN:
+              #   valueFrom:
+              #     secretKeyRef:
+              #       name: remnawave-pgsql-pguser-remnawave-statuspage
+              #       key: uri
             envFrom:
               - secretRef:
                   name: remnawave-statuspage-secret
@@ -496,3 +496,10 @@ spec:
           node:
             app:
               - path: /var/log/remnanode
+      statuspage:
+        enabled: true
+        type: emptyDir
+        advancedMounts:
+          statuspage:
+            statuspage:
+              - path: /data
