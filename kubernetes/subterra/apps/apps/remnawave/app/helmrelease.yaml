@@ -498,7 +498,8 @@ spec:
               - path: /var/log/remnanode
       statuspage:
         enabled: true
-        type: emptyDir
+        type: persistentVolumeClaim
+        existingClaim: remnawave-statuspage-data-v1
         advancedMounts:
           statuspage:
             statuspage:
