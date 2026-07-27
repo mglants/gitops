@@ -12,3 +12,17 @@ spec:
   resources:
     requests:
       storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: remnawave-statuspage-data-v1
+  namespace: apps
+  labels:
+    kasten.io/backup-volume: enabled
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
