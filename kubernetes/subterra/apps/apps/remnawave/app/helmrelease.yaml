@@ -258,6 +258,68 @@ spec:
               - --tasks-pattern
               - src/infrastructure/taskiq/tasks/*.py
               - -fsd
+      statuspage:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          checker:
+            image:
+              repository: kutovoys/xray-checker
+              tag: v1.3.1
+            env:
+              SUBSCRIPTION_JSON_FORMAT: "true"
+              PROXY_CHECK_INTERVAL: "300"
+              PROXY_CHECK_METHOD: "download"
+            envFrom:
+              - secretRef:
+                  name: remnawave-statuspage-secret
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 1Gi
+          statuspage:
+            image:
+              repository: ghcr.io/mrvibecodic/xray-checker-statuspage
+              tag: go-build
+            env:
+              CHECKER_URL: "http://localhost:2112"
+              DB_DRIVER: "postgres"
+              DB_DSN:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-pgsql-pguser-remnawave-statuspage
+                    key: uri
+            envFrom:
+              - secretRef:
+                  name: remnawave-statuspage-secret
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 1Gi
     service:
       app:
         forceRename: remnawave
@@ -293,6 +355,11 @@ spec:
         ports:
           http:
             port: 5000
+      statuspage:
+        controller: statuspage
+        ports:
+          http:
+            port: 8080
     ingress:
       app:
         className: external-nginx
@@ -381,6 +448,23 @@ spec:
           - secretName: remnawave-node-tls
             hosts:
               - runet.ur30.ru
+      statuspage:
+        className: external-nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
+          nginx.ingress.kubernetes.io/whitelist-source-range: 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12
+        hosts:
+          - host: remnastatus.glants.xyz
+            paths:
+              - path: /
+                service:
+                  identifier: statuspage
+                  port: http
+        tls:
+          - secretName: remnawave-statuspage-tls
+            hosts:
+              - remnastatus.glants.xyz
     persistence:
       bot-data:
         enabled: true

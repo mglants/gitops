@@ -50,6 +50,12 @@ spec:
       password:
         type: AlphaNumeric
       options: SUPERUSER
+    - name: remnawave-statuspage
+      databases:
+        - remnawave-statuspage
+      password:
+        type: AlphaNumeric
+      options: SUPERUSER
   backups:
     pgbackrest:
       configuration:
