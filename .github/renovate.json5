@@ -7,7 +7,7 @@
     "github>mglants/gitops//.github/renovate/groups.json5",
     "github>mglants/gitops//.github/renovate/grafanaDashboards.json5",
   ],
-  ignorePaths: [".archive/**"],
+  ignorePaths: ["kubernetes/.archive/**"],
   flux: {
     fileMatch: ["^kubernetes/.+\\.ya?ml$"],
   },
