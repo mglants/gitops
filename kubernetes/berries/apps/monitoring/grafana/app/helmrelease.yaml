@@ -107,13 +107,6 @@ spec:
           # renovate: dashboardName="blocky"
           gnetId: 13768
           revision: 7
-        mikrotik:
-          # renovate: dashboardName="Mikrotik MKTXP Exporter"
-          gnetId: 13679
-          revision: 24
-          datasource:
-            - name: DS_PROMETHEUS
-              value: Prometheus
         external-dns:
           # renovate: dashboardName="External-DNS"
           gnetId: 15038
