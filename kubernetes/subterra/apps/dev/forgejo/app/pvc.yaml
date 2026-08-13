@@ -5,7 +5,7 @@ metadata:
   name: forgejo-data-v1
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   storageClassName: freenas-iscsi-csi
   resources:
     requests:
