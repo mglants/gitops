@@ -13,7 +13,7 @@ spec:
     - ../../../../components/dragonfly
   dependsOn:
     - name: dragonfly-operator
-      namespace: database
+      namespace: flux-system
   healthCheckExprs:
     - apiVersion: dragonflydb.io/v1alpha1
       kind: Dragonfly
