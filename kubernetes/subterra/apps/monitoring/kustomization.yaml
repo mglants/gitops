@@ -16,4 +16,3 @@ resources:
   - ./loki/ks.yaml
   - ./nut/ks.yaml
   - ./promtail/ks.yaml
-  - ./uptime-kuma/ks.yaml
