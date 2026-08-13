@@ -10,7 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: forgejo
   components:
-    - ../../../../components/dragonfly
+    - ../../../../../components/dragonfly
   dependsOn:
     - name: dragonfly-operator
       namespace: flux-system
