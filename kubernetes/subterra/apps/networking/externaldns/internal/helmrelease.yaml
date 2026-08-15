@@ -27,6 +27,7 @@ spec:
     domainFilters:
       - ur30.ru
       - glants.xyz
+      - ur30.dev
     provider:
       name: webhook
       webhook:

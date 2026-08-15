@@ -23,6 +23,7 @@ spec:
     domainFilters:
       - glants.xyz
       - ur30.ru
+      - ur30.dev
     env:
       - name: CF_API_TOKEN
         valueFrom:

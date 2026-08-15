@@ -14,3 +14,4 @@ resources:
   - ./ingress-nginx/ks.yaml
   - ./ipmi-server/ks.yaml
   - ./cloudflared/ks.yaml
+  - ./envoy-gateway/ks.yaml

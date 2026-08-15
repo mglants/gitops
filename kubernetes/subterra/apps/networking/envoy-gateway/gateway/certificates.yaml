@@ -1,0 +1,63 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "ur30-ru"
+spec:
+  dnsNames:
+    - "ur30.ru"
+    - "*.ur30.ru"
+  duration: 160h
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  secretName: "ur30-ru-tls"
+  usages:
+    - digital signature
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "glants-xyz"
+spec:
+  dnsNames:
+    - "glants.xyz"
+    - "*.glants.xyz"
+  duration: 160h
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  secretName: "glants-xyz-tls"
+  usages:
+    - digital signature
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "ur30-dev"
+spec:
+  dnsNames:
+    - "ur30.dev"
+    - "*.ur30.dev"
+  duration: 160h
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  secretName: "ur30-dev-tls"
+  usages:
+    - digital signature
