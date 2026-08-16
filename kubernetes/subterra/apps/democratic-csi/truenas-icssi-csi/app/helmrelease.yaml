@@ -95,7 +95,8 @@ spec:
             value: nsenter
           - name: ISCSIADM_HOST_PATH
             value: /usr/local/sbin/iscsiadm
-        iscsiDirHostPath: /usr/local/etc/iscsi
+        # Talos iscsi-tools v0.2+ stores its host configuration under /etc/iscsi.
+        iscsiDirHostPath: /etc/iscsi
         iscsiDirHostPathType: ''
   valuesFrom:
     - targetPath: driver.config.httpConnection.apiKey
