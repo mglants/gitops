@@ -4,9 +4,9 @@ clusterName: ${clusterName}
 endpoint: https://${clusterEndpointIP}:6443
 
 # renovate: depName=ghcr.io/siderolabs/installer datasource=docker
-talosVersion: v1.7.7
+talosVersion: v1.13.8
 # renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker
-kubernetesVersion: v1.30.8
+kubernetesVersion: v1.36.3
 allowSchedulingOnMasters: true
 cniConfig:
   name: none
@@ -18,7 +18,7 @@ additionalMachineCertSans: *san
 
 nodes:
   - hostname: subterra-cp3
-    ipAddress: 192.168.48.112
+    ipAddress: 192.168.48.144
     controlPlane: true
     installDisk: /dev/sda
     networkInterfaces:
@@ -40,38 +40,6 @@ nodes:
       size: '>100GB'
     networkInterfaces:
       - *cp_interface
-  # - hostname: berries-cp2
-  #   ipAddress: 172.16.30.225
-  #   controlPlane: true
-  #   installDisk: *install_disk
-  #   networkInterfaces:
-  #     - *cp_interface
-  # - hostname: berries-cp3
-  #   ipAddress: 172.16.30.231
-  #   controlPlane: true
-  #   installDisk: *install_disk
-  #   networkInterfaces:
-  #     - *cp_interface
-  # - hostname: berries-worker1
-  #   ipAddress: 172.16.30.230
-  #   installDisk: *install_disk
-  #   networkInterfaces:
-  #     - &worker_interface
-  #       interface: eth0
-  #       dhcp: true
-  #       dhcpOptions:
-  #         routeMetric: 1024
-  # - hostname: berries-worker2
-  #   ipAddress: 172.16.30.227
-  #   installDisk: *install_disk
-  #   networkInterfaces:
-  #     - *worker_interface
-  # - hostname: berries-worker3
-  #   ipAddress: 172.16.30.221
-  #   installDisk: *install_disk
-  #   networkInterfaces:
-  #     - *worker_interface
-
 controlPlane:
   schematic:
     customization:
@@ -95,6 +63,9 @@ controlPlane:
     - &machine_kubeprism |-
       machine:
         features:
+          hostDNS:
+            enabled: false
+            forwardKubeDNSToHost: false
           kubePrism:
             enabled: true
             port: 7445
