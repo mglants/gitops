@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: jitsi-meet
-      version: 2.22.2
+      version: 3.4.0
       sourceRef:
         kind: HelmRepository
         name: jitsi-charts
