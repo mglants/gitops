@@ -857,7 +857,7 @@ spec:
               value: 172.16.30.100
             - name: KUBERNETES_SERVICE_PORT
               value: '6443'
-          image: quay.io/cilium/operator-generic:v1.18.10@sha256:ab08d58fd12e98d9a9601d4b52beee839ff2537fba73d262aabad222454a16b3
+          image: quay.io/cilium/operator-generic:v1.20.1@sha256:6c3885fc7b629099fdbe2a5c87869c86feb825fa18fae299eac0f61918d16ecf
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -942,7 +942,7 @@ spec:
             - serve
           command:
             - hubble-relay
-          image: quay.io/cilium/hubble-relay:v1.18.10@sha256:6f320095640b8e7bb4c1c9efdd0ed46302d0d684c3ea04eb341ca7e0618ef740
+          image: quay.io/cilium/hubble-relay:v1.20.1@sha256:59be0ae7d475ab9011a5e954618c0f27b5778b17140381425b308b55ba4917f4
           imagePullPolicy: IfNotPresent
           livenessProbe:
             tcpSocket:
@@ -1128,7 +1128,7 @@ spec:
               value: 172.16.30.100
             - name: KUBERNETES_SERVICE_PORT
               value: '6443'
-          image: quay.io/cilium/cilium:v1.18.10@sha256:dd573bc2f7213dbd978e564a363ecaad060e9578ed557b92b53e42eeeb0f2294
+          image: quay.io/cilium/cilium:v1.20.1@sha256:ae9ea21f7427fe24bc6ea7247eb552157a1b0a431744045d3f641545ca71d11b
           imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
@@ -1250,7 +1250,7 @@ spec:
               value: 172.16.30.100
             - name: KUBERNETES_SERVICE_PORT
               value: '6443'
-          image: quay.io/cilium/cilium:v1.18.10@sha256:dd573bc2f7213dbd978e564a363ecaad060e9578ed557b92b53e42eeeb0f2294
+          image: quay.io/cilium/cilium:v1.20.1@sha256:ae9ea21f7427fe24bc6ea7247eb552157a1b0a431744045d3f641545ca71d11b
           imagePullPolicy: IfNotPresent
           name: config
           terminationMessagePolicy: FallbackToLogsOnError
@@ -1263,7 +1263,7 @@ spec:
             - /bin/bash
             - -c
             - --
-          image: quay.io/cilium/cilium:v1.18.10@sha256:dd573bc2f7213dbd978e564a363ecaad060e9578ed557b92b53e42eeeb0f2294
+          image: quay.io/cilium/cilium:v1.20.1@sha256:ae9ea21f7427fe24bc6ea7247eb552157a1b0a431744045d3f641545ca71d11b
           imagePullPolicy: IfNotPresent
           name: mount-bpf-fs
           securityContext:
@@ -1292,7 +1292,7 @@ spec:
               value: 172.16.30.100
             - name: KUBERNETES_SERVICE_PORT
               value: '6443'
-          image: quay.io/cilium/cilium:v1.18.10@sha256:dd573bc2f7213dbd978e564a363ecaad060e9578ed557b92b53e42eeeb0f2294
+          image: quay.io/cilium/cilium:v1.20.1@sha256:ae9ea21f7427fe24bc6ea7247eb552157a1b0a431744045d3f641545ca71d11b
           imagePullPolicy: IfNotPresent
           name: clean-cilium-state
           resources:
@@ -1321,7 +1321,7 @@ spec:
               name: cilium-run
         - command:
             - /install-plugin.sh
-          image: quay.io/cilium/cilium:v1.18.10@sha256:dd573bc2f7213dbd978e564a363ecaad060e9578ed557b92b53e42eeeb0f2294
+          image: quay.io/cilium/cilium:v1.20.1@sha256:ae9ea21f7427fe24bc6ea7247eb552157a1b0a431744045d3f641545ca71d11b
           imagePullPolicy: IfNotPresent
           name: install-cni-binaries
           resources:
