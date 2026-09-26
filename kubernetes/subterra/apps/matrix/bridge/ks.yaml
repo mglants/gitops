@@ -16,7 +16,6 @@ spec:
   wait: false # no flux ks dependents
   dependsOn:
     - name: cluster-apps-external-secrets-stores
-    - name: cluster-apps-volsync
     - name: cluster-apps-synapse
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
@@ -36,5 +35,4 @@ spec:
   wait: false # no flux ks dependents
   dependsOn:
     - name: cluster-apps-external-secrets-stores
-    - name: cluster-apps-volsync
     - name: cluster-apps-synapse

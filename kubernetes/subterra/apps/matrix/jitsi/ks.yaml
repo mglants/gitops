@@ -15,4 +15,3 @@ spec:
   wait: false # no flux ks dependents
   dependsOn:
     - name: cluster-apps-external-secrets-stores
-    - name: cluster-apps-volsync

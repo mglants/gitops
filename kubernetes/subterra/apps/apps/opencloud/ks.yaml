@@ -17,7 +17,6 @@ spec:
     name: home-ops-kubernetes
   wait: false
   dependsOn:
-    - name: cluster-apps-volsync
     - name: cluster-apps-external-secrets-stores
   postBuild:
     substitute:
