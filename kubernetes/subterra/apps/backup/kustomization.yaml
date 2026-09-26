@@ -7,4 +7,3 @@ resources:
   # Flux-Kustomizations
   # - ./rclone/ks.yaml
   - ./talos-backup/ks.yaml
-  - ./volsync/ks.yaml
