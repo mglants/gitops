@@ -55,6 +55,8 @@ spec:
     redis:
       enabled: true
       architecture: standalone
+      image:
+        repository: bitnamilegacy/redis
       auth:
         existingSecret: *secret
         existingSecretPasswordKey: REDIS_PASSWORD
