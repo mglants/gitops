@@ -70,3 +70,19 @@ spec:
       enabled: true
       name: truenas-csi
       deletionPolicy: Retain
+
+  # Talos exposes its iSCSI configuration through an extension path that is
+  # not a conventional host directory. Match the working democratic-csi
+  # setup by disabling kubelet's hostPath type check for this one volume.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: apps
+              version: v1
+              kind: DaemonSet
+              name: truenas-csi-node
+            patch: |-
+              - op: replace
+                path: /spec/template/spec/volumes/5/hostPath/type
+                value: ""
