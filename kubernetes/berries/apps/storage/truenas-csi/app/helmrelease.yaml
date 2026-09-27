@@ -1,0 +1,86 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: truenas-csi
+  namespace: storage
+spec:
+  interval: 30m
+  timeout: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://raw.githubusercontent.com/truenas/truenas-csi/master/charts
+      chart: truenas-csi
+      version: 1.3.0
+      sourceRef:
+        kind: HelmRepository
+        name: truenas-csi-charts
+        namespace: flux-system
+      interval: 10m
+  values:
+    truenas:
+      url: ws://172.16.30.200/api/current
+      defaultPool: ssd
+      nfsServer: 172.16.30.200
+      iscsiPortal: 172.16.30.200:3260
+      insecureSkipTLS: true
+      existingSecret: truenas-csi-secret
+      existingSecretKey: API_KEY
+
+    controller:
+      replicas: 1
+
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        interval: 30s
+
+    # Keep democratic-csi active until both migration waves are validated.
+    storageClasses:
+      - name: truenas-nfs
+        isDefault: false
+        reclaimPolicy: Retain
+        allowVolumeExpansion: true
+        volumeBindingMode: Immediate
+        mountOptions:
+          - noatime
+          - nfsvers=4
+          - hard
+        parameters:
+          protocol: nfs
+          datasetPath: k8s/nfs
+          nfs.networks: 172.16.30.0/24
+          nfs.rootSquash: "false"
+      - name: truenas-iscsi
+        isDefault: false
+        reclaimPolicy: Retain
+        allowVolumeExpansion: true
+        volumeBindingMode: Immediate
+        parameters:
+          protocol: iscsi
+          datasetPath: k8s/iscsi
+          fsType: xfs
+          sparse: "true"
+          volblocksize: 16K
+          iscsi.blocksize: "4096"
+          iscsi.initiators: "*"
+
+    volumeSnapshotClass:
+      enabled: true
+      name: truenas-csi
+      deletionPolicy: Retain
+
+  # Talos exposes its iSCSI configuration through a nonstandard host path.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: apps
+              version: v1
+              kind: DaemonSet
+              name: truenas-csi-node
+            patch: |-
+              - op: replace
+                path: /spec/template/spec/volumes/5/hostPath/type
+                value: ""
