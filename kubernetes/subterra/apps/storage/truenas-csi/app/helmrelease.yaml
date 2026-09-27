@@ -65,9 +65,10 @@ spec:
           sparse: "true"
           volblocksize: 16K
           iscsi.blocksize: "4096"
-          # TrueNAS/SCST supports wildcard initiator patterns. This admits all
-          # current and future Talos nodes without opening access to every IQN.
-          iscsi.initiators: "iqn.2017-11.dev.talos:*"
+          # The CSI driver requires a non-empty value to create an initiator
+          # group. TrueNAS renders "*" as its native allow-all SCST ACL, so
+          # current and future cluster nodes can discover provisioned targets.
+          iscsi.initiators: "*"
 
     volumeSnapshotClass:
       enabled: true
