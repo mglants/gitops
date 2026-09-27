@@ -125,7 +125,7 @@ spec:
     write:
       replicas: 1
       persistence:
-        storageClass: freenas-iscsi-csi
+        storageClass: truenas-nfs
         size: 10Gi
 
     read:
@@ -134,7 +134,7 @@ spec:
     backend:
       replicas: 1
       persistence:
-        storageClass: freenas-iscsi-csi
+        storageClass: truenas-iscsi
         size: 10Gi
     chunksCache:
       allocatedMemory: 2048

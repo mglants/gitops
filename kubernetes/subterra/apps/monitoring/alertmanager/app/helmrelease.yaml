@@ -72,4 +72,5 @@ spec:
       - name: storage
         mountPath: /alertmanager
         accessMode: ReadWriteOnce
+        storageClass: truenas-nfs
         size: 50Mi

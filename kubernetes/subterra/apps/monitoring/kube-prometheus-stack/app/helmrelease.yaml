@@ -146,6 +146,7 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
+              storageClassName: truenas-nfs
               resources:
                 requests:
                   storage: 20Gi
