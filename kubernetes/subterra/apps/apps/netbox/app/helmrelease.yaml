@@ -57,7 +57,7 @@ spec:
       architecture: standalone
       image:
         repository: bitnamilegacy/redis
-        tag: 6.2.6
+        tag: 6.2.16
       auth:
         existingSecret: *secret
         existingSecretPasswordKey: REDIS_PASSWORD
