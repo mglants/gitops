@@ -24,6 +24,7 @@ resources:
   - authentik-charts.yaml
   - bootc-charts.yaml
   - democratic-csi-charts.yaml
+  - truenas-csi-charts.yaml
   - emqx-charts.yaml
   - falco-security-charts.yaml
   - gitea-charts.yaml

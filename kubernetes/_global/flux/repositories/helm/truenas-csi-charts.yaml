@@ -1,0 +1,10 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: truenas-csi-charts
+  namespace: flux-system
+spec:
+  interval: 10m
+  url: https://raw.githubusercontent.com/truenas/truenas-csi/master/charts
+  timeout: 3m

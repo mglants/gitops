@@ -1,0 +1,72 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: truenas-csi
+  namespace: storage
+spec:
+  interval: 30m
+  timeout: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://raw.githubusercontent.com/truenas/truenas-csi/master/charts
+      chart: truenas-csi
+      version: 1.3.0
+      sourceRef:
+        kind: HelmRepository
+        name: truenas-csi-charts
+        namespace: flux-system
+      interval: 10m
+  values:
+    truenas:
+      url: wss://192.168.48.150/api/current
+      defaultPool: vmware
+      nfsServer: 192.168.48.150
+      iscsiPortal: 192.168.48.150:3260
+      insecureSkipTLS: true
+      existingSecret: truenas-csi-secret
+      existingSecretKey: API_KEY
+
+    controller:
+      replicas: 1
+
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        interval: 30s
+
+    # Keep the democratic-csi classes active during migration. These classes
+    # are intentionally non-default until both protocols pass canary tests.
+    storageClasses:
+      - name: truenas-nfs
+        isDefault: false
+        reclaimPolicy: Retain
+        allowVolumeExpansion: true
+        volumeBindingMode: Immediate
+        mountOptions:
+          - noatime
+          - nfsvers=4
+          - hard
+        parameters:
+          protocol: nfs
+          datasetPath: k8s/nfs
+          nfs.networks: 192.168.48.0/24
+          nfs.rootSquash: "false"
+      - name: truenas-iscsi
+        isDefault: false
+        reclaimPolicy: Retain
+        allowVolumeExpansion: true
+        volumeBindingMode: Immediate
+        parameters:
+          protocol: iscsi
+          datasetPath: k8s/iscsi
+          fsType: xfs
+          sparse: "true"
+          volblocksize: 16K
+          iscsi.blocksize: "4096"
+
+    volumeSnapshotClass:
+      enabled: true
+      name: truenas-csi
+      deletionPolicy: Retain
