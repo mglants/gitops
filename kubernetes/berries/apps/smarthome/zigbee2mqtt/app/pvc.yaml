@@ -2,11 +2,44 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: zigbee2mqtt-data-v1
+  name: zigbee2mqtt-data-v2
   namespace: smarthome
 spec:
+  storageClassName: truenas-nfs
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 2Gi
+  dataSource:
+    apiGroup: snapshot.storage.k8s.io
+    kind: VolumeSnapshot
+    name: truenas-csi-import-zigbee2mqtt-data-v1
+  dataSourceRef:
+    apiGroup: snapshot.storage.k8s.io
+    kind: VolumeSnapshot
+    name: truenas-csi-import-zigbee2mqtt-data-v1
+---
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: truenas-csi-import-zigbee2mqtt-data-v1
+  namespace: smarthome
+spec:
+  source:
+    volumeSnapshotContentName: truenas-csi-import-zigbee2mqtt-data-v1
+  volumeSnapshotClassName: truenas-csi
+---
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotContent
+metadata:
+  name: truenas-csi-import-zigbee2mqtt-data-v1
+spec:
+  deletionPolicy: Retain
+  driver: csi.truenas.io
+  source:
+    snapshotHandle: ssd/k8s/nfs/pvc-80878e6b-0889-487a-92fa-39c2cd1d3616@truenas-csi-import-zigbee2mqtt-data-v1
+  volumeSnapshotClassName: truenas-csi
+  volumeSnapshotRef:
+    name: truenas-csi-import-zigbee2mqtt-data-v1
+    namespace: smarthome

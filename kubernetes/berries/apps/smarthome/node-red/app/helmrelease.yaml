@@ -37,7 +37,7 @@ spec:
     persistence:
       data:
         enabled: true
-        existingClaim: node-red-data-v1
+        existingClaim: node-red-data-v2
     podSecurityContext:
       runAsUser: 1000
       runAsGroup: 1000

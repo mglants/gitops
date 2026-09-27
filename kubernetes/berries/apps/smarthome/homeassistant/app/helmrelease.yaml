@@ -102,7 +102,7 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: homeassistant-config-v1
+        existingClaim: homeassistant-config-v2
     podAnnotations:
       k8s.v1.cni.cncf.io/networks: |
         [{

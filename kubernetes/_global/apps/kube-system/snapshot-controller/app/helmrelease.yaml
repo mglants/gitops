@@ -18,6 +18,12 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
+    controller:
+      args:
+        # GroupSnapshot CRDs are not installed in these clusters. Enabling the
+        # gate makes snapshot-controller exit before it can reconcile normal
+        # VolumeSnapshots.
+        featureGates: CSIVolumeGroupSnapshot=false
     image:
       repository: registry.k8s.io/sig-storage/snapshot-controller
       pullPolicy: IfNotPresent

@@ -46,7 +46,7 @@ spec:
     persistence:
       data:
         enabled: true
-        existingClaim: frigate-data-v1
+        existingClaim: frigate-data-v2
         mountPath: /data
       media:
         enabled: true
