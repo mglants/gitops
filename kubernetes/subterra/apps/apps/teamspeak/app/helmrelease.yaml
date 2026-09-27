@@ -132,7 +132,7 @@ spec:
     persistence:
       data:
         type: persistentVolumeClaim
-        existingClaim: teamspeak-data-v1
+        existingClaim: teamspeak-data-v2
         globalMounts:
           - path: /var/ts3server
 

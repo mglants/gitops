@@ -68,6 +68,6 @@ spec:
     persistence:
       data:
         type: persistentVolumeClaim
-        existingClaim: mumble-data-v1
+        existingClaim: mumble-data-v2
         globalMounts:
           - path: /data

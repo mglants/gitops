@@ -50,4 +50,4 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: xteve-config-v1
+        existingClaim: xteve-config-v2

@@ -94,7 +94,7 @@ spec:
               - vikunja.glants.xyz
     persistence:
       data:
-        existingClaim: vikunja-data-v1
+        existingClaim: vikunja-data-v2
         advancedMounts:
           vikunja:
             app:
