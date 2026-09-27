@@ -1,0 +1,54 @@
+---
+# Retained data from currently inactive applications. Keeping these claims in
+# GitOps prevents their migrated volumes from becoming undocumented state.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: etcd-backup-v2
+  namespace: apps
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: truenas-nfs
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitea-data-v2
+  namespace: apps
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: truenas-nfs
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: haste-server-config-v2
+  namespace: apps
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: truenas-nfs
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prosody-data-jitsi-prosody-v2
+  namespace: matrix
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: truenas-iscsi
+  resources:
+    requests:
+      storage: 3G

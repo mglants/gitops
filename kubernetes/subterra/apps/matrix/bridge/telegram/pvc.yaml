@@ -2,11 +2,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mautrix-telegram-data-v1
+  name: mautrix-telegram-data-v2
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: freenas-iscsi-csi
+  storageClassName: truenas-iscsi
   resources:
     requests:
       storage: 5Gi
