@@ -45,6 +45,10 @@ spec:
                 pathType: Prefix
 
     persistence:
+      storage:
+        enabled: true
+        existingClaim: alertmanager-data-v2
+        mountPath: /alertmanager
       config:
         enabled: true
         type: configMap
@@ -65,8 +69,4 @@ spec:
       limits:
         memory: 99M
 
-    volumeClaimTemplates:
-      - name: storage
-        mountPath: /alertmanager
-        accessMode: ReadWriteOnce
-        size: 50Mi
+    volumeClaimTemplates: []

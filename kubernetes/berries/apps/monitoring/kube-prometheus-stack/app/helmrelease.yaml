@@ -144,7 +144,10 @@ spec:
             memory: 2000Mi
         storageSpec:
           volumeClaimTemplate:
+            metadata:
+              name: prometheus-data-v2
             spec:
+              storageClassName: truenas-nfs
               resources:
                 requests:
                   storage: 20Gi
