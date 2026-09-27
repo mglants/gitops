@@ -24,6 +24,8 @@ spec:
   # Default values
   # https://github.com/itzg/minecraft-server-charts/blob/master/charts/minecraft-bedrock/values.yaml
   values:
+    image:
+      tag: java17
     livenessProbe:
       initialDelaySeconds: 300
     minecraftServer:
