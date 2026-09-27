@@ -5,5 +5,4 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
-  - ./truenas-nfs-csi/ks.yaml
   - ./local-hostpath/ks.yaml

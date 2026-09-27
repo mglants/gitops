@@ -36,10 +36,9 @@ spec:
         enabled: true
         interval: 30s
 
-    # Keep democratic-csi active until both migration waves are validated.
     storageClasses:
       - name: truenas-nfs
-        isDefault: false
+        isDefault: true
         reclaimPolicy: Retain
         allowVolumeExpansion: true
         volumeBindingMode: Immediate

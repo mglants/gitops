@@ -15,6 +15,6 @@ spec:
   wait: false # no flux ks dependents
   dependsOn:
     - name: cluster-apps-external-secrets-stores
-    - name: cluster-apps-democratic-csi
+    - name: cluster-apps-truenas-csi
     - name: cluster-apps-multus
     - name: cluster-apps-smarthome-database
