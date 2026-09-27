@@ -27,10 +27,10 @@ spec:
 
         statefulset:
           volumeClaimTemplates:
-            - name: data
+            - name: data-v2
               accessMode: ReadWriteOnce
               size: 15Gi
-              storageClass: freenas-iscsi-csi
+              storageClass: truenas-iscsi
               globalMounts:
                 - path: /data/local
 

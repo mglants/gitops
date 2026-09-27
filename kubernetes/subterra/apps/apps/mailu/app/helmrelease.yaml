@@ -113,7 +113,7 @@ spec:
     ## Set single_pvc: false to use a per app volume and set the properties in <app>.persistence (ex. admin.persistence)
     persistence:
       single_pvc: true
-      existingClaim: mailu-data-v3
+      existingClaim: mailu-data-v4
 
     ## @section Ingress settings
 
@@ -310,6 +310,7 @@ spec:
       persistence:
         ## @param clamav.persistence.enabled Enable persistence using PVC
         enabled: true
+        existingClaim: data-mailu-clamav-v2
 
         ## @param clamav.persistence.size Pod pvc size
         size: 10Gi

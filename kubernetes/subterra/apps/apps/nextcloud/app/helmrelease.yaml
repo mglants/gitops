@@ -211,7 +211,7 @@ spec:
     persistence:
       ## Nextcloud Data (/var/www/html)
       enabled: true
-      existingClaim: nextcloud-config-v1
+      existingClaim: nextcloud-config-v2
       nextcloudData:
         enabled: true
         existingClaim: nextcloud-nfs
