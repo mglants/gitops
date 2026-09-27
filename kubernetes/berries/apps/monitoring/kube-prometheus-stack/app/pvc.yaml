@@ -43,3 +43,50 @@ spec:
   volumeSnapshotRef:
     name: truenas-csi-import-prometheus-data-v1
     namespace: monitoring
+---
+# Retained data from the kube-prometheus-stack Alertmanager that is currently
+# disabled. Keep it available under the new driver without activating it.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kube-prometheus-alertmanager-data-v2
+  namespace: monitoring
+spec:
+  storageClassName: truenas-nfs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  dataSource:
+    apiGroup: snapshot.storage.k8s.io
+    kind: VolumeSnapshot
+    name: truenas-csi-import-kube-prometheus-alertmanager-data-v1
+  dataSourceRef:
+    apiGroup: snapshot.storage.k8s.io
+    kind: VolumeSnapshot
+    name: truenas-csi-import-kube-prometheus-alertmanager-data-v1
+---
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: truenas-csi-import-kube-prometheus-alertmanager-data-v1
+  namespace: monitoring
+spec:
+  source:
+    volumeSnapshotContentName: truenas-csi-import-kube-prometheus-alertmanager-data-v1
+  volumeSnapshotClassName: truenas-csi
+---
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotContent
+metadata:
+  name: truenas-csi-import-kube-prometheus-alertmanager-data-v1
+spec:
+  deletionPolicy: Retain
+  driver: csi.truenas.io
+  source:
+    snapshotHandle: ssd/k8s/nfs/pvc-916a16af-a65d-422a-88a3-08af6944909e@truenas-csi-import-kube-prometheus-alertmanager-data-v1
+  volumeSnapshotClassName: truenas-csi
+  volumeSnapshotRef:
+    name: truenas-csi-import-kube-prometheus-alertmanager-data-v1
+    namespace: monitoring
