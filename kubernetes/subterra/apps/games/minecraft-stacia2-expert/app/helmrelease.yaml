@@ -41,7 +41,7 @@ spec:
     persistence:
       dataDir:
         enabled: true
-        existingClaim: minecraft-stacia2-expert
+        existingClaim: minecraft-stacia2-expert-v2
     resources:
       requests:
         memory: 16Gi

@@ -45,7 +45,7 @@ spec:
     persistence:
       dataDir:
         enabled: true
-        existingClaim: minecraft-enigmatica10
+        existingClaim: minecraft-enigmatica10-v2
     resources:
       requests:
         memory: 16Gi

@@ -93,7 +93,7 @@ spec:
 
     persistence:
       config:
-        existingClaim: jellyfin-config-v1
+        existingClaim: jellyfin-config-v2
         advancedMounts:
           jellyfin:
             app:

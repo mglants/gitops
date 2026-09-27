@@ -51,7 +51,7 @@ spec:
       config:
         enabled: true
         mountPath: /config
-        existingClaim: radarr-config-v1
+        existingClaim: radarr-config-v2
       media:
         enabled: true
         existingClaim: nfs-public-pvc

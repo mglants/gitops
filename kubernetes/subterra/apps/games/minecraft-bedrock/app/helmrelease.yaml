@@ -38,7 +38,7 @@ spec:
     persistence:
       dataDir:
         enabled: true
-        existingClaim: minecraft-bedrock-v1
+        existingClaim: minecraft-bedrock-v2
     resources:
       requests:
         memory: 2048Mi
