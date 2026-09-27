@@ -19,7 +19,7 @@ spec:
       interval: 10m
   values:
     truenas:
-      url: ws://172.16.30.200/api/current
+      url: wss://172.16.30.200/api/current
       defaultPool: ssd
       nfsServer: 172.16.30.200
       iscsiPortal: 172.16.30.200:3260
