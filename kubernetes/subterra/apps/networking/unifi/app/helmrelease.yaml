@@ -24,7 +24,7 @@ spec:
     persistence:
       data:
         enabled: true
-        existingClaim: unifi-config-v1
+        existingClaim: unifi-config-v2
     podAnnotations:
       setGateway: 'true'
     env:

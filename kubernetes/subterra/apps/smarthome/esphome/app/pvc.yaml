@@ -2,11 +2,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: esphome-config-v1
+  name: esphome-config-v2
   namespace: smarthome
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: truenas-nfs
   resources:
     requests:
       storage: 1Gi

@@ -73,7 +73,7 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: vaultwarden-config-v1
+        existingClaim: vaultwarden-config-v2
         emptydir:
           enabled: true
     podAnnotations:

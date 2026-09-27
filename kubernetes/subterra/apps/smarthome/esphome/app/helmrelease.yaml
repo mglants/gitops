@@ -64,4 +64,4 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: esphome-config-v1
+        existingClaim: esphome-config-v2

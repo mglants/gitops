@@ -174,7 +174,7 @@ spec:
               - karakeep.glants.xyz
     persistence:
       data:
-        existingClaim: karakeep-data-v1
+        existingClaim: karakeep-data-v2
         advancedMounts:
           karakeep:
             app:

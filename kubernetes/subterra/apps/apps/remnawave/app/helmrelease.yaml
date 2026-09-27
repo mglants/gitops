@@ -470,7 +470,7 @@ spec:
       bot-data:
         enabled: true
         type: persistentVolumeClaim
-        existingClaim: remnawave-bot-data-v1
+        existingClaim: remnawave-bot-data-v2
         advancedMounts:
           bot:
             app:
@@ -499,7 +499,7 @@ spec:
       statuspage:
         enabled: true
         type: persistentVolumeClaim
-        existingClaim: remnawave-statuspage-data-v1
+        existingClaim: remnawave-statuspage-data-v2
         advancedMounts:
           statuspage:
             statuspage:

@@ -72,7 +72,7 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: calibre-web-config-v1
+        existingClaim: calibre-web-config-v2
         advancedMounts:
           main:
             main:

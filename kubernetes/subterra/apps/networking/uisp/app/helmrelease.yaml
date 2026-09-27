@@ -86,7 +86,7 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: uisp-config-v1
+        existingClaim: uisp-config-v2
         advancedMounts:
           main:
             main:

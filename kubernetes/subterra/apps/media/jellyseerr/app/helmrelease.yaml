@@ -61,7 +61,7 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: jellyseerr-config-v1
+        existingClaim: jellyseerr-config-v2
         globalMounts:
           - path: /app/config
     resources:

@@ -2,13 +2,14 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: remnawave-bot-data-v1
+  name: remnawave-bot-data-v2
   namespace: apps
   labels:
     kasten.io/backup-volume: enabled
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: truenas-nfs
   resources:
     requests:
       storage: 1Gi
@@ -16,13 +17,14 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: remnawave-statuspage-data-v1
+  name: remnawave-statuspage-data-v2
   namespace: apps
   labels:
     kasten.io/backup-volume: enabled
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: truenas-nfs
   resources:
     requests:
       storage: 1Gi
