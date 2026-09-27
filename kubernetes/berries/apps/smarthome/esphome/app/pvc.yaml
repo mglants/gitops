@@ -11,35 +11,3 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  dataSource:
-    apiGroup: snapshot.storage.k8s.io
-    kind: VolumeSnapshot
-    name: truenas-csi-import-esphome-config-v1
-  dataSourceRef:
-    apiGroup: snapshot.storage.k8s.io
-    kind: VolumeSnapshot
-    name: truenas-csi-import-esphome-config-v1
----
-apiVersion: snapshot.storage.k8s.io/v1
-kind: VolumeSnapshot
-metadata:
-  name: truenas-csi-import-esphome-config-v1
-  namespace: smarthome
-spec:
-  source:
-    volumeSnapshotContentName: truenas-csi-import-esphome-config-v1
-  volumeSnapshotClassName: truenas-csi
----
-apiVersion: snapshot.storage.k8s.io/v1
-kind: VolumeSnapshotContent
-metadata:
-  name: truenas-csi-import-esphome-config-v1
-spec:
-  deletionPolicy: Retain
-  driver: csi.truenas.io
-  source:
-    snapshotHandle: ssd/k8s/nfs/pvc-ce559929-c88e-491d-907b-d9eb5423b995@truenas-csi-import-esphome-config-v1
-  volumeSnapshotClassName: truenas-csi
-  volumeSnapshotRef:
-    name: truenas-csi-import-esphome-config-v1
-    namespace: smarthome

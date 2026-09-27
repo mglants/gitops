@@ -36,8 +36,6 @@ spec:
         enabled: true
         interval: 30s
 
-    # Keep the democratic-csi classes active during migration. These classes
-    # are intentionally non-default until both protocols pass canary tests.
     storageClasses:
       - name: truenas-nfs
         isDefault: false
