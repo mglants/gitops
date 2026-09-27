@@ -7,7 +7,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
-  path: ./kubernetes/subterra/apps/truenas-csi/app
+  path: ./kubernetes/subterra/apps/storage/app
   prune: true
   sourceRef:
     kind: GitRepository
