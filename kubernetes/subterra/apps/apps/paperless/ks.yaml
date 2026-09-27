@@ -31,4 +31,4 @@ spec:
   dependsOn:
     - name: cluster-apps-paperless-redis
     - name: cluster-apps-external-secrets-stores
-    - name: cluster-apps-democratic-csi-iscsi
+    - name: cluster-apps-truenas-csi

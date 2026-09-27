@@ -20,7 +20,7 @@ spec:
   wait: false
   dependsOn:
     - name: cluster-apps-external-secrets-stores
-    - name: cluster-apps-democratic-csi
+    - name: cluster-apps-truenas-csi
   postBuild:
     substitute:
       APP: *appname

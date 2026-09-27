@@ -14,4 +14,4 @@ spec:
     name: home-ops-kubernetes
   wait: false
   dependsOn:
-    - name: cluster-apps-democratic-csi
+    - name: cluster-apps-truenas-csi

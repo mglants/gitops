@@ -14,7 +14,7 @@ spec:
     name: home-ops-kubernetes
   wait: true
   dependsOn:
-    - name: cluster-apps-democratic-csi
+    - name: cluster-apps-truenas-csi
     - name: cluster-apps-nfs
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
