@@ -84,3 +84,6 @@ spec:
               - op: replace
                 path: /spec/template/spec/volumes/5/hostPath/type
                 value: ""
+              - op: replace
+                path: /spec/template/spec/volumes/5/hostPath/path
+                value: /var/etc/iscsi
