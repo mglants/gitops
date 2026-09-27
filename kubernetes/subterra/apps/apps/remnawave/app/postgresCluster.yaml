@@ -75,8 +75,8 @@ spec:
       repos:
         - name: repo1
           schedules:
-            full: 0 1 * * 0
-            differential: 0 1 * * 1-6
+            full: 45 1 * * 0
+            differential: 45 1 * * 1-6
           s3:
             bucket: crunchy-postgres
             endpoint: nas.ur30.ru
