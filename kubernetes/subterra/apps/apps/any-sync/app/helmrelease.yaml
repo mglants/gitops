@@ -175,7 +175,7 @@ spec:
               - path: /etc/any-sync-node/config.yml
                 subPath: any-sync-node-1.yaml
       data:
-        existingClaim: any-sync-data-v1
+        existingClaim: any-sync-data-v2
         advancedMounts:
           node-1:
             app:

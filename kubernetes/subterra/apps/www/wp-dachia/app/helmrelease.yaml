@@ -60,7 +60,7 @@ spec:
 
     persistence:
       enabled: true
-      existingClaim: wp-dachia-wp-v1
+      existingClaim: wp-dachia-wp-v2
     networkPolicy:
       enabled: false
     mariadb:

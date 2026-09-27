@@ -2,13 +2,14 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wp-dachia-wp-v1
+  name: wp-dachia-wp-v2
   namespace: www
   labels:
     kasten.io/backup-volume: enabled
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: truenas-nfs
   resources:
     requests:
       storage: 10Gi

@@ -90,5 +90,5 @@ spec:
     persistence:
       data:
         enabled: true
-        existingClaim: zigbee2mqtt-data-v1
+        existingClaim: zigbee2mqtt-data-v2
         mountPath: /data

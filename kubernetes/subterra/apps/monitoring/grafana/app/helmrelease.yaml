@@ -24,7 +24,7 @@ spec:
       secret.reloader.stakater.com/reload: grafana-secret
     persistence:
       enabled: true
-      existingClaim: grafana-data-v1
+      existingClaim: grafana-data-v2
     ingress:
       enabled: true
       ingressClassName: external-nginx

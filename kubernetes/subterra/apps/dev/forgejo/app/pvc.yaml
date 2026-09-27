@@ -2,11 +2,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: forgejo-data-v1
+  name: forgejo-data-v2
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: freenas-iscsi-csi
+  storageClassName: truenas-iscsi
   resources:
     requests:
       storage: 50Gi

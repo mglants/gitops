@@ -61,7 +61,7 @@ spec:
 
     persistence:
       enabled: true
-      existingClaim: netbox-config-v1
+      existingClaim: netbox-config-v2
     externalDatabase:
       host: netbox-pgsql-primary.apps.svc
       port: 5432
