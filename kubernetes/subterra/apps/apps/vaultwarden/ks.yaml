@@ -19,6 +19,7 @@ spec:
     substitute:
       APP: vaultwarden
       KOPIUR_CLAIM: vaultwarden-config-v2
+      KOPIUR_NAMESPACE: apps
   dependsOn:
     - name: cluster-apps-external-secrets-stores
     - name: cluster-apps-truenas-csi
