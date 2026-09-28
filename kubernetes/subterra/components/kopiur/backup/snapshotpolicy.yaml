@@ -15,7 +15,7 @@ spec:
       mode: Ephemeral
       storageClassName: truenas-nfs
     podSecurityContext:
-      fsGroup: ${KOPIUR_MOVER_GID:=1000}
+      fsGroup: ${KOPIUR_MOVER_FSGID:=${KOPIUR_MOVER_GID:=1000}}
       fsGroupChangePolicy: OnRootMismatch
       runAsGroup: ${KOPIUR_MOVER_GID:=1000}
       runAsNonRoot: ${KOPIUR_MOVER_RUN_AS_NON_ROOT:=true}
