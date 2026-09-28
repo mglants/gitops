@@ -15,3 +15,14 @@ spec:
   wait: false
   dependsOn:
     - name: cluster-apps-truenas-csi
+  components:
+    - ../../../../components/kopiur/backup
+  targetNamespace: media
+  postBuild:
+    substitute:
+      APP: prowlarr
+      KOPIUR_CLAIM: prowlarr-config-v2
+      KOPIUR_MOVER_UID: "568"
+      KOPIUR_MOVER_GID: "568"
+      KOPIUR_MOVER_FSGID: "1000"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "true"

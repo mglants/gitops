@@ -23,4 +23,11 @@ spec:
     - name: cluster-apps-truenas-csi
   postBuild:
     substitute:
-      APP: *appname
+      APP: vikunja
+      KOPIUR_CLAIM: vikunja-data-v2
+      KOPIUR_MOVER_UID: "2000"
+      KOPIUR_MOVER_GID: "2000"
+      KOPIUR_MOVER_FSGID: "1000"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "true"
+  components:
+    - ../../../../components/kopiur/backup

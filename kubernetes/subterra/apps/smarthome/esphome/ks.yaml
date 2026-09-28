@@ -16,3 +16,14 @@ spec:
   dependsOn:
     - name: cluster-apps-external-secrets-stores
     - name: cluster-apps-truenas-csi
+  components:
+    - ../../../../components/kopiur/backup
+  targetNamespace: smarthome
+  postBuild:
+    substitute:
+      APP: esphome
+      KOPIUR_CLAIM: esphome-config-v2
+      KOPIUR_MOVER_UID: "0"
+      KOPIUR_MOVER_GID: "0"
+      KOPIUR_MOVER_FSGID: "1000"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "false"

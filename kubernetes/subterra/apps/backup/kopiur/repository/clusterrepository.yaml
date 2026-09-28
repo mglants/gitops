@@ -14,8 +14,6 @@ spec:
         nfs:
           path: /mnt/Storinator/backup/kopiur/subterra
           server: 192.168.48.150
-  credentialProjection:
-    allowed: true
   encryption:
     passwordSecretRef:
       name: kopiur-nas-secret

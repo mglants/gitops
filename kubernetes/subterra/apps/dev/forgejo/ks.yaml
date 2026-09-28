@@ -11,6 +11,7 @@ spec:
       app.kubernetes.io/name: forgejo
   components:
     - ../../../../../components/dragonfly
+    - ../../../../components/kopiur/backup
   dependsOn:
     - name: dragonfly-operator
       namespace: flux-system
@@ -26,6 +27,11 @@ spec:
       APP: forgejo
       APP_UID: "1000"
       APP_GID: "1000"
+      KOPIUR_CLAIM: forgejo-data-v2
+      KOPIUR_MOVER_UID: "1000"
+      KOPIUR_MOVER_GID: "1000"
+      KOPIUR_MOVER_FSGID: "1000"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "true"
   prune: true
   sourceRef:
     kind: GitRepository

@@ -32,3 +32,14 @@ spec:
     - name: cluster-apps-paperless-redis
     - name: cluster-apps-external-secrets-stores
     - name: cluster-apps-truenas-csi
+  components:
+    - ../../../../components/kopiur/backup
+  targetNamespace: apps
+  postBuild:
+    substitute:
+      APP: paperless
+      KOPIUR_CLAIM: data-v2-paperless-0
+      KOPIUR_MOVER_UID: "0"
+      KOPIUR_MOVER_GID: "65542"
+      KOPIUR_MOVER_FSGID: "1000"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "false"

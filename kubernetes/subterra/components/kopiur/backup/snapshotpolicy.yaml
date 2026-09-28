@@ -3,12 +3,9 @@ apiVersion: kopiur.home-operations.com/v1alpha1
 kind: SnapshotPolicy
 metadata:
   name: ${APP}
-  namespace: ${KOPIUR_NAMESPACE}
   annotations:
     kopiur.home-operations.com/allow-identity-change: "true"
 spec:
-  credentialProjection:
-    enabled: true
   mover:
     cache:
       capacity: ${KOPIUR_CAPACITY:=5Gi}
@@ -29,7 +26,6 @@ spec:
     name: nas
   retention:
     keepDaily: 7
-    keepHourly: 24
   sources:
     - pvc:
         name: "${KOPIUR_CLAIM:-${APP}}"

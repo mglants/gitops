@@ -16,3 +16,14 @@ spec:
   dependsOn:
     - name: cluster-apps-external-secrets-stores
     - name: cluster-apps-truenas-csi
+  components:
+    - ../../../../components/kopiur/backup
+  targetNamespace: apps
+  postBuild:
+    substitute:
+      APP: rustdesk
+      KOPIUR_CLAIM: rustdesk-data-v2
+      KOPIUR_MOVER_UID: "777"
+      KOPIUR_MOVER_GID: "777"
+      KOPIUR_MOVER_FSGID: "1000"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "true"

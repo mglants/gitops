@@ -13,3 +13,14 @@ spec:
     kind: GitRepository
     name: home-ops-kubernetes
   wait: false # no flux ks dependents
+  components:
+    - ../../../../components/kopiur/backup
+  targetNamespace: games
+  postBuild:
+    substitute:
+      APP: minecraft-enigmatica10
+      KOPIUR_CLAIM: minecraft-enigmatica10-v2
+      KOPIUR_MOVER_UID: "1000"
+      KOPIUR_MOVER_GID: "3000"
+      KOPIUR_MOVER_FSGID: "1000"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "true"

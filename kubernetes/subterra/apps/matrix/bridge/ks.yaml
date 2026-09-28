@@ -17,6 +17,16 @@ spec:
   dependsOn:
     - name: cluster-apps-external-secrets-stores
     - name: cluster-apps-synapse
+  components:
+    - ../../../../components/kopiur/backup
+  postBuild:
+    substitute:
+      APP: mautrix-telegram
+      KOPIUR_CLAIM: mautrix-telegram-data-v2
+      KOPIUR_MOVER_UID: "1000"
+      KOPIUR_MOVER_GID: "1000"
+      KOPIUR_MOVER_FSGID: "1000"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "true"
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1

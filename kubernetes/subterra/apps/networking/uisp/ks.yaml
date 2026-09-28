@@ -13,3 +13,14 @@ spec:
     kind: GitRepository
     name: home-ops-kubernetes
   wait: false # no flux ks dependents
+  components:
+    - ../../../../components/kopiur/backup
+  targetNamespace: networking
+  postBuild:
+    substitute:
+      APP: uisp
+      KOPIUR_CLAIM: uisp-config-v2
+      KOPIUR_MOVER_UID: "911"
+      KOPIUR_MOVER_GID: "911"
+      KOPIUR_MOVER_FSGID: "1000"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "true"

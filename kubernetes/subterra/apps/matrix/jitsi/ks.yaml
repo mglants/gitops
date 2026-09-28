@@ -15,3 +15,14 @@ spec:
   wait: false # no flux ks dependents
   dependsOn:
     - name: cluster-apps-external-secrets-stores
+  components:
+    - ../../../../components/kopiur/backup
+  targetNamespace: matrix
+  postBuild:
+    substitute:
+      APP: jitsi
+      KOPIUR_CLAIM: prosody-data-jitsi-prosody-v2
+      KOPIUR_MOVER_UID: "1000"
+      KOPIUR_MOVER_GID: "1000"
+      KOPIUR_MOVER_FSGID: "1000"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "true"

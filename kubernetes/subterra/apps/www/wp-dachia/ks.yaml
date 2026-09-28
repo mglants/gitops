@@ -17,3 +17,14 @@ spec:
     - name: cluster-apps-external-secrets-stores
     - name: cluster-apps-truenas-csi
     - name: cluster-apps-crunchy-postgres-operator
+  components:
+    - ../../../../components/kopiur/backup
+  targetNamespace: www
+  postBuild:
+    substitute:
+      APP: wp-dachia
+      KOPIUR_CLAIM: wp-dachia-wp-v2
+      KOPIUR_MOVER_UID: "1001"
+      KOPIUR_MOVER_GID: "1001"
+      KOPIUR_MOVER_FSGID: "1000"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "true"

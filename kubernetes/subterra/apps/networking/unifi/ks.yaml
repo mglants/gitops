@@ -13,3 +13,14 @@ spec:
     kind: GitRepository
     name: home-ops-kubernetes
   wait: false # no flux ks dependents
+  components:
+    - ../../../../components/kopiur/backup
+  targetNamespace: networking
+  postBuild:
+    substitute:
+      APP: unifi
+      KOPIUR_CLAIM: unifi-config-v2
+      KOPIUR_MOVER_UID: "999"
+      KOPIUR_MOVER_GID: "999"
+      KOPIUR_MOVER_FSGID: "1000"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "true"

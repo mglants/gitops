@@ -3,9 +3,8 @@ apiVersion: kopiur.home-operations.com/v1alpha1
 kind: SnapshotSchedule
 metadata:
   name: ${APP}
-  namespace: ${KOPIUR_NAMESPACE}
 spec:
   policyRef:
     name: ${APP}
   schedule:
-    cron: H * * * *
+    cron: H H * * *

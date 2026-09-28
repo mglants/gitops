@@ -20,4 +20,11 @@ spec:
     - name: cluster-apps-external-secrets-stores
   postBuild:
     substitute:
-      APP: *appname
+      APP: opencloud
+      KOPIUR_CLAIM: opencloud-data-v2
+      KOPIUR_MOVER_UID: "2000"
+      KOPIUR_MOVER_GID: "2000"
+      KOPIUR_MOVER_FSGID: "1000"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "true"
+  components:
+    - ../../../../components/kopiur/backup

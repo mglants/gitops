@@ -23,9 +23,9 @@ spec:
       KOPIUR_MOVER_GID: "0"
       KOPIUR_MOVER_RUN_AS_NON_ROOT: "false"
       KOPIUR_MOVER_UID: "0"
-      KOPIUR_NAMESPACE: apps
   dependsOn:
     - name: cluster-apps-external-secrets-stores
     - name: cluster-apps-truenas-csi
     - name: cluster-apps-crunchy-postgres-operator
     - name: kopiur-repository
+  targetNamespace: apps
