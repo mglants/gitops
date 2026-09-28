@@ -19,11 +19,20 @@ spec:
     substitute:
       APP: vaultwarden
       KOPIUR_CLAIM: vaultwarden-config-v2
-      KOPIUR_MOVER_FSGID: "1000"
-      KOPIUR_MOVER_GID: "0"
-      KOPIUR_MOVER_RUN_AS_NON_ROOT: "false"
-      KOPIUR_MOVER_UID: "0"
       KOPIUR_NAMESPACE: apps
+  patches:
+    - target:
+        group: kopiur.home-operations.com
+        kind: SnapshotPolicy
+        name: vaultwarden
+      patch: |-
+        - op: add
+          path: /spec/mover/securityContext/capabilities
+          value:
+            add:
+              - DAC_READ_SEARCH
+            drop:
+              - ALL
   dependsOn:
     - name: cluster-apps-external-secrets-stores
     - name: cluster-apps-truenas-csi
