@@ -13,6 +13,9 @@ spec:
   values:
     installScope: cluster
     streamingLists: true
+    features:
+      credentialProjection:
+        enabled: true
     extraVolumes:
       - name: repo
         nfs:
