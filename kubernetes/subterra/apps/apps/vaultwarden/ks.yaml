@@ -6,6 +6,8 @@ metadata:
   name: cluster-apps-vaultwarden
   namespace: flux-system
 spec:
+  components:
+    - ../../../../components/kopiur/backup
   interval: 10m
   path: ./kubernetes/subterra/apps/apps/vaultwarden/app
   prune: true
@@ -13,7 +15,12 @@ spec:
     kind: GitRepository
     name: home-ops-kubernetes
   wait: false
+  postBuild:
+    substitute:
+      APP: vaultwarden
+      KOPIUR_CLAIM: vaultwarden-config-v2
   dependsOn:
     - name: cluster-apps-external-secrets-stores
     - name: cluster-apps-truenas-csi
     - name: cluster-apps-crunchy-postgres-operator
+    - name: kopiur-repository

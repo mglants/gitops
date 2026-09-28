@@ -71,7 +71,7 @@ spec:
     volumeSnapshotClass:
       enabled: true
       name: truenas-csi
-      deletionPolicy: Retain
+      deletionPolicy: Delete
 
   # Talos exposes its iSCSI configuration through an extension path that is
   # not a conventional host directory. Match the working democratic-csi

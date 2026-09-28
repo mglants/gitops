@@ -1,0 +1,33 @@
+---
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: SnapshotPolicy
+metadata:
+  name: ${APP}
+  annotations:
+    kopiur.home-operations.com/allow-identity-change: "true"
+spec:
+  mover:
+    cache:
+      capacity: ${KOPIUR_CAPACITY:=5Gi}
+      mode: Ephemeral
+      storageClassName: truenas-nfs
+    securityContext:
+      runAsUser: ${KOPIUR_MOVER_UID:=1000}
+      runAsGroup: ${KOPIUR_MOVER_GID:=1000}
+  repository:
+    kind: ClusterRepository
+    name: nas
+  retention:
+    keepDaily: 7
+    keepHourly: 24
+  sources:
+    - pvc:
+        name: "${KOPIUR_CLAIM:-${APP}}"
+  verification:
+    deep:
+      schedule:
+        cron: H 5 1 * *
+    quick:
+      schedule:
+        cron: H 3 * * *
+  volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS:=truenas-csi}

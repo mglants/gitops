@@ -6,4 +6,5 @@ resources:
   - ./namespace.yaml
   # Flux-Kustomizations
   # - ./rclone/ks.yaml
+  - ./kopiur/ks.yaml
   - ./talos-backup/ks.yaml
