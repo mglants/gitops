@@ -7,6 +7,8 @@ metadata:
   annotations:
     kopiur.home-operations.com/allow-identity-change: "true"
 spec:
+  credentialProjection:
+    enabled: true
   mover:
     cache:
       capacity: ${KOPIUR_CAPACITY:=5Gi}
