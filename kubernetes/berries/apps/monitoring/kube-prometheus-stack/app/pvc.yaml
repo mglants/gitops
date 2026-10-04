@@ -5,6 +5,15 @@ metadata:
   name: prometheus-data-v2-prometheus-kube-prometheus-stack-prometheus-0
   namespace: monitoring
 spec:
+  # Preserve immutable snapshot provenance on this restored claim.
+  dataSource:
+    apiGroup: snapshot.storage.k8s.io
+    kind: VolumeSnapshot
+    name: truenas-csi-import-prometheus-data-v1
+  dataSourceRef:
+    apiGroup: snapshot.storage.k8s.io
+    kind: VolumeSnapshot
+    name: truenas-csi-import-prometheus-data-v1
   storageClassName: truenas-nfs
   accessModes:
     - ReadWriteOnce
@@ -20,6 +29,15 @@ metadata:
   name: kube-prometheus-alertmanager-data-v2
   namespace: monitoring
 spec:
+  # Preserve immutable snapshot provenance on this restored claim.
+  dataSource:
+    apiGroup: snapshot.storage.k8s.io
+    kind: VolumeSnapshot
+    name: truenas-csi-import-kube-prometheus-alertmanager-data-v1
+  dataSourceRef:
+    apiGroup: snapshot.storage.k8s.io
+    kind: VolumeSnapshot
+    name: truenas-csi-import-kube-prometheus-alertmanager-data-v1
   storageClassName: truenas-nfs
   accessModes:
     - ReadWriteOnce

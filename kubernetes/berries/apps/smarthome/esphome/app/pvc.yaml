@@ -5,6 +5,15 @@ metadata:
   name: esphome-config-v2
   namespace: smarthome
 spec:
+  # Preserve immutable snapshot provenance on this restored claim.
+  dataSource:
+    apiGroup: snapshot.storage.k8s.io
+    kind: VolumeSnapshot
+    name: truenas-csi-import-esphome-config-v1
+  dataSourceRef:
+    apiGroup: snapshot.storage.k8s.io
+    kind: VolumeSnapshot
+    name: truenas-csi-import-esphome-config-v1
   storageClassName: truenas-nfs
   accessModes:
     - ReadWriteOnce
