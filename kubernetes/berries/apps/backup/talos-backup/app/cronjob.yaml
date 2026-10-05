@@ -6,8 +6,14 @@ metadata:
   namespace: backup
 spec:
   schedule: 0 */12 * * *
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
+      activeDeadlineSeconds: 900
+      backoffLimit: 2
       template:
         spec:
           containers:
@@ -47,7 +53,7 @@ spec:
                   name: tmp
                 - mountPath: /var/run/secrets/talos.dev
                   name: talos-secrets
-          restartPolicy: OnFailure
+          restartPolicy: Never
           nodeSelector:
             kubernetes.io/arch: amd64
           tolerations:
