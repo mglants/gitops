@@ -857,7 +857,7 @@ spec:
               value: 172.16.30.100
             - name: KUBERNETES_SERVICE_PORT
               value: '6443'
-          image: quay.io/cilium/operator-generic:v1.18.10@sha256:ab08d58fd12e98d9a9601d4b52beee839ff2537fba73d262aabad222454a16b3
+          image: quay.io/cilium/operator-generic:v1.18.14@sha256:6a77082c3938edad0433f53c46a90b8da08c9e4a9a255e51a1c2ff410db60104
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -942,7 +942,7 @@ spec:
             - serve
           command:
             - hubble-relay
-          image: quay.io/cilium/hubble-relay:v1.18.10@sha256:6f320095640b8e7bb4c1c9efdd0ed46302d0d684c3ea04eb341ca7e0618ef740
+          image: quay.io/cilium/hubble-relay:v1.18.14@sha256:828c22fcde4c0f7317ad5bb0f73c42294c6b3e2be286bb9374cf66cea930fb5d
           imagePullPolicy: IfNotPresent
           livenessProbe:
             tcpSocket:
@@ -1032,7 +1032,7 @@ spec:
     spec:
       automountServiceAccountToken: true
       containers:
-        - image: quay.io/cilium/hubble-ui:v0.13.5@sha256:f7d514fc54d784ed6df9d58cf0e97648b143f92b766dd1780ed3fc845bd4c516
+        - image: quay.io/cilium/hubble-ui:v0.13.6@sha256:049a80a03585c043d0c3121bdc518c72b0fd42bae07e4bcce0fdb8f1e88041d0
           imagePullPolicy: IfNotPresent
           name: frontend
           ports:
@@ -1050,7 +1050,7 @@ spec:
               value: '8090'
             - name: FLOWS_API_ADDR
               value: hubble-relay:80
-          image: quay.io/cilium/hubble-ui-backend:v0.13.5@sha256:fac0c300ae119274edca11fd89b1ad23c788792d8bc4ea2ba631c709e8d3c688
+          image: quay.io/cilium/hubble-ui-backend:v0.13.6@sha256:83b3fc763f3d49948c306bf49b08277383e195904b9ca5c0c0022b2112628787
           imagePullPolicy: IfNotPresent
           name: backend
           ports:
@@ -1128,7 +1128,7 @@ spec:
               value: 172.16.30.100
             - name: KUBERNETES_SERVICE_PORT
               value: '6443'
-          image: quay.io/cilium/cilium:v1.18.10@sha256:dd573bc2f7213dbd978e564a363ecaad060e9578ed557b92b53e42eeeb0f2294
+          image: quay.io/cilium/cilium:v1.18.14@sha256:0e65a0910d74be4d56ebc8f8a010b566f9177444667dbb8eb5b2d8d840ea5406
           imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
@@ -1250,7 +1250,7 @@ spec:
               value: 172.16.30.100
             - name: KUBERNETES_SERVICE_PORT
               value: '6443'
-          image: quay.io/cilium/cilium:v1.18.10@sha256:dd573bc2f7213dbd978e564a363ecaad060e9578ed557b92b53e42eeeb0f2294
+          image: quay.io/cilium/cilium:v1.18.14@sha256:0e65a0910d74be4d56ebc8f8a010b566f9177444667dbb8eb5b2d8d840ea5406
           imagePullPolicy: IfNotPresent
           name: config
           terminationMessagePolicy: FallbackToLogsOnError
@@ -1263,7 +1263,7 @@ spec:
             - /bin/bash
             - -c
             - --
-          image: quay.io/cilium/cilium:v1.18.10@sha256:dd573bc2f7213dbd978e564a363ecaad060e9578ed557b92b53e42eeeb0f2294
+          image: quay.io/cilium/cilium:v1.18.14@sha256:0e65a0910d74be4d56ebc8f8a010b566f9177444667dbb8eb5b2d8d840ea5406
           imagePullPolicy: IfNotPresent
           name: mount-bpf-fs
           securityContext:
@@ -1292,7 +1292,7 @@ spec:
               value: 172.16.30.100
             - name: KUBERNETES_SERVICE_PORT
               value: '6443'
-          image: quay.io/cilium/cilium:v1.18.10@sha256:dd573bc2f7213dbd978e564a363ecaad060e9578ed557b92b53e42eeeb0f2294
+          image: quay.io/cilium/cilium:v1.18.14@sha256:0e65a0910d74be4d56ebc8f8a010b566f9177444667dbb8eb5b2d8d840ea5406
           imagePullPolicy: IfNotPresent
           name: clean-cilium-state
           resources:
@@ -1321,7 +1321,7 @@ spec:
               name: cilium-run
         - command:
             - /install-plugin.sh
-          image: quay.io/cilium/cilium:v1.18.10@sha256:dd573bc2f7213dbd978e564a363ecaad060e9578ed557b92b53e42eeeb0f2294
+          image: quay.io/cilium/cilium:v1.18.14@sha256:0e65a0910d74be4d56ebc8f8a010b566f9177444667dbb8eb5b2d8d840ea5406
           imagePullPolicy: IfNotPresent
           name: install-cni-binaries
           resources:
