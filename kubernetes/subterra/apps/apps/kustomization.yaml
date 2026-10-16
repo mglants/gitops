@@ -21,4 +21,4 @@ resources:
   - ./remnawave/ks.yaml
   - ./spliit/ks.yaml
   - ./rustdesk/ks.yaml
-  - ./mumble/ks.yaml
+  - ./fluxer/ks.yaml

@@ -1,0 +1,1289 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: fluxer
+spec:
+  interval: 30m
+  timeout: 15m
+  install:
+    remediation:
+      retries: 5
+  chart:
+    spec:
+      chart: app-template
+      version: 5.0.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  values:
+    # Shared pod settings; controllers only specify their differences.
+    defaultPodOptionsStrategy: merge
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+    configMaps:
+      config:
+        data:
+          FLUXER_ADMIN_ENDPOINT: https://chat.glants.xyz/admin
+          FLUXER_API_PRESIGNED_HARVEST_DOWNLOADS_ENABLED: "false"
+          FLUXER_APP_ENDPOINT: https://chat.glants.xyz
+          FLUXER_BASE_DOMAIN: chat.glants.xyz
+          FLUXER_DATABASE_BACKEND: postgres
+          FLUXER_EMAIL_ENABLED: "true"
+          FLUXER_EMAIL_PROVIDER: smtp
+          FLUXER_EMAIL_FROM_EMAIL: noreply@glants.xyz
+          FLUXER_EMAIL_FROM_NAME: Fluxer
+          FLUXER_EMAIL_APP_BASE_URL: https://chat.glants.xyz
+          FLUXER_EMAIL_SMTP_PORT: "465"
+          FLUXER_EMAIL_SMTP_TLS_MODE: implicit
+          FLUXER_ENV: production
+          FLUXER_GATEWAY_MEDIA_PROXY_ENDPOINT: https://chat.glants.xyz/media
+          FLUXER_GATEWAY_STATIC_CDN_ENDPOINT: https://chat.glants.xyz
+          FLUXER_INTERNAL_API_ENDPOINT: http://fluxer-api:8080
+          FLUXER_INTERNAL_MEDIA_PROXY_ENDPOINT: http://fluxer-media-proxy:8080
+          FLUXER_LIVEKIT_DEFAULT_REGION: "{\"id\":\"default\",\"name\":\"Default\",\"emoji\":\"\U0001F30D\",\"latitude\":0,\"longitude\":0}"
+          FLUXER_LIVEKIT_ENABLED: "true"
+          FLUXER_LIVEKIT_INTERNAL_URL: http://fluxer-livekit:7880
+          FLUXER_LIVEKIT_URL: https://chat.glants.xyz:443/livekit
+          FLUXER_MARKETING_ENDPOINT: https://chat.glants.xyz
+          FLUXER_MEDIA_ENDPOINT: https://chat.glants.xyz/media
+          FLUXER_MEDIA_PROXY_CORS_ALLOWED_ORIGINS: https://chat.glants.xyz:443
+          FLUXER_MEDIA_PROXY_PUBLIC_ENDPOINT: https://chat.glants.xyz/media
+          FLUXER_MEDIA_PROXY_UPLOAD_RELAY_ENDPOINT: https://chat.glants.xyz/media
+          FLUXER_NATS_JETSTREAM_URL: nats://fluxer-nats:4222
+          FLUXER_NATS_URL: nats://fluxer-nats:4222
+          FLUXER_PASSKEY_ADDITIONAL_ALLOWED_ORIGINS: https://chat.glants.xyz
+          FLUXER_PASSKEY_RP_ID: chat.glants.xyz
+          FLUXER_POSTGRES_DATABASE: fluxer
+          FLUXER_POSTGRES_HOST: fluxer-pgsql-primary.apps.svc.cluster.local
+          FLUXER_POSTGRES_PORT: "5432"
+          FLUXER_POSTGRES_SSL: "false"
+          FLUXER_POSTGRES_USERNAME: fluxer
+          FLUXER_PUBLIC_PORT: "443"
+          FLUXER_PUBLIC_SCHEME: https
+          FLUXER_S3_BUCKET_CDN: fluxer
+          FLUXER_S3_BUCKET_HARVESTS: fluxer-harvests
+          FLUXER_S3_BUCKET_REPORTS: fluxer-reports
+          FLUXER_S3_BUCKET_UPLOADS: fluxer-uploads
+          FLUXER_S3_ENDPOINT: https://nas.ur30.ru:30002
+          FLUXER_S3_FORCE_PATH_STYLE: "true"
+          FLUXER_S3_PUBLIC_ENDPOINT: https://nas.ur30.ru:30002
+          FLUXER_S3_REGION: us-east-1
+          FLUXER_SEARCH_ENGINE: meilisearch
+          FLUXER_SEARCH_URL: http://fluxer-meilisearch:7700
+          FLUXER_SELF_HOSTED: "true"
+          FLUXER_SVC_NATS_URL: nats://fluxer-nats:4222
+          FLUXER_TRUST_CLIENT_IP_HEADER: "true"
+          FLUXER_VAPID_EMAIL: admin@chat.glants.xyz
+      app-proxy:
+        data:
+          DISCOVERY_UPSTREAM_URL: http://fluxer-api:8080/.well-known/fluxer
+          FLUXER_APP_PROXY_PORT: "8080"
+          FLUXER_MEDIA_ENDPOINT: https://chat.glants.xyz/media
+          FLUXER_S3_BUCKET_UPLOADS: fluxer-uploads
+          FLUXER_S3_PUBLIC_ENDPOINT: https://nas.ur30.ru:30002
+      nats-config:
+        data:
+          nats.conf: |-
+            server_name: $POD_NAME
+            listen: 0.0.0.0:4222
+            http: 127.0.0.1:8222
+            jetstream {
+              store_dir: /data
+            }
+    # Environment definitions are centralized here; YAML aliases wire each container.
+    # The chart ignores this helper map and consumes the resolved container values.
+    environment:
+      shared: &fluxer_shared_env
+        FLUXER_KV_URL: redis://fluxer-dragonfly:6379/0
+      service: &fluxer_service_env
+        <<: *fluxer_shared_env
+        FLUXER_SVC_PORT: '8090'
+      sources: &app_config
+        - configMapRef:
+            identifier: config
+        - secretRef:
+            name: fluxer-env
+      api: &api_env
+        <<: *fluxer_shared_env
+        FLUXER_API_PORT: '8080'
+        FLUXER_API_PRESIGNED_ATTACHMENT_UPLOADS_ENABLED: 'true'
+        NODE_ENV: production
+        NODE_OPTIONS: --enable-source-maps
+        NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
+        FLUXER_POSTGRES_MAX_CONNECTIONS: '25'
+        FLUXER_POSTGRES_PASSWORD: &fluxer_postgres_password
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: fluxer-pgsql-pguser-fluxer
+      worker: &worker_env
+        <<: *fluxer_shared_env
+        FLUXER_API_WORKER_MODE: all_lanes
+        FLUXER_API_WORKER_ENABLE_CRON_SCHEDULER: 'true'
+        NODE_ENV: production
+        NODE_OPTIONS: --enable-source-maps
+        NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
+        FLUXER_POSTGRES_MAX_CONNECTIONS: '25'
+        FLUXER_POSTGRES_PASSWORD: *fluxer_postgres_password
+      gateway: &gateway_env
+        <<: *fluxer_shared_env
+        FLUXER_GATEWAY_PORT: '8080'
+        FLUXER_GATEWAY_ROLE: all
+        POD_IP:
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        FLUXER_ERLANG_NODE_NAME:
+          value: fluxer_gateway@$(POD_IP)
+          dependsOn:
+            - POD_IP
+        FLUXER_ERLANG_DIST_PORT: '8081'
+        FLUXER_GATEWAY_CLUSTER_ENABLED: 'true'
+        FLUXER_GATEWAY_CLUSTER_DISCOVERY_DNS_NAME: fluxer-gateway-headless.apps.svc.cluster.local
+        FLUXER_GATEWAY_CLUSTER_DISCOVERY_NODE_BASENAME: fluxer_gateway
+      media-proxy: &media_proxy_env
+        <<: *fluxer_shared_env
+        FLUXER_MEDIA_PROXY_PORT: '8080'
+        FLUXER_MEDIA_PROXY_MODE: upload
+        FLUXER_MEDIA_PROXY_STORAGE_BACKEND: s3
+        FLUXER_S3_READ_SIGNED: 'true'
+      push: &push_env
+        <<: *fluxer_shared_env
+        FLUXER_PUSH_SERVICE_PORT: '8126'
+      admin: &admin_env
+        <<: *fluxer_shared_env
+        FLUXER_ADMIN_PORT: '8080'
+        FLUXER_ADMIN_BASE_PATH: /admin
+        FLUXER_API_ENDPOINT: http://fluxer-api:8080
+        FLUXER_STATIC_CDN_ENDPOINT: https://chat.glants.xyz
+      app-proxy-sources: &app_proxy_sources
+        - configMapRef:
+            identifier: app-proxy
+      livekit: &livekit_env
+        LIVEKIT_CONFIG: |-
+          log_level: info
+          port: 7880
+          rtc:
+            node_ip: 193.41.79.236
+            stun_servers:
+            - stun.l.google.com:19302
+            - stun1.l.google.com:19302
+            tcp_port: 7881
+            udp_port: 7882
+            use_external_ip: false
+        LIVEKIT_WEBHOOK_URL: http://fluxer-api:8080/webhooks/livekit
+        LIVEKIT_API_KEY:
+          valueFrom:
+            secretKeyRef:
+              name: fluxer-env
+              key: FLUXER_LIVEKIT_API_KEY
+        LIVEKIT_API_SECRET:
+          valueFrom:
+            secretKeyRef:
+              name: fluxer-env
+              key: FLUXER_LIVEKIT_API_SECRET
+      gifs: &gifs_env
+        <<: *fluxer_service_env
+        FLUXER_SVC_NAME: gifs
+        FLUXER_SVC_SHARD_COUNT: '1'
+        FLUXER_SVC_MODE: router
+      messages: &messages_env
+        <<: *fluxer_service_env
+        FLUXER_SVC_NAME: messages
+        FLUXER_SVC_SHARD_COUNT: '1'
+        FLUXER_SVC_MODE: router
+      snowflakes: &snowflakes_env
+        <<: *fluxer_service_env
+        FLUXER_SVC_NAME: snowflakes
+        FLUXER_SVC_SHARD_COUNT: '1'
+        FLUXER_SVC_MODE: router
+      unfurl: &unfurl_env
+        <<: *fluxer_service_env
+        FLUXER_SVC_NAME: unfurl
+        FLUXER_SVC_SHARD_COUNT: '1'
+        FLUXER_SVC_MODE: router
+      users: &users_env
+        <<: *fluxer_service_env
+        FLUXER_SVC_NAME: users
+        FLUXER_SVC_SHARD_COUNT: '1'
+        FLUXER_SVC_MODE: router
+      meilisearch: &meilisearch_env
+        MEILI_ENV: production
+        MEILI_NO_ANALYTICS: 'true'
+        MEILI_UPGRADE_DB: 'true'
+        MEILI_MAX_INDEXING_MEMORY: 256mb
+        MEILI_MAX_INDEXING_THREADS: '2'
+        MEILI_MASTER_KEY:
+          valueFrom:
+            secretKeyRef:
+              name: fluxer-env
+              key: FLUXER_SEARCH_API_KEY
+      nats: &nats_env
+        POD_NAME:
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+      gifs-shard: &gifs_shard_env
+        <<: *fluxer_service_env
+        FLUXER_SVC_NAME: gifs
+        FLUXER_SVC_SHARD_COUNT: '1'
+        FLUXER_SVC_MODE: shard
+        FLUXER_SVC_SHARD_ID:
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['apps.kubernetes.io/pod-index']
+        POD_NAME:
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+      messages-shard: &messages_shard_env
+        <<: *fluxer_service_env
+        FLUXER_SVC_NAME: messages
+        FLUXER_SVC_SHARD_COUNT: '1'
+        FLUXER_SVC_MODE: shard
+        FLUXER_SVC_SHARD_ID:
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['apps.kubernetes.io/pod-index']
+        POD_NAME:
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        FLUXER_POSTGRES_MAX_CONNECTIONS: '20'
+        FLUXER_POSTGRES_PASSWORD: *fluxer_postgres_password
+      snowflakes-shard: &snowflakes_shard_env
+        <<: *fluxer_service_env
+        FLUXER_SVC_NAME: snowflakes
+        FLUXER_SVC_SHARD_COUNT: '1'
+        FLUXER_SVC_MODE: shard
+        FLUXER_SVC_SHARD_ID:
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['apps.kubernetes.io/pod-index']
+        POD_NAME:
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+      unfurl-shard: &unfurl_shard_env
+        <<: *fluxer_service_env
+        FLUXER_SVC_NAME: unfurl
+        FLUXER_SVC_SHARD_COUNT: '1'
+        FLUXER_SVC_MODE: shard
+        FLUXER_SVC_SHARD_ID:
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['apps.kubernetes.io/pod-index']
+        POD_NAME:
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        FLUXER_MEDIA_PROXY_ENDPOINT: http://fluxer-media-proxy:8080
+      users-shard: &users_shard_env
+        <<: *fluxer_service_env
+        FLUXER_SVC_NAME: users
+        FLUXER_SVC_SHARD_COUNT: '1'
+        FLUXER_SVC_MODE: shard
+        FLUXER_SVC_SHARD_ID:
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['apps.kubernetes.io/pod-index']
+        POD_NAME:
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        FLUXER_POSTGRES_MAX_CONNECTIONS: '20'
+        FLUXER_POSTGRES_PASSWORD: *fluxer_postgres_password
+    # Named YAML anchors share repeated probes, images and startup checks.
+    controllers:
+      api:
+        annotations: &reload_on_change
+          reloader.stakater.com/auto: 'true'
+        pod:
+          labels: &public_http
+            fluxer.home.arpa/public: 'true'
+        containers:
+          api:
+            image: &api_image
+              repository: ghcr.io/fluxerapp/fluxer-api
+              tag: "2026.1015.210832"
+            env: *api_env
+            envFrom: *app_config
+            ports: &api_ports
+              - name: http
+                containerPort: 8080
+            resources: &api_resources
+              limits:
+                memory: 2560Mi
+              requests:
+                cpu: 100m
+                memory: 768Mi
+            securityContext: &container_security
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+            probes: &http_health_probes
+              startup:
+                enabled: true
+                custom: true
+                spec: &api_startup_probe
+                  failureThreshold: 30
+                  httpGet:
+                    path: /_health
+                    port: http
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec: &api_readiness_probe
+                  failureThreshold: 3
+                  httpGet:
+                    path: /_health
+                    port: http
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              liveness:
+                enabled: true
+                custom: true
+                spec: *api_readiness_probe
+        strategy: RollingUpdate
+        initContainers: &wait_for_backends
+          wait-for-dependencies:
+            image: &dependency_image
+              repository: busybox
+              tag: '1.37'
+            command:
+              - sh
+              - -c
+              - |-
+                for t in fluxer-nats:4222 fluxer-dragonfly:6379 fluxer-gifs:8090 fluxer-gifs-shard:8090 fluxer-messages:8090 fluxer-messages-shard:8090 fluxer-snowflakes:8090 fluxer-snowflakes-shard:8090 fluxer-unfurl:8090 fluxer-unfurl-shard:8090 fluxer-users:8090 fluxer-users-shard:8090; do until nc -z -w 2 "$(echo "$t" | cut -d: -f1)" "$(echo "$t" | cut -d: -f2)"; do echo waiting for $t; sleep 2; done; done
+            resources: &dependency_resources
+              requests:
+                cpu: 10m
+                memory: 16Mi
+              limits:
+                memory: 32Mi
+            securityContext: &dependency_security
+              runAsUser: 65532
+              runAsGroup: 65532
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+      worker:
+        annotations: *reload_on_change
+        containers:
+          worker:
+            image: *api_image
+            command:
+              - node
+              - dist/WorkerEntrypoint.js
+            env: *worker_env
+            envFrom: *app_config
+            ports: *api_ports
+            resources: *api_resources
+            securityContext: *container_security
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - node
+                      - -e
+                      - |-
+                        const age=Date.now()-require('node:fs').statSync('/tmp/fluxer-worker-heartbeat').mtimeMs;if(age>30000){console.error('worker heartbeat is '+Math.round(age)+'ms old');process.exit(1)}
+                  failureThreshold: 3
+                  initialDelaySeconds: 90
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+        initContainers: *wait_for_backends
+      gateway:
+        annotations: *reload_on_change
+        pod:
+          labels: *public_http
+        containers:
+          gateway:
+            image:
+              repository: ghcr.io/fluxerapp/fluxer-gateway
+              tag: "2026.1012.111351"
+            env: *gateway_env
+            envFrom: *app_config
+            ports:
+              - name: http
+                containerPort: 8080
+              - name: epmd
+                containerPort: 4369
+              - name: erl-dist
+                containerPort: 8081
+            lifecycle:
+              preStop:
+                exec:
+                  command:
+                    - /bin/sh
+                    - -c
+                    - curl -fsS -o /dev/null --max-time 2 http://127.0.0.1:8080/_health/drain; sleep 5
+            resources:
+              limits:
+                memory: 1Gi
+              requests:
+                cpu: 50m
+                memory: 256Mi
+            securityContext: *container_security
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec: *api_startup_probe
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - curl
+                      - -fsS
+                      - -o
+                      - /dev/null
+                      - --max-time
+                      - '4'
+                      - http://127.0.0.1:8080/_health/ready
+                  failureThreshold: 3
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              liveness:
+                enabled: true
+                custom: true
+                spec: *api_readiness_probe
+        strategy: RollingUpdate
+        initContainers: &wait_for_nats
+          wait-for-dependencies:
+            image: *dependency_image
+            command:
+              - sh
+              - -c
+              - |-
+                for t in fluxer-nats:4222; do until nc -z -w 2 "$(echo "$t" | cut -d: -f1)" "$(echo "$t" | cut -d: -f2)"; do echo waiting for $t; sleep 2; done; done
+            resources: *dependency_resources
+            securityContext: *dependency_security
+      media-proxy:
+        annotations: *reload_on_change
+        pod:
+          labels: *public_http
+        containers:
+          media-proxy:
+            image:
+              repository: ghcr.io/fluxerapp/fluxer-media-proxy
+              tag: "2026.1013.32826"
+            env: *media_proxy_env
+            envFrom: *app_config
+            ports: *api_ports
+            resources: &media_proxy_resources
+              limits:
+                memory: 512Mi
+              requests:
+                cpu: 50m
+                memory: 128Mi
+            securityContext: *container_security
+            probes: *http_health_probes
+        strategy: RollingUpdate
+        initContainers: *wait_for_nats
+      push:
+        annotations: *reload_on_change
+        containers:
+          push:
+            image:
+              repository: ghcr.io/fluxerapp/fluxer-push
+              tag: "2026.1012.111323"
+            env: *push_env
+            envFrom: *app_config
+            ports:
+              - name: http
+                containerPort: 8126
+            resources: &push_resources
+              limits:
+                memory: 256Mi
+              requests:
+                cpu: 10m
+                memory: 32Mi
+            securityContext: *container_security
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - /usr/local/bin/fluxer-push
+                      - healthcheck
+                  failureThreshold: 12
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec: &push_readiness_probe
+                  exec:
+                    command:
+                      - /usr/local/bin/fluxer-push
+                      - healthcheck
+                  failureThreshold: 3
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              liveness:
+                enabled: true
+                custom: true
+                spec: *push_readiness_probe
+        strategy: RollingUpdate
+        initContainers: *wait_for_nats
+      admin:
+        annotations: *reload_on_change
+        pod:
+          labels: *public_http
+        containers:
+          admin:
+            image:
+              repository: ghcr.io/fluxerapp/fluxer-admin
+              tag: "2026.1015.210844"
+            env: *admin_env
+            envFrom: *app_config
+            ports: *api_ports
+            resources:
+              limits:
+                memory: 256Mi
+              requests:
+                cpu: 10m
+                memory: 64Mi
+            securityContext: *container_security
+            probes: *http_health_probes
+        strategy: RollingUpdate
+      app-proxy:
+        annotations: *reload_on_change
+        pod:
+          labels: *public_http
+        containers:
+          app-proxy:
+            image:
+              repository: ghcr.io/fluxerapp/fluxer-app-proxy-self-hosted
+              tag: "2026.1015.210837"
+            envFrom: *app_proxy_sources
+            ports: *api_ports
+            resources: &app_proxy_resources
+              limits:
+                memory: 256Mi
+              requests:
+                cpu: 20m
+                memory: 64Mi
+            securityContext: *container_security
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec: *api_startup_probe
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 3
+                  httpGet:
+                    path: /_ready
+                    port: http
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              liveness:
+                enabled: true
+                custom: true
+                spec: *api_readiness_probe
+        strategy: RollingUpdate
+      static-proxy:
+        annotations: *reload_on_change
+        pod:
+          labels: *public_http
+        containers:
+          static-proxy:
+            image:
+              repository: ghcr.io/fluxerapp/fluxer-static
+              tag: "2026.1010.212914"
+            ports: *api_ports
+            resources: *push_resources
+            securityContext: *container_security
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 30
+                  httpGet:
+                    path: /avatars/0.png
+                    port: http
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec: &static_proxy_readiness_probe
+                  failureThreshold: 3
+                  httpGet:
+                    path: /avatars/0.png
+                    port: http
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              liveness:
+                enabled: true
+                custom: true
+                spec: *static_proxy_readiness_probe
+        strategy: RollingUpdate
+      livekit:
+        annotations: *reload_on_change
+        pod:
+          securityContext:
+            runAsUser: 65532
+            runAsGroup: 65532
+            fsGroup: 65532
+            fsGroupChangePolicy: OnRootMismatch
+          labels: *public_http
+        containers:
+          livekit:
+            image:
+              repository: livekit/livekit-server
+              tag: v1.12.0
+            command:
+              - /bin/sh
+              - -c
+              - |
+                export LIVEKIT_KEYS="$LIVEKIT_API_KEY: $LIVEKIT_API_SECRET"
+                export LIVEKIT_CONFIG="$(printf '%s\nwebhook:\n  api_key: %s\n  urls:\n    - %s\n' "$LIVEKIT_CONFIG" "$LIVEKIT_API_KEY" "$LIVEKIT_WEBHOOK_URL")"
+                exec /livekit-server
+            env: *livekit_env
+            ports:
+              - name: http
+                containerPort: 7880
+              - name: rtc-tcp
+                containerPort: 7881
+              - name: rtc-udp
+                containerPort: 7882
+                protocol: UDP
+            resources: *media_proxy_resources
+            securityContext: *container_security
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: http
+                  periodSeconds: 5
+                  failureThreshold: 60
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: http
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: http
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 6
+      gifs:
+        annotations: *reload_on_change
+        containers:
+          router:
+            image: &gifs_image
+              repository: ghcr.io/fluxerapp/fluxer-gifs
+              tag: "2026.1012.111352"
+            env: *gifs_env
+            envFrom: *app_config
+            ports: &gifs_ports
+              - name: http
+                containerPort: 8090
+            resources: &gifs_resources
+              limits:
+                memory: 128Mi
+              requests:
+                cpu: 10m
+                memory: 32Mi
+            securityContext: *container_security
+            probes: &gifs_probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 12
+                  httpGet:
+                    path: /_healthz
+                    port: http
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec: *api_readiness_probe
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 3
+                  httpGet:
+                    path: /_healthz
+                    port: http
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+        strategy: RollingUpdate
+        initContainers: *wait_for_nats
+      messages:
+        annotations: *reload_on_change
+        containers:
+          router:
+            image: &messages_image
+              repository: ghcr.io/fluxerapp/fluxer-messages
+              tag: "2026.1012.111357"
+            env: *messages_env
+            envFrom: *app_config
+            ports: *gifs_ports
+            resources: *gifs_resources
+            securityContext: *container_security
+            probes: *gifs_probes
+        strategy: RollingUpdate
+        initContainers: *wait_for_nats
+      snowflakes:
+        annotations: *reload_on_change
+        containers:
+          router:
+            image: &snowflakes_image
+              repository: ghcr.io/fluxerapp/fluxer-snowflakes
+              tag: "2026.1012.111327"
+            env: *snowflakes_env
+            envFrom: *app_config
+            ports: *gifs_ports
+            resources: *gifs_resources
+            securityContext: *container_security
+            probes: *gifs_probes
+        strategy: RollingUpdate
+        initContainers: *wait_for_nats
+      unfurl:
+        annotations: *reload_on_change
+        containers:
+          router:
+            image: &unfurl_image
+              repository: ghcr.io/fluxerapp/fluxer-unfurl
+              tag: "2026.1012.111349"
+            env: *unfurl_env
+            envFrom: *app_config
+            ports: *gifs_ports
+            resources: *gifs_resources
+            securityContext: *container_security
+            probes: *gifs_probes
+        strategy: RollingUpdate
+        initContainers: *wait_for_nats
+      users:
+        annotations: *reload_on_change
+        containers:
+          router:
+            image: &users_image
+              repository: ghcr.io/fluxerapp/fluxer-users
+              tag: "2026.1012.111317"
+            env: *users_env
+            envFrom: *app_config
+            ports: *gifs_ports
+            resources: *gifs_resources
+            securityContext: *container_security
+            probes: *gifs_probes
+        strategy: RollingUpdate
+        initContainers: *wait_for_nats
+      meilisearch:
+        type: statefulset
+        replicas: 1
+        annotations: *reload_on_change
+        pod:
+          securityContext:
+            runAsUser: 65532
+            runAsGroup: 65532
+            fsGroup: 65532
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          meilisearch:
+            image:
+              repository: getmeili/meilisearch
+              tag: v1.53
+            env: *meilisearch_env
+            ports:
+              - name: http
+                containerPort: 7700
+            resources:
+              limits:
+                memory: 1536Mi
+              requests:
+                cpu: 50m
+                memory: 256Mi
+            securityContext:
+              <<: *container_security
+              readOnlyRootFilesystem: true
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: http
+                  periodSeconds: 5
+                  failureThreshold: 120
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: http
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: http
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 6
+        statefulset:
+          serviceName: fluxer-meilisearch
+          podManagementPolicy: Parallel
+          persistentVolumeClaimRetentionPolicy: &retain_data
+            whenDeleted: Retain
+            whenScaled: Retain
+          volumeClaimTemplates:
+            - name: data
+              accessMode: ReadWriteOnce
+              size: 10Gi
+              storageClass: truenas-iscsi
+              advancedMounts:
+                meilisearch:
+                  - path: /meili_data
+      nats:
+        type: statefulset
+        replicas: 1
+        annotations: *reload_on_change
+        pod:
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            fsGroup: 65534
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          nats:
+            image:
+              repository: nats
+              tag: 2.14-alpine
+            command:
+              - nats-server
+            args:
+              - --config
+              - /etc/nats/nats.conf
+            env: *nats_env
+            ports:
+              - name: client
+                containerPort: 4222
+              - name: cluster
+                containerPort: 6222
+            resources: *app_proxy_resources
+            securityContext: *container_security
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - wget
+                      - -q
+                      - -O
+                      - /dev/null
+                      - http://127.0.0.1:8222/healthz
+                  failureThreshold: 60
+                  periodSeconds: 5
+                  timeoutSeconds: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - wget
+                      - -q
+                      - -O
+                      - /dev/null
+                      - http://127.0.0.1:8222/healthz
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - wget
+                      - -q
+                      - -O
+                      - /dev/null
+                      - http://127.0.0.1:8222/healthz
+                  failureThreshold: 6
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+        statefulset:
+          serviceName: fluxer-nats-headless
+          podManagementPolicy: Parallel
+          persistentVolumeClaimRetentionPolicy: *retain_data
+          volumeClaimTemplates:
+            - name: data
+              accessMode: ReadWriteOnce
+              size: 10Gi
+              storageClass: truenas-iscsi
+              advancedMounts:
+                nats:
+                  - path: /data
+      gifs-shard:
+        type: statefulset
+        replicas: 1
+        annotations: *reload_on_change
+        containers:
+          shard:
+            image: *gifs_image
+            env: *gifs_shard_env
+            envFrom: *app_config
+            ports: *gifs_ports
+            resources: *app_proxy_resources
+            securityContext: *container_security
+            probes: *gifs_probes
+        statefulset:
+          serviceName: fluxer-gifs-shard
+          podManagementPolicy: Parallel
+        initContainers: *wait_for_nats
+      messages-shard:
+        type: statefulset
+        replicas: 1
+        annotations: *reload_on_change
+        containers:
+          shard:
+            image: *messages_image
+            env: *messages_shard_env
+            envFrom: *app_config
+            ports: *gifs_ports
+            resources: *app_proxy_resources
+            securityContext: *container_security
+            probes: *gifs_probes
+        statefulset:
+          serviceName: fluxer-messages-shard
+          podManagementPolicy: Parallel
+        initContainers: *wait_for_nats
+      snowflakes-shard:
+        type: statefulset
+        replicas: 1
+        annotations: *reload_on_change
+        containers:
+          shard:
+            image: *snowflakes_image
+            env: *snowflakes_shard_env
+            envFrom: *app_config
+            ports: *gifs_ports
+            resources: *app_proxy_resources
+            securityContext: *container_security
+            probes: *gifs_probes
+        statefulset:
+          serviceName: fluxer-snowflakes-shard
+          podManagementPolicy: Parallel
+        initContainers: *wait_for_nats
+      unfurl-shard:
+        type: statefulset
+        replicas: 1
+        annotations: *reload_on_change
+        containers:
+          shard:
+            image: *unfurl_image
+            env: *unfurl_shard_env
+            envFrom: *app_config
+            ports: *gifs_ports
+            resources: *app_proxy_resources
+            securityContext: *container_security
+            probes: *gifs_probes
+        statefulset:
+          serviceName: fluxer-unfurl-shard
+          podManagementPolicy: Parallel
+        initContainers: *wait_for_nats
+      users-shard:
+        type: statefulset
+        replicas: 1
+        annotations: *reload_on_change
+        containers:
+          shard:
+            image: *users_image
+            env: *users_shard_env
+            envFrom: *app_config
+            ports: *gifs_ports
+            resources: *app_proxy_resources
+            securityContext: *container_security
+            probes: *gifs_probes
+        statefulset:
+          serviceName: fluxer-users-shard
+          podManagementPolicy: Parallel
+        initContainers: *wait_for_nats
+    service:
+      api:
+        controller: api
+        ports: &http_service_ports
+          http:
+            port: 8080
+      gateway:
+        controller: gateway
+        ports: *http_service_ports
+      gateway-headless:
+        controller: gateway
+        ports:
+          http:
+            port: 8080
+          epmd:
+            port: 4369
+          erl-dist:
+            port: 8081
+        clusterIP: None
+        publishNotReadyAddresses: true
+      media-proxy:
+        controller: media-proxy
+        ports: *http_service_ports
+      push:
+        controller: push
+        ports:
+          http:
+            port: 8126
+      admin:
+        controller: admin
+        ports: *http_service_ports
+      app-proxy:
+        controller: app-proxy
+        ports: *http_service_ports
+      static-proxy:
+        controller: static-proxy
+        ports: *http_service_ports
+      livekit:
+        controller: livekit
+        ports:
+          http:
+            port: 7880
+      livekit-rtc:
+        controller: livekit
+        type: LoadBalancer
+        ports:
+          rtc-tcp:
+            port: 7881
+          rtc-udp:
+            port: 7882
+            protocol: UDP
+        externalTrafficPolicy: Local
+        annotations:
+          lbipam.cilium.io/ips: 192.168.40.26
+      meilisearch:
+        controller: meilisearch
+        ports:
+          http:
+            port: 7700
+      nats:
+        controller: nats
+        ports:
+          client:
+            port: 4222
+      nats-headless:
+        controller: nats
+        ports:
+          client:
+            port: 4222
+          cluster:
+            port: 6222
+        clusterIP: None
+        publishNotReadyAddresses: true
+      gifs:
+        controller: gifs
+        ports: &internal_service_ports
+          http:
+            port: 8090
+      gifs-shard:
+        controller: gifs-shard
+        ports: *internal_service_ports
+        clusterIP: None
+        publishNotReadyAddresses: true
+      messages:
+        controller: messages
+        ports: *internal_service_ports
+      messages-shard:
+        controller: messages-shard
+        ports: *internal_service_ports
+        clusterIP: None
+        publishNotReadyAddresses: true
+      snowflakes:
+        controller: snowflakes
+        ports: *internal_service_ports
+      snowflakes-shard:
+        controller: snowflakes-shard
+        ports: *internal_service_ports
+        clusterIP: None
+        publishNotReadyAddresses: true
+      unfurl:
+        controller: unfurl
+        ports: *internal_service_ports
+      unfurl-shard:
+        controller: unfurl-shard
+        ports: *internal_service_ports
+        clusterIP: None
+        publishNotReadyAddresses: true
+      users:
+        controller: users
+        ports: *internal_service_ports
+      users-shard:
+        controller: users-shard
+        ports: *internal_service_ports
+        clusterIP: None
+        publishNotReadyAddresses: true
+    persistence:
+      meilisearch-tmp:
+        type: emptyDir
+        advancedMounts:
+          meilisearch:
+            meilisearch:
+              - path: /tmp
+      nats-config:
+        type: configMap
+        advancedMounts:
+          nats:
+            nats:
+              - path: /etc/nats
+                readOnly: true
+        identifier: nats-config
+    route:
+      main:
+        parentRefs:
+          - name: envoy-external
+            namespace: networking
+            sectionName: https
+        hostnames:
+          - chat.glants.xyz
+        rules:
+          - matches:
+              - path:
+                  type: Exact
+                  value: /_health
+              - path:
+                  type: Exact
+                  value: /.well-known/fluxer
+            backendRefs:
+              - identifier: api
+            timeouts: &route_timeouts
+              request: 0s
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /api
+            backendRefs:
+              - identifier: api
+            timeouts: *route_timeouts
+            filters: &strip_prefix
+              - type: URLRewrite
+                urlRewrite:
+                  path:
+                    type: ReplacePrefixMatch
+                    replacePrefixMatch: /
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /gateway
+            backendRefs:
+              - identifier: gateway
+            timeouts: *route_timeouts
+            filters: *strip_prefix
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /media
+            backendRefs:
+              - identifier: media-proxy
+            timeouts: *route_timeouts
+            filters: *strip_prefix
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /livekit
+            backendRefs:
+              - identifier: livekit
+            timeouts: *route_timeouts
+            filters: *strip_prefix
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /admin
+            backendRefs:
+              - identifier: admin
+            timeouts: *route_timeouts
+            filters: *strip_prefix
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /web
+              - path:
+                  type: PathPrefix
+                  value: /emoji
+              - path:
+                  type: PathPrefix
+                  value: /libs
+              - path:
+                  type: PathPrefix
+                  value: /avatars
+              - path:
+                  type: PathPrefix
+                  value: /badges
+              - path:
+                  type: PathPrefix
+                  value: /desktop
+            backendRefs:
+              - identifier: static-proxy
+            timeouts: *route_timeouts
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            backendRefs:
+              - identifier: app-proxy
+            timeouts: *route_timeouts
+    rawResources:
+      backend-traffic-policy:
+        manifest:
+          apiVersion: gateway.envoyproxy.io/v1alpha1
+          kind: BackendTrafficPolicy
+          spec:
+            targetRefs:
+              - group: gateway.networking.k8s.io
+                kind: HTTPRoute
+                name: '{{ .Release.Name }}'
+            timeout:
+              http:
+                connectionIdleTimeout: 3600s
+                requestTimeout: 0s
+                streamIdleTimeout: 3600s

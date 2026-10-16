@@ -1,0 +1,27 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-fluxer
+  namespace: flux-system
+spec:
+  components:
+    - ../../../../../components/dragonfly
+  postBuild:
+    substitute:
+      APP: fluxer
+  interval: 30m
+  timeout: 15m
+  path: ./kubernetes/subterra/apps/apps/fluxer/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+  targetNamespace: apps
+  dependsOn:
+    - name: dragonfly-operator
+    - name: cluster-apps-crunchy-postgres-operator
+    - name: cluster-apps-external-secrets-stores
+    - name: cluster-apps-truenas-csi
+    - name: envoy-gateway-gateway
+  wait: false
