@@ -8,6 +8,7 @@ resources:
   - ./external.yaml
   - ./https-redirect.yaml
   - ./internal.yaml
+  - ./nginx-fallback.yaml
   - ./podmonitor.yaml
 configMapGenerator:
   - name: envoy-external-extensions
