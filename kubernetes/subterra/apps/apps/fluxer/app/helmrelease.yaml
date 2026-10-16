@@ -35,6 +35,7 @@ spec:
           FLUXER_API_PRESIGNED_HARVEST_DOWNLOADS_ENABLED: "false"
           FLUXER_APP_ENDPOINT: https://chat.glants.xyz
           FLUXER_BASE_DOMAIN: chat.glants.xyz
+          FLUXER_AUTO_JOIN_INVITE_CODE: X1vnzeFY
           FLUXER_DATABASE_BACKEND: postgres
           FLUXER_EMAIL_ENABLED: "true"
           FLUXER_EMAIL_PROVIDER: smtp
