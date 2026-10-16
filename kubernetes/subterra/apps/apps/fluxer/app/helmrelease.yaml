@@ -895,7 +895,7 @@ spec:
           nats:
             image:
               repository: nats
-              tag: 2.14-alpine
+              tag: 2.15-alpine
             command:
               - nats-server
             args:
