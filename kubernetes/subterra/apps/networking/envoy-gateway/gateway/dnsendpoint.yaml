@@ -1,0 +1,13 @@
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: envoy-external
+  annotations:
+    external-dns.alpha.kubernetes.io/type: external
+spec:
+  endpoints:
+    - dnsName: ingress-ext.ur30.dev
+      recordType: A
+      targets:
+        - 193.41.79.236
