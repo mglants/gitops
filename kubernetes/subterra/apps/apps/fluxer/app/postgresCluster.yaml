@@ -5,6 +5,9 @@ metadata:
   name: fluxer-pgsql
 spec:
   postgresVersion: 15
+  databaseInitSQL:
+    name: fluxer-pgsql-init
+    key: init.sql
   patroni:
     dynamicConfiguration:
       synchronous_mode: true
@@ -56,3 +59,13 @@ spec:
             bucket: crunchy-postgres
             endpoint: nas.ur30.ru
             region: us-east-1
+---
+# Bootstrap SQL must be available independently of Helm install/remediation.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluxer-pgsql-init
+data:
+  init.sql: |
+    \connect fluxer
+    GRANT USAGE, CREATE ON SCHEMA public TO fluxer;
