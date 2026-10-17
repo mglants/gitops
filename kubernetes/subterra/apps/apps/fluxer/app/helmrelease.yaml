@@ -675,7 +675,7 @@ spec:
           app-proxy:
             image:
               repository: ghcr.io/fluxerapp/fluxer-app-proxy-self-hosted
-              tag: "2026.1015.210837"
+              tag: "2026.1017.202601"
             envFrom: *app_proxy_sources
             ports: *api_ports
             resources: &app_proxy_resources
