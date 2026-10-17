@@ -38,6 +38,24 @@ spec:
             name: ur30-ru-tls
           - kind: Secret
             name: glants-xyz-tls
+    # TURN is raw TCP after TLS termination, selected by its SNI hostname.
+    - name: turn
+      protocol: TLS
+      hostname: turn.glants.xyz
+      port: 443
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: apps
+        kinds:
+          - kind: TLSRoute
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: fluxer-turn-tls
     - name: ssh
       protocol: TCP
       port: 22
@@ -66,3 +84,37 @@ spec:
         name: envoy-external-extensions
         kind: ConfigMap
         group: v1
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: fluxer-turn
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: envoy-external
+      sectionName: turn
+  tls:
+    minVersion: "1.2"
+    # Override the shared HTTP ALPN list for binary TURN traffic.
+    alpnProtocols: []
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: fluxer-turn
+spec:
+  dnsNames:
+    - turn.glants.xyz
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  privateKey:
+    algorithm: RSA
+    size: 2048
+    rotationPolicy: Always
+  secretName: fluxer-turn-tls
+  usages:
+    - digital signature
+    - key encipherment

@@ -98,6 +98,17 @@ spec:
             http: 127.0.0.1:8222
             jetstream {
               store_dir: /data
+              max_memory_store: 256MB
+              max_file_store: 9GB
+            }
+            cluster {
+              name: fluxer
+              listen: 0.0.0.0:6222
+              routes: [
+                nats://fluxer-nats-0.fluxer-nats-headless.apps.svc.cluster.local:6222,
+                nats://fluxer-nats-1.fluxer-nats-headless.apps.svc.cluster.local:6222,
+                nats://fluxer-nats-2.fluxer-nats-headless.apps.svc.cluster.local:6222
+              ]
             }
     # Environment definitions are centralized here; YAML aliases wire each container.
     # The chart ignores this helper map and consumes the resolved container values.
@@ -105,7 +116,7 @@ spec:
       shared: &fluxer_shared_env
         FLUXER_KV_URL: redis://fluxer-dragonfly:6379/0
       service: &fluxer_service_env
-        <<: *fluxer_shared_env
+        !!merge <<: *fluxer_shared_env
         FLUXER_SVC_PORT: '8090'
       sources: &app_config
         - configMapRef:
@@ -113,7 +124,7 @@ spec:
         - secretRef:
             name: fluxer-env
       api: &api_env
-        <<: *fluxer_shared_env
+        !!merge <<: *fluxer_shared_env
         FLUXER_API_PORT: '8080'
         FLUXER_API_PRESIGNED_ATTACHMENT_UPLOADS_ENABLED: 'true'
         NODE_ENV: production
@@ -126,7 +137,7 @@ spec:
               key: password
               name: fluxer-pgsql-pguser-fluxer
       worker: &worker_env
-        <<: *fluxer_shared_env
+        !!merge <<: *fluxer_shared_env
         FLUXER_API_WORKER_MODE: all_lanes
         FLUXER_API_WORKER_ENABLE_CRON_SCHEDULER: 'true'
         NODE_ENV: production
@@ -135,7 +146,7 @@ spec:
         FLUXER_POSTGRES_MAX_CONNECTIONS: '25'
         FLUXER_POSTGRES_PASSWORD: *fluxer_postgres_password
       gateway: &gateway_env
-        <<: *fluxer_shared_env
+        !!merge <<: *fluxer_shared_env
         FLUXER_GATEWAY_PORT: '8080'
         FLUXER_GATEWAY_ROLE: all
         POD_IP:
@@ -151,16 +162,16 @@ spec:
         FLUXER_GATEWAY_CLUSTER_DISCOVERY_DNS_NAME: fluxer-gateway-headless.apps.svc.cluster.local
         FLUXER_GATEWAY_CLUSTER_DISCOVERY_NODE_BASENAME: fluxer_gateway
       media-proxy: &media_proxy_env
-        <<: *fluxer_shared_env
+        !!merge <<: *fluxer_shared_env
         FLUXER_MEDIA_PROXY_PORT: '8080'
         FLUXER_MEDIA_PROXY_MODE: upload
         FLUXER_MEDIA_PROXY_STORAGE_BACKEND: s3
         FLUXER_S3_READ_SIGNED: 'true'
       push: &push_env
-        <<: *fluxer_shared_env
+        !!merge <<: *fluxer_shared_env
         FLUXER_PUSH_SERVICE_PORT: '8126'
       admin: &admin_env
-        <<: *fluxer_shared_env
+        !!merge <<: *fluxer_shared_env
         FLUXER_ADMIN_PORT: '8080'
         FLUXER_ADMIN_BASE_PATH: /admin
         FLUXER_API_ENDPOINT: http://fluxer-api:8080
@@ -169,17 +180,38 @@ spec:
         - configMapRef:
             identifier: app-proxy
       livekit: &livekit_env
+        POD_INDEX:
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['apps.kubernetes.io/pod-index']
         LIVEKIT_CONFIG: |-
           log_level: info
           port: 7880
+          redis:
+            address: fluxer-dragonfly.apps.svc.cluster.local:6379
+            db: 1
           rtc:
             node_ip: 193.41.79.236
+            advertise_internal_ip: true
             stun_servers:
-            - stun.l.google.com:19302
-            - stun1.l.google.com:19302
+              - stun.rtc.yandex.net:3478
+              - stun.sipnet.ru:3478
+              - stun.l.google.com:19302
+              - stun1.l.google.com:19302
             tcp_port: 7881
             udp_port: 7882
             use_external_ip: false
+            turn_servers:
+              - host: turn.glants.xyz
+                port: 443
+                protocol: tls
+                secret: __TURN_SHARED_SECRET__
+                ttl: 300
+        TURN_SHARED_SECRET:
+          valueFrom:
+            secretKeyRef:
+              name: fluxer-env
+              key: FLUXER_TURN_SHARED_SECRET
         LIVEKIT_WEBHOOK_URL: http://fluxer-api:8080/webhooks/livekit
         LIVEKIT_API_KEY:
           valueFrom:
@@ -192,27 +224,27 @@ spec:
               name: fluxer-env
               key: FLUXER_LIVEKIT_API_SECRET
       gifs: &gifs_env
-        <<: *fluxer_service_env
+        !!merge <<: *fluxer_service_env
         FLUXER_SVC_NAME: gifs
         FLUXER_SVC_SHARD_COUNT: '1'
         FLUXER_SVC_MODE: router
       messages: &messages_env
-        <<: *fluxer_service_env
+        !!merge <<: *fluxer_service_env
         FLUXER_SVC_NAME: messages
         FLUXER_SVC_SHARD_COUNT: '1'
         FLUXER_SVC_MODE: router
       snowflakes: &snowflakes_env
-        <<: *fluxer_service_env
+        !!merge <<: *fluxer_service_env
         FLUXER_SVC_NAME: snowflakes
         FLUXER_SVC_SHARD_COUNT: '1'
         FLUXER_SVC_MODE: router
       unfurl: &unfurl_env
-        <<: *fluxer_service_env
+        !!merge <<: *fluxer_service_env
         FLUXER_SVC_NAME: unfurl
         FLUXER_SVC_SHARD_COUNT: '1'
         FLUXER_SVC_MODE: router
       users: &users_env
-        <<: *fluxer_service_env
+        !!merge <<: *fluxer_service_env
         FLUXER_SVC_NAME: users
         FLUXER_SVC_SHARD_COUNT: '1'
         FLUXER_SVC_MODE: router
@@ -233,7 +265,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
       gifs-shard: &gifs_shard_env
-        <<: *fluxer_service_env
+        !!merge <<: *fluxer_service_env
         FLUXER_SVC_NAME: gifs
         FLUXER_SVC_SHARD_COUNT: '1'
         FLUXER_SVC_MODE: shard
@@ -246,7 +278,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
       messages-shard: &messages_shard_env
-        <<: *fluxer_service_env
+        !!merge <<: *fluxer_service_env
         FLUXER_SVC_NAME: messages
         FLUXER_SVC_SHARD_COUNT: '1'
         FLUXER_SVC_MODE: shard
@@ -261,7 +293,7 @@ spec:
         FLUXER_POSTGRES_MAX_CONNECTIONS: '20'
         FLUXER_POSTGRES_PASSWORD: *fluxer_postgres_password
       snowflakes-shard: &snowflakes_shard_env
-        <<: *fluxer_service_env
+        !!merge <<: *fluxer_service_env
         FLUXER_SVC_NAME: snowflakes
         FLUXER_SVC_SHARD_COUNT: '1'
         FLUXER_SVC_MODE: shard
@@ -274,7 +306,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
       unfurl-shard: &unfurl_shard_env
-        <<: *fluxer_service_env
+        !!merge <<: *fluxer_service_env
         FLUXER_SVC_NAME: unfurl
         FLUXER_SVC_SHARD_COUNT: '1'
         FLUXER_SVC_MODE: shard
@@ -288,7 +320,7 @@ spec:
               fieldPath: metadata.name
         FLUXER_MEDIA_PROXY_ENDPOINT: http://fluxer-media-proxy:8080
       users-shard: &users_shard_env
-        <<: *fluxer_service_env
+        !!merge <<: *fluxer_service_env
         FLUXER_SVC_NAME: users
         FLUXER_SVC_SHARD_COUNT: '1'
         FLUXER_SVC_MODE: shard
@@ -305,9 +337,20 @@ spec:
     # Named YAML anchors share repeated probes, images and startup checks.
     controllers:
       api:
+        replicas: 2
+        podDisruptionBudget:
+          minAvailable: 1
         annotations: &reload_on_change
           reloader.stakater.com/auto: 'true'
         pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: api
           labels: &public_http
             fluxer.home.arpa/public: 'true'
         containers:
@@ -410,8 +453,19 @@ spec:
                   timeoutSeconds: 5
         initContainers: *wait_for_backends
       gateway:
+        replicas: 2
+        podDisruptionBudget:
+          minAvailable: 1
         annotations: *reload_on_change
         pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: gateway
           labels: *public_http
         containers:
           gateway:
@@ -478,8 +532,19 @@ spec:
             resources: *dependency_resources
             securityContext: *dependency_security
       media-proxy:
+        replicas: 2
+        podDisruptionBudget:
+          minAvailable: 1
         annotations: *reload_on_change
         pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: media-proxy
           labels: *public_http
         containers:
           media-proxy:
@@ -500,7 +565,19 @@ spec:
         strategy: RollingUpdate
         initContainers: *wait_for_nats
       push:
+        replicas: 2
+        podDisruptionBudget:
+          minAvailable: 1
         annotations: *reload_on_change
+        pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: push
         containers:
           push:
             image:
@@ -548,8 +625,19 @@ spec:
         strategy: RollingUpdate
         initContainers: *wait_for_nats
       admin:
+        replicas: 2
+        podDisruptionBudget:
+          minAvailable: 1
         annotations: *reload_on_change
         pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: admin
           labels: *public_http
         containers:
           admin:
@@ -569,8 +657,19 @@ spec:
             probes: *http_health_probes
         strategy: RollingUpdate
       app-proxy:
+        replicas: 2
+        podDisruptionBudget:
+          minAvailable: 1
         annotations: *reload_on_change
         pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: app-proxy
           labels: *public_http
         containers:
           app-proxy:
@@ -607,8 +706,19 @@ spec:
                 spec: *api_readiness_probe
         strategy: RollingUpdate
       static-proxy:
+        replicas: 2
+        podDisruptionBudget:
+          minAvailable: 1
         annotations: *reload_on_change
         pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: static-proxy
           labels: *public_http
         containers:
           static-proxy:
@@ -645,8 +755,24 @@ spec:
                 spec: *static_proxy_readiness_probe
         strategy: RollingUpdate
       livekit:
+        type: statefulset
+        replicas: 2
+        podDisruptionBudget:
+          minAvailable: 1
+        statefulset:
+          serviceName: fluxer-livekit-headless
+          podManagementPolicy: Parallel
         annotations: *reload_on_change
         pod:
+          terminationGracePeriodSeconds: 18000
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: livekit
           securityContext:
             runAsUser: 65532
             runAsGroup: 65532
@@ -657,11 +783,16 @@ spec:
           livekit:
             image:
               repository: livekit/livekit-server
-              tag: v1.12.0
+              tag: v1.13.10
             command:
               - /bin/sh
               - -c
               - |
+                : "${POD_INDEX:?missing LiveKit pod ordinal}"
+                TCP_PORT=$((7881 + 2 * POD_INDEX))
+                UDP_PORT=$((7882 + 2 * POD_INDEX))
+                LIVEKIT_CONFIG="$(printf '%s' "$LIVEKIT_CONFIG" | sed "s/tcp_port: 7881/tcp_port: $TCP_PORT/;s/udp_port: 7882/udp_port: $UDP_PORT/")"
+                LIVEKIT_CONFIG="$(printf '%s' "$LIVEKIT_CONFIG" | sed "s/__TURN_SHARED_SECRET__/$TURN_SHARED_SECRET/")"
                 export LIVEKIT_KEYS="$LIVEKIT_API_KEY: $LIVEKIT_API_SECRET"
                 export LIVEKIT_CONFIG="$(printf '%s\nwebhook:\n  api_key: %s\n  urls:\n    - %s\n' "$LIVEKIT_CONFIG" "$LIVEKIT_API_KEY" "$LIVEKIT_WEBHOOK_URL")"
                 exec /livekit-server
@@ -674,7 +805,12 @@ spec:
               - name: rtc-udp
                 containerPort: 7882
                 protocol: UDP
-            resources: *media_proxy_resources
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 512Mi
             securityContext: *container_security
             probes:
               startup:
@@ -699,14 +835,25 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  httpGet:
-                    path: /
+                  tcpSocket:
                     port: http
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 6
       gifs:
+        replicas: 2
+        podDisruptionBudget:
+          minAvailable: 1
         annotations: *reload_on_change
+        pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: gifs
         containers:
           router:
             image: &gifs_image
@@ -752,7 +899,19 @@ spec:
         strategy: RollingUpdate
         initContainers: *wait_for_nats
       messages:
+        replicas: 2
+        podDisruptionBudget:
+          minAvailable: 1
         annotations: *reload_on_change
+        pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: messages
         containers:
           router:
             image: &messages_image
@@ -767,7 +926,19 @@ spec:
         strategy: RollingUpdate
         initContainers: *wait_for_nats
       snowflakes:
+        replicas: 2
+        podDisruptionBudget:
+          minAvailable: 1
         annotations: *reload_on_change
+        pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: snowflakes
         containers:
           router:
             image: &snowflakes_image
@@ -782,7 +953,19 @@ spec:
         strategy: RollingUpdate
         initContainers: *wait_for_nats
       unfurl:
+        replicas: 2
+        podDisruptionBudget:
+          minAvailable: 1
         annotations: *reload_on_change
+        pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: unfurl
         containers:
           router:
             image: &unfurl_image
@@ -797,7 +980,19 @@ spec:
         strategy: RollingUpdate
         initContainers: *wait_for_nats
       users:
+        replicas: 2
+        podDisruptionBudget:
+          minAvailable: 1
         annotations: *reload_on_change
+        pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: users
         containers:
           router:
             image: &users_image
@@ -837,7 +1032,7 @@ spec:
                 cpu: 50m
                 memory: 256Mi
             securityContext:
-              <<: *container_security
+              !!merge <<: *container_security
               readOnlyRootFilesystem: true
             probes:
               startup:
@@ -884,9 +1079,19 @@ spec:
                   - path: /meili_data
       nats:
         type: statefulset
-        replicas: 1
+        replicas: 3
+        podDisruptionBudget:
+          minAvailable: 2
         annotations: *reload_on_change
         pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: nats
           securityContext:
             runAsUser: 65534
             runAsGroup: 65534
@@ -908,7 +1113,12 @@ spec:
                 containerPort: 4222
               - name: cluster
                 containerPort: 6222
-            resources: *app_proxy_resources
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
             securityContext: *container_security
             probes:
               startup:
@@ -1049,6 +1259,98 @@ spec:
           serviceName: fluxer-users-shard
           podManagementPolicy: Parallel
         initContainers: *wait_for_nats
+      coturn:
+        type: deployment
+        replicas: 2
+        strategy: RollingUpdate
+        rollingUpdate:
+          unavailable: "0"
+          surge: 1
+        podDisruptionBudget:
+          minAvailable: 1
+        annotations:
+          secret.reloader.stakater.com/reload: fluxer-env
+        pod:
+          terminationGracePeriodSeconds: 60
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: fluxer
+                      app.kubernetes.io/controller: coturn
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            fsGroup: 65532
+            seccompProfile:
+              type: RuntimeDefault
+        containers:
+          turn:
+            command:
+              - /bin/sh
+              - -ec
+              - |
+                umask 077
+                printf 'static-auth-secret=%s\n' "$TURN_SHARED_SECRET" > /tmp/turnserver.conf
+                # Drop the image binary's low-port file capability; port 3478 needs none.
+                cp /usr/bin/turnserver /tmp/turnserver
+                exec /tmp/turnserver -c /tmp/turnserver.conf \
+                  --listening-port=3478 --listening-ip="$POD_IP" --relay-ip="$POD_IP" \
+                  --realm=turn.glants.xyz --use-auth-secret --fingerprint \
+                  --no-udp --no-tls --no-tcp-relay --no-multicast-peers \
+                  --denied-peer-ip=0.0.0.0-255.255.255.255 \
+                  --allowed-peer-ip=193.41.79.236 \
+                  --allowed-peer-ip=10.244.0.0-10.244.255.255 \
+                  --min-port=20000 --max-port=29999 --relay-threads=2 \
+                  --userdb=/tmp/turndb \
+                  --user-quota=12 --total-quota=500 --stale-nonce=600 \
+                  --pidfile=/tmp/turnserver.pid --log-file=stdout --simple-log
+            ports:
+              - name: turn
+                containerPort: 3478
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            image:
+              repository: coturn/coturn
+              tag: 4.18.0-r0
+            env:
+              POD_IP:
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.podIP
+              TURN_SHARED_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: fluxer-env
+                    key: FLUXER_TURN_SHARED_SECRET
+            probes:
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: turn
+                  periodSeconds: 5
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: turn
+                  periodSeconds: 10
     service:
       api:
         controller: api
@@ -1091,8 +1393,17 @@ spec:
         ports:
           http:
             port: 7880
+      livekit-headless:
+        controller: livekit
+        clusterIP: None
+        publishNotReadyAddresses: true
+        ports:
+          http:
+            port: 7880
       livekit-rtc:
         controller: livekit
+        extraSelectorLabels:
+          statefulset.kubernetes.io/pod-name: fluxer-livekit-0
         type: LoadBalancer
         ports:
           rtc-tcp:
@@ -1103,6 +1414,22 @@ spec:
         externalTrafficPolicy: Local
         annotations:
           lbipam.cilium.io/ips: 192.168.40.26
+      livekit-rtc-secondary:
+        controller: livekit
+        extraSelectorLabels:
+          statefulset.kubernetes.io/pod-name: fluxer-livekit-1
+        type: LoadBalancer
+        ports:
+          rtc-tcp:
+            port: 7883
+            targetPort: 7883
+          rtc-udp:
+            port: 7884
+            targetPort: 7884
+            protocol: UDP
+        externalTrafficPolicy: Local
+        annotations:
+          lbipam.cilium.io/ips: 192.168.40.27
       meilisearch:
         controller: meilisearch
         ports:
@@ -1164,6 +1491,12 @@ spec:
         ports: *internal_service_ports
         clusterIP: None
         publishNotReadyAddresses: true
+      turn:
+        controller: coturn
+        ports:
+          turn:
+            port: 3478
+            targetPort: turn
     persistence:
       meilisearch-tmp:
         type: emptyDir
@@ -1179,7 +1512,25 @@ spec:
               - path: /etc/nats
                 readOnly: true
         identifier: nats-config
+      coturn-tmp:
+        type: emptyDir
+        advancedMounts:
+          coturn:
+            turn:
+              - path: /tmp
     route:
+      turn:
+        kind: TLSRoute
+        parentRefs:
+          - name: envoy-external
+            namespace: networking
+            sectionName: turn
+        hostnames:
+          - turn.glants.xyz
+        rules:
+          - backendRefs:
+              - identifier: turn
+                port: 3478
       main:
         parentRefs:
           - name: envoy-external
@@ -1288,3 +1639,42 @@ spec:
                 connectionIdleTimeout: 3600s
                 requestTimeout: 0s
                 streamIdleTimeout: 3600s
+    networkpolicies:
+      coturn:
+        controller: coturn
+        forceRename: fluxer-coturn
+        policyTypes:
+          - Ingress
+          - Egress
+        rules:
+          ingress:
+            - from:
+                - namespaceSelector:
+                    matchLabels:
+                      kubernetes.io/metadata.name: networking
+                  podSelector:
+                    matchLabels:
+                      gateway.envoyproxy.io/owning-gateway-name: envoy-external
+              ports:
+                - port: 3478
+                  protocol: TCP
+            - from:
+                - podSelector:
+                    matchLabels:
+                      app.kubernetes.io/controller: livekit
+                      app.kubernetes.io/instance: fluxer
+              ports:
+                - endPort: 29999
+                  port: 20000
+                  protocol: UDP
+          egress:
+            - ports:
+                - port: 7882
+                  protocol: UDP
+                - port: 7884
+                  protocol: UDP
+              to:
+                - podSelector:
+                    matchLabels:
+                      app.kubernetes.io/controller: livekit
+                      app.kubernetes.io/instance: fluxer

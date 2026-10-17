@@ -17,7 +17,15 @@ spec:
           - hostssl all all all md5
   instances:
     - name: postgres
-      replicas: 2
+      replicas: 3
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  postgres-operator.crunchydata.com/cluster: fluxer-pgsql
+                  postgres-operator.crunchydata.com/data: postgres
       dataVolumeClaimSpec:
         storageClassName: truenas-iscsi
         accessModes:

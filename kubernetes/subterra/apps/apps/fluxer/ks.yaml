@@ -7,9 +7,29 @@ metadata:
 spec:
   components:
     - ../../../../../components/dragonfly
+  patches:
+    - target:
+        group: dragonflydb.io
+        version: v1alpha1
+        kind: Dragonfly
+        name: .*-dragonfly
+      patch: |-
+        - op: add
+          path: /spec/resources/requests/memory
+          value: 256Mi
+        - op: add
+          path: /spec/affinity
+          value:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app: fluxer-dragonfly
   postBuild:
     substitute:
       APP: fluxer
+      DRAGONFLY_REPLICAS: "3"
   interval: 30m
   timeout: 15m
   path: ./kubernetes/subterra/apps/apps/fluxer/app
