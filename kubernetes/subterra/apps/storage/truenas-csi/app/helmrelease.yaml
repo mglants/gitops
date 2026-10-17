@@ -30,6 +30,11 @@ spec:
     controller:
       replicas: 1
 
+    node:
+      resources:
+        limits:
+          cpu: 500m
+
     metrics:
       enabled: true
       serviceMonitor:
