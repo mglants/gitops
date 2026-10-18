@@ -571,6 +571,8 @@ spec:
               repository: livekit/livekit-server
               tag: v1.13.10@sha256:89ca9ce0791e18d6e03bf6e2c49ceb27e1c754eae8bd50c989386c1a5963791a
             env:
+              # LiveKit reads REDIS_HOST ahead of the YAML address and needs host:port.
+              REDIS_HOST: bigbluebutton-dragonfly:6379
               LIVEKIT_CONFIG:
                 valueFrom:
                   secretKeyRef:
