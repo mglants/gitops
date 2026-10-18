@@ -45,10 +45,7 @@ spec:
       port: 443
       allowedRoutes:
         namespaces:
-          from: Selector
-          selector:
-            matchLabels:
-              kubernetes.io/metadata.name: apps
+          from: Same
         kinds:
           - kind: TLSRoute
       tls:

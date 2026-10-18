@@ -1,0 +1,278 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: coturn
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 5.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  values:
+    controllers:
+      main:
+        replicas: 1
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          # Fixed relay sockets must reach the same instance without Service NAT.
+          hostNetwork: true
+          dnsPolicy: ClusterFirstWithHostNet
+          nodeSelector:
+            kubernetes.io/hostname: subterra-cp2
+          automountServiceAccountToken: false
+          enableServiceLinks: false
+          terminationGracePeriodSeconds: 60
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            fsGroup: 65532
+            seccompProfile:
+              type: RuntimeDefault
+        containers:
+          app:
+            image:
+              repository: coturn/coturn
+              tag: 4.18.0-r0
+            command:
+              - /bin/sh
+              - -ec
+              - |
+                umask 077
+                cp /etc/coturn/turnserver.conf /tmp/turnserver.conf
+                printf '\nstatic-auth-secret=%s\nrelay-ip=%s\nexternal-ip=193.41.79.236/%s\n' "$TURN_SHARED_SECRET" "$HOST_IP" "$HOST_IP" >> /tmp/turnserver.conf
+                # Remove the binary's file capability; all container ports are unprivileged.
+                cp /usr/bin/turnserver /tmp/turnserver
+                exec /tmp/turnserver -c /tmp/turnserver.conf
+            env:
+              HOST_IP:
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.hostIP
+              TURN_SHARED_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: coturn-secret
+                    key: TURN_SHARED_SECRET
+            ports:
+              - name: turn-tcp
+                containerPort: 3480
+              - name: turn-udp
+                containerPort: 3480
+                protocol: UDP
+              - name: turns
+                containerPort: 5349
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            probes:
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: turn-tcp
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: turn-tcp
+    configMaps:
+      config:
+        data:
+          turnserver.conf: |-
+            listening-port=3480
+            tls-listening-port=5349
+            listening-ip=0.0.0.0
+            realm=turn.glants.xyz
+            use-auth-secret
+            fingerprint
+            cert=/etc/coturn/tls/tls.crt
+            pkey=/etc/coturn/tls/tls.key
+            no-tcp-relay
+            no-multicast-peers
+            no-cli
+            denied-peer-ip=0.0.0.0-0.255.255.255
+            denied-peer-ip=127.0.0.0-127.255.255.255
+            denied-peer-ip=169.254.0.0-169.254.255.255
+            denied-peer-ip=10.0.0.0-10.255.255.255
+            denied-peer-ip=172.16.0.0-172.31.255.255
+            denied-peer-ip=192.168.0.0-192.168.255.255
+            # SFUs live on pod addresses; Jitsi can also use node ICE addresses.
+            allowed-peer-ip=10.244.0.0-10.244.255.255
+            allowed-peer-ip=192.168.48.110-192.168.48.112
+            min-port=49160
+            max-port=49259
+            relay-threads=2
+            user-quota=12
+            total-quota=100
+            stale-nonce=600
+            userdb=/tmp/turndb
+            pidfile=/tmp/turnserver.pid
+            log-file=stdout
+            simple-log
+    service:
+      main:
+        forceRename: coturn-public
+        controller: main
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+        annotations:
+          lbipam.cilium.io/ips: 192.168.40.28
+        ports:
+          turn-tcp:
+            port: 3480
+          turn-udp:
+            port: 3480
+            protocol: UDP
+          turns:
+            port: 5349
+          turns-443:
+            port: 443
+            targetPort: turns
+          # Kubernetes requires each relay port to be listed individually.
+          relay-49160: {port: 49160, targetPort: 49160, protocol: UDP}
+          relay-49161: {port: 49161, targetPort: 49161, protocol: UDP}
+          relay-49162: {port: 49162, targetPort: 49162, protocol: UDP}
+          relay-49163: {port: 49163, targetPort: 49163, protocol: UDP}
+          relay-49164: {port: 49164, targetPort: 49164, protocol: UDP}
+          relay-49165: {port: 49165, targetPort: 49165, protocol: UDP}
+          relay-49166: {port: 49166, targetPort: 49166, protocol: UDP}
+          relay-49167: {port: 49167, targetPort: 49167, protocol: UDP}
+          relay-49168: {port: 49168, targetPort: 49168, protocol: UDP}
+          relay-49169: {port: 49169, targetPort: 49169, protocol: UDP}
+          relay-49170: {port: 49170, targetPort: 49170, protocol: UDP}
+          relay-49171: {port: 49171, targetPort: 49171, protocol: UDP}
+          relay-49172: {port: 49172, targetPort: 49172, protocol: UDP}
+          relay-49173: {port: 49173, targetPort: 49173, protocol: UDP}
+          relay-49174: {port: 49174, targetPort: 49174, protocol: UDP}
+          relay-49175: {port: 49175, targetPort: 49175, protocol: UDP}
+          relay-49176: {port: 49176, targetPort: 49176, protocol: UDP}
+          relay-49177: {port: 49177, targetPort: 49177, protocol: UDP}
+          relay-49178: {port: 49178, targetPort: 49178, protocol: UDP}
+          relay-49179: {port: 49179, targetPort: 49179, protocol: UDP}
+          relay-49180: {port: 49180, targetPort: 49180, protocol: UDP}
+          relay-49181: {port: 49181, targetPort: 49181, protocol: UDP}
+          relay-49182: {port: 49182, targetPort: 49182, protocol: UDP}
+          relay-49183: {port: 49183, targetPort: 49183, protocol: UDP}
+          relay-49184: {port: 49184, targetPort: 49184, protocol: UDP}
+          relay-49185: {port: 49185, targetPort: 49185, protocol: UDP}
+          relay-49186: {port: 49186, targetPort: 49186, protocol: UDP}
+          relay-49187: {port: 49187, targetPort: 49187, protocol: UDP}
+          relay-49188: {port: 49188, targetPort: 49188, protocol: UDP}
+          relay-49189: {port: 49189, targetPort: 49189, protocol: UDP}
+          relay-49190: {port: 49190, targetPort: 49190, protocol: UDP}
+          relay-49191: {port: 49191, targetPort: 49191, protocol: UDP}
+          relay-49192: {port: 49192, targetPort: 49192, protocol: UDP}
+          relay-49193: {port: 49193, targetPort: 49193, protocol: UDP}
+          relay-49194: {port: 49194, targetPort: 49194, protocol: UDP}
+          relay-49195: {port: 49195, targetPort: 49195, protocol: UDP}
+          relay-49196: {port: 49196, targetPort: 49196, protocol: UDP}
+          relay-49197: {port: 49197, targetPort: 49197, protocol: UDP}
+          relay-49198: {port: 49198, targetPort: 49198, protocol: UDP}
+          relay-49199: {port: 49199, targetPort: 49199, protocol: UDP}
+          relay-49200: {port: 49200, targetPort: 49200, protocol: UDP}
+          relay-49201: {port: 49201, targetPort: 49201, protocol: UDP}
+          relay-49202: {port: 49202, targetPort: 49202, protocol: UDP}
+          relay-49203: {port: 49203, targetPort: 49203, protocol: UDP}
+          relay-49204: {port: 49204, targetPort: 49204, protocol: UDP}
+          relay-49205: {port: 49205, targetPort: 49205, protocol: UDP}
+          relay-49206: {port: 49206, targetPort: 49206, protocol: UDP}
+          relay-49207: {port: 49207, targetPort: 49207, protocol: UDP}
+          relay-49208: {port: 49208, targetPort: 49208, protocol: UDP}
+          relay-49209: {port: 49209, targetPort: 49209, protocol: UDP}
+          relay-49210: {port: 49210, targetPort: 49210, protocol: UDP}
+          relay-49211: {port: 49211, targetPort: 49211, protocol: UDP}
+          relay-49212: {port: 49212, targetPort: 49212, protocol: UDP}
+          relay-49213: {port: 49213, targetPort: 49213, protocol: UDP}
+          relay-49214: {port: 49214, targetPort: 49214, protocol: UDP}
+          relay-49215: {port: 49215, targetPort: 49215, protocol: UDP}
+          relay-49216: {port: 49216, targetPort: 49216, protocol: UDP}
+          relay-49217: {port: 49217, targetPort: 49217, protocol: UDP}
+          relay-49218: {port: 49218, targetPort: 49218, protocol: UDP}
+          relay-49219: {port: 49219, targetPort: 49219, protocol: UDP}
+          relay-49220: {port: 49220, targetPort: 49220, protocol: UDP}
+          relay-49221: {port: 49221, targetPort: 49221, protocol: UDP}
+          relay-49222: {port: 49222, targetPort: 49222, protocol: UDP}
+          relay-49223: {port: 49223, targetPort: 49223, protocol: UDP}
+          relay-49224: {port: 49224, targetPort: 49224, protocol: UDP}
+          relay-49225: {port: 49225, targetPort: 49225, protocol: UDP}
+          relay-49226: {port: 49226, targetPort: 49226, protocol: UDP}
+          relay-49227: {port: 49227, targetPort: 49227, protocol: UDP}
+          relay-49228: {port: 49228, targetPort: 49228, protocol: UDP}
+          relay-49229: {port: 49229, targetPort: 49229, protocol: UDP}
+          relay-49230: {port: 49230, targetPort: 49230, protocol: UDP}
+          relay-49231: {port: 49231, targetPort: 49231, protocol: UDP}
+          relay-49232: {port: 49232, targetPort: 49232, protocol: UDP}
+          relay-49233: {port: 49233, targetPort: 49233, protocol: UDP}
+          relay-49234: {port: 49234, targetPort: 49234, protocol: UDP}
+          relay-49235: {port: 49235, targetPort: 49235, protocol: UDP}
+          relay-49236: {port: 49236, targetPort: 49236, protocol: UDP}
+          relay-49237: {port: 49237, targetPort: 49237, protocol: UDP}
+          relay-49238: {port: 49238, targetPort: 49238, protocol: UDP}
+          relay-49239: {port: 49239, targetPort: 49239, protocol: UDP}
+          relay-49240: {port: 49240, targetPort: 49240, protocol: UDP}
+          relay-49241: {port: 49241, targetPort: 49241, protocol: UDP}
+          relay-49242: {port: 49242, targetPort: 49242, protocol: UDP}
+          relay-49243: {port: 49243, targetPort: 49243, protocol: UDP}
+          relay-49244: {port: 49244, targetPort: 49244, protocol: UDP}
+          relay-49245: {port: 49245, targetPort: 49245, protocol: UDP}
+          relay-49246: {port: 49246, targetPort: 49246, protocol: UDP}
+          relay-49247: {port: 49247, targetPort: 49247, protocol: UDP}
+          relay-49248: {port: 49248, targetPort: 49248, protocol: UDP}
+          relay-49249: {port: 49249, targetPort: 49249, protocol: UDP}
+          relay-49250: {port: 49250, targetPort: 49250, protocol: UDP}
+          relay-49251: {port: 49251, targetPort: 49251, protocol: UDP}
+          relay-49252: {port: 49252, targetPort: 49252, protocol: UDP}
+          relay-49253: {port: 49253, targetPort: 49253, protocol: UDP}
+          relay-49254: {port: 49254, targetPort: 49254, protocol: UDP}
+          relay-49255: {port: 49255, targetPort: 49255, protocol: UDP}
+          relay-49256: {port: 49256, targetPort: 49256, protocol: UDP}
+          relay-49257: {port: 49257, targetPort: 49257, protocol: UDP}
+          relay-49258: {port: 49258, targetPort: 49258, protocol: UDP}
+          relay-49259: {port: 49259, targetPort: 49259, protocol: UDP}
+    persistence:
+      config:
+        type: configMap
+        identifier: config
+        globalMounts:
+          - path: /etc/coturn
+            readOnly: true
+      tls:
+        type: secret
+        name: coturn-tls
+        globalMounts:
+          - path: /etc/coturn/tls
+            readOnly: true
+      tmp:
+        type: emptyDir
+    route:
+      turn:
+        kind: TLSRoute
+        parentRefs:
+          - name: envoy-external
+            namespace: networking
+            sectionName: turn
+        hostnames:
+          - turn.glants.xyz
+        rules:
+          - backendRefs:
+              - identifier: main
+                port: 3480

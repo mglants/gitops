@@ -39,6 +39,7 @@ spec:
     name: home-ops-kubernetes
   targetNamespace: apps
   dependsOn:
+    - name: cluster-apps-coturn
     - name: dragonfly-operator
     - name: cluster-apps-crunchy-postgres-operator
     - name: cluster-apps-external-secrets-stores

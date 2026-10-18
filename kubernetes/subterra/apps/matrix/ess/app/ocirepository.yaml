@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: ess
+spec:
+  interval: 30m
+  url: oci://ghcr.io/element-hq/ess-helm/matrix-stack
+  ref:
+    tag: 26.10.2
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy

@@ -9,7 +9,3 @@ spec:
       recordType: CNAME
       targets:
         - ingress-ext.ur30.dev
-    - dnsName: turn.glants.xyz
-      recordType: CNAME
-      targets:
-        - ingress-ext.ur30.dev

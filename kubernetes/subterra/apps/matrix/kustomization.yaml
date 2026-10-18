@@ -7,8 +7,5 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
-  - ./synapse/ks.yaml
-  - ./element-web/ks.yaml
-  - ./jitsi/ks.yaml
-  - ./stunner/ks.yaml
+  - ./ess/ks.yaml
   - ./bridge/ks.yaml

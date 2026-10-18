@@ -1,0 +1,136 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ess-synapse
+  namespace: matrix
+spec:
+  parentRefs:
+    - name: envoy-external
+      namespace: networking
+      sectionName: https
+  hostnames:
+    - matrix.glants.xyz
+  rules:
+    - matches:
+        - path:
+            type: RegularExpression
+            value: ^/_matrix/client/(api/v1|r0|v3|unstable)/(login|logout|refresh)(/.*)?$
+      backendRefs:
+        - name: ess-matrix-authentication-service
+          port: 8080
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /_matrix
+        - path:
+            type: PathPrefix
+            value: /_synapse
+      backendRefs:
+        - name: ess-synapse
+          port: 8008
+      timeouts:
+        request: 0s
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ess-discovery
+  namespace: matrix
+spec:
+  parentRefs:
+    - name: envoy-external
+      namespace: networking
+      sectionName: https
+  hostnames:
+    - glants.xyz
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /.well-known/matrix
+      backendRefs:
+        - name: ess-well-known
+          port: 8010
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ess-auth
+  namespace: matrix
+spec:
+  parentRefs:
+    - name: envoy-external
+      namespace: networking
+      sectionName: https
+  hostnames:
+    - matrix-auth.glants.xyz
+  rules:
+    - backendRefs:
+        - name: ess-matrix-authentication-service
+          port: 8080
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ess-web
+  namespace: matrix
+spec:
+  parentRefs:
+    - name: envoy-external
+      namespace: networking
+      sectionName: https
+  hostnames:
+    - element.glants.xyz
+  rules:
+    - backendRefs:
+        - name: ess-element-web
+          port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ess-admin
+  namespace: matrix
+spec:
+  parentRefs:
+    - name: envoy-external
+      namespace: networking
+      sectionName: https
+  hostnames:
+    - matrix-admin.glants.xyz
+  rules:
+    - backendRefs:
+        - name: ess-element-admin
+          port: 8080
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ess-rtc
+  namespace: matrix
+spec:
+  parentRefs:
+    - name: envoy-external
+      namespace: networking
+      sectionName: https
+  hostnames:
+    - matrix-rtc.glants.xyz
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /sfu/get
+        - path:
+            type: PathPrefix
+            value: /get_token
+        - path:
+            type: PathPrefix
+            value: /delegate_delayed_leave
+      backendRefs:
+        - name: ess-matrix-rtc-authorisation-service
+          port: 8080
+    - backendRefs:
+        - name: ess-matrix-rtc-sfu
+          port: 7880
+      timeouts:
+        request: 0s

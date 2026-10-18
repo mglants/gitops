@@ -1,0 +1,19 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: coturn
+spec:
+  dnsNames:
+    - turn.glants.xyz
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  privateKey:
+    algorithm: RSA
+    size: 2048
+    rotationPolicy: Always
+  secretName: coturn-tls
+  usages:
+    - digital signature
+    - key encipherment

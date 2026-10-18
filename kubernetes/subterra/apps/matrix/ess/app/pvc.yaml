@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: synapse-data-v2
   namespace: matrix
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   accessModes:
     - ReadWriteOnce

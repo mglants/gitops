@@ -50,6 +50,7 @@ spec:
           FLUXER_INTERNAL_API_ENDPOINT: http://fluxer-api:8080
           FLUXER_INTERNAL_MEDIA_PROXY_ENDPOINT: http://fluxer-media-proxy:8080
           FLUXER_LIVEKIT_DEFAULT_REGION: "{\"id\":\"default\",\"name\":\"Default\",\"emoji\":\"\U0001F30D\",\"latitude\":0,\"longitude\":0}"
+          FLUXER_VOICE_P2P_STUN_URLS: stun:turn.glants.xyz:3480,stun:stun.l.google.com:19302
           FLUXER_LIVEKIT_ENABLED: "true"
           FLUXER_LIVEKIT_INTERNAL_URL: http://fluxer-livekit:7880
           FLUXER_LIVEKIT_URL: https://chat.glants.xyz:443/livekit
@@ -194,14 +195,17 @@ spec:
             node_ip: 193.41.79.236
             advertise_internal_ip: true
             stun_servers:
-              - stun.rtc.yandex.net:3478
-              - stun.sipnet.ru:3478
+              - turn.glants.xyz:3480
               - stun.l.google.com:19302
-              - stun1.l.google.com:19302
             tcp_port: 7881
             udp_port: 7882
             use_external_ip: false
             turn_servers:
+              - host: turn.glants.xyz
+                port: 3480
+                protocol: udp
+                secret: __TURN_SHARED_SECRET__
+                ttl: 300
               - host: turn.glants.xyz
                 port: 443
                 protocol: tls
@@ -788,7 +792,7 @@ spec:
               - /bin/sh
               - -c
               - |
-                : "${POD_INDEX:?missing LiveKit pod ordinal}"
+                [ -n "$POD_INDEX" ] || { echo "missing LiveKit pod ordinal" >&2; exit 1; }
                 TCP_PORT=$((7881 + 2 * POD_INDEX))
                 UDP_PORT=$((7882 + 2 * POD_INDEX))
                 LIVEKIT_CONFIG="$(printf '%s' "$LIVEKIT_CONFIG" | sed "s/tcp_port: 7881/tcp_port: $TCP_PORT/;s/udp_port: 7882/udp_port: $UDP_PORT/")"
@@ -1259,98 +1263,6 @@ spec:
           serviceName: fluxer-users-shard
           podManagementPolicy: Parallel
         initContainers: *wait_for_nats
-      coturn:
-        type: deployment
-        replicas: 2
-        strategy: RollingUpdate
-        rollingUpdate:
-          unavailable: "0"
-          surge: 1
-        podDisruptionBudget:
-          minAvailable: 1
-        annotations:
-          secret.reloader.stakater.com/reload: fluxer-env
-        pod:
-          terminationGracePeriodSeconds: 60
-          affinity:
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - topologyKey: kubernetes.io/hostname
-                  labelSelector:
-                    matchLabels:
-                      app.kubernetes.io/instance: fluxer
-                      app.kubernetes.io/controller: coturn
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 65532
-            runAsGroup: 65532
-            fsGroup: 65532
-            seccompProfile:
-              type: RuntimeDefault
-        containers:
-          turn:
-            command:
-              - /bin/sh
-              - -ec
-              - |
-                umask 077
-                printf 'static-auth-secret=%s\n' "$TURN_SHARED_SECRET" > /tmp/turnserver.conf
-                # Drop the image binary's low-port file capability; port 3478 needs none.
-                cp /usr/bin/turnserver /tmp/turnserver
-                exec /tmp/turnserver -c /tmp/turnserver.conf \
-                  --listening-port=3478 --listening-ip="$POD_IP" --relay-ip="$POD_IP" \
-                  --realm=turn.glants.xyz --use-auth-secret --fingerprint \
-                  --no-udp --no-tls --no-tcp-relay --no-multicast-peers \
-                  --denied-peer-ip=0.0.0.0-255.255.255.255 \
-                  --allowed-peer-ip=193.41.79.236 \
-                  --allowed-peer-ip=10.244.0.0-10.244.255.255 \
-                  --min-port=20000 --max-port=29999 --relay-threads=2 \
-                  --userdb=/tmp/turndb \
-                  --user-quota=12 --total-quota=500 --stale-nonce=600 \
-                  --pidfile=/tmp/turnserver.pid --log-file=stdout --simple-log
-            ports:
-              - name: turn
-                containerPort: 3478
-            resources:
-              requests:
-                cpu: 50m
-                memory: 64Mi
-              limits:
-                memory: 256Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
-            image:
-              repository: coturn/coturn
-              tag: 4.18.0-r0
-            env:
-              POD_IP:
-                valueFrom:
-                  fieldRef:
-                    fieldPath: status.podIP
-              TURN_SHARED_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: fluxer-env
-                    key: FLUXER_TURN_SHARED_SECRET
-            probes:
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  tcpSocket:
-                    port: turn
-                  periodSeconds: 5
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  tcpSocket:
-                    port: turn
-                  periodSeconds: 10
     service:
       api:
         controller: api
@@ -1491,12 +1403,6 @@ spec:
         ports: *internal_service_ports
         clusterIP: None
         publishNotReadyAddresses: true
-      turn:
-        controller: coturn
-        ports:
-          turn:
-            port: 3478
-            targetPort: turn
     persistence:
       meilisearch-tmp:
         type: emptyDir
@@ -1512,25 +1418,7 @@ spec:
               - path: /etc/nats
                 readOnly: true
         identifier: nats-config
-      coturn-tmp:
-        type: emptyDir
-        advancedMounts:
-          coturn:
-            turn:
-              - path: /tmp
     route:
-      turn:
-        kind: TLSRoute
-        parentRefs:
-          - name: envoy-external
-            namespace: networking
-            sectionName: turn
-        hostnames:
-          - turn.glants.xyz
-        rules:
-          - backendRefs:
-              - identifier: turn
-                port: 3478
       main:
         parentRefs:
           - name: envoy-external
@@ -1639,42 +1527,3 @@ spec:
                 connectionIdleTimeout: 3600s
                 requestTimeout: 0s
                 streamIdleTimeout: 3600s
-    networkpolicies:
-      coturn:
-        controller: coturn
-        forceRename: fluxer-coturn
-        policyTypes:
-          - Ingress
-          - Egress
-        rules:
-          ingress:
-            - from:
-                - namespaceSelector:
-                    matchLabels:
-                      kubernetes.io/metadata.name: networking
-                  podSelector:
-                    matchLabels:
-                      gateway.envoyproxy.io/owning-gateway-name: envoy-external
-              ports:
-                - port: 3478
-                  protocol: TCP
-            - from:
-                - podSelector:
-                    matchLabels:
-                      app.kubernetes.io/controller: livekit
-                      app.kubernetes.io/instance: fluxer
-              ports:
-                - endPort: 29999
-                  port: 20000
-                  protocol: UDP
-          egress:
-            - ports:
-                - port: 7882
-                  protocol: UDP
-                - port: 7884
-                  protocol: UDP
-              to:
-                - podSelector:
-                    matchLabels:
-                      app.kubernetes.io/controller: livekit
-                      app.kubernetes.io/instance: fluxer

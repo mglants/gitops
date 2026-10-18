@@ -1,0 +1,33 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-ess
+  namespace: flux-system
+spec:
+  interval: 30m
+  path: ./kubernetes/subterra/apps/matrix/ess/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+  targetNamespace: matrix
+  components:
+    - ../../../../components/kopiur/backup
+  postBuild:
+    substitute:
+      APP: ess
+      KOPIUR_CLAIM: synapse-data-v2
+      KOPIUR_MOVER_UID: "10091"
+      KOPIUR_MOVER_GID: "10091"
+      KOPIUR_MOVER_FSGID: "10091"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "true"
+  dependsOn:
+    - name: dragonfly-operator
+    - name: cluster-apps-coturn
+    - name: cluster-apps-external-secrets-stores
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: ess
+      namespace: matrix

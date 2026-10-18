@@ -1,0 +1,216 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ess
+spec:
+  interval: 30m
+  timeout: 20m
+  chartRef:
+    kind: OCIRepository
+    name: ess
+  install:
+    remediation:
+      retries: 0
+  upgrade:
+    remediation:
+      retries: 0 # Migration hooks must be reviewed before retrying.
+  valuesFrom:
+    - kind: Secret
+      name: ess-secret
+      valuesKey: LIVEKIT_KEY
+      targetPath: matrixRTC.livekitAuth.key
+  postRenderers:
+    - kustomize:
+        patches:
+          # ESS currently emits Ingress objects; Envoy HTTPRoutes replace them.
+          - target:
+              group: networking.k8s.io
+              version: v1
+              kind: Ingress
+            patch: |-
+              apiVersion: networking.k8s.io/v1
+              kind: Ingress
+              metadata:
+                name: unused
+              $patch: delete
+  values:
+    serverName: glants.xyz
+    networking:
+      ipFamily: ipv4
+    ingress:
+      tlsEnabled: false # TLS terminates at Envoy.
+    initSecrets:
+      enabled: false # Persistent credentials come from ExternalSecrets/1Password.
+    postgres:
+      enabled: false
+    hookshot:
+      enabled: false
+    synapse:
+      redisOrValkey:
+        host: ess-dragonfly.matrix.svc.cluster.local
+        port: 6379
+        db: 0
+      ingress:
+        host: matrix.glants.xyz
+      postgres:
+        host: synapse-pgsql-primary.matrix.svc.cluster.local
+        port: 5432
+        user: synapse
+        database: synapse
+        sslMode: prefer
+        password:
+          secret: synapse-pgsql-pguser-synapse
+          secretKey: password
+      media:
+        storage:
+          existingClaim: synapse-data-v2
+        maxUploadSize: 100M
+      signingKey:
+        secret: ess-secret
+        secretKey: SYNAPSE_SIGNING_KEY
+      registrationSharedSecret:
+        secret: ess-secret
+        secretKey: SYNAPSE_REGISTRATION_SHARED_SECRET
+      macaroon:
+        secret: ess-secret
+        secretKey: SYNAPSE_MACAROON
+      appservices:
+        - secret: mautrix-telegram-secret
+          secretKey: registration.yaml
+        - secret: mautrix-gmessages-secret
+          secretKey: registration.yaml
+      additional:
+        turn:
+          configSecret: ess-secret
+          configSecretKey: synapse-turn.yaml
+        local:
+          config: |
+            enable_registration: false
+            url_preview_enabled: true
+            max_spider_size: 10M
+            url_preview_ip_range_blacklist:
+              - 127.0.0.0/8
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+              - 100.64.0.0/10
+              - 169.254.0.0/16
+              - ::1/128
+              - fe80::/64
+              - fc00::/7
+      workers:
+        client-reader:
+          enabled: true
+          replicas: 3
+          resources: &worker_resources
+            requests:
+              cpu: 200m
+              memory: 128Mi
+            limits:
+              memory: 1Gi
+        synchrotron:
+          enabled: true
+          resources: *worker_resources
+        federation-inbound:
+          enabled: true
+          resources: *worker_resources
+        federation-sender:
+          enabled: true
+          resources: *worker_resources
+        appservice:
+          enabled: true
+          resources: *worker_resources
+        pusher:
+          enabled: true
+          resources: *worker_resources
+      resources:
+        requests:
+          cpu: 500m
+          memory: 1Gi
+        limits:
+          memory: 4Gi
+    matrixAuthenticationService:
+      ingress:
+        host: matrix-auth.glants.xyz
+      postgres:
+        host: synapse-pgsql-primary.matrix.svc.cluster.local
+        port: 5432
+        user: mas
+        database: mas
+        sslMode: prefer
+        password:
+          secret: synapse-pgsql-pguser-mas
+          secretKey: password
+      encryptionSecret:
+        secret: ess-secret
+        secretKey: MAS_ENCRYPTION_SECRET
+      synapseSharedSecret:
+        secret: ess-secret
+        secretKey: MAS_SYNAPSE_SHARED_SECRET
+      privateKeys:
+        rsa:
+          secret: ess-secret
+          secretKey: MAS_RSA_PRIVATE_KEY
+        ecdsaPrime256v1:
+          secret: ess-secret
+          secretKey: MAS_EC_PRIVATE_KEY
+      additional:
+        local:
+          configSecret: ess-secret
+          configSecretKey: mas.yaml
+    matrixRTC:
+      redisOrValkey:
+        host: ess-dragonfly.matrix.svc.cluster.local
+        port: 6379
+        db: 2
+      ingress:
+        host: matrix-rtc.glants.xyz
+      livekitAuth:
+        secret:
+          secret: ess-secret
+          secretKey: LIVEKIT_SECRET
+      appserviceRegistration:
+        secret: ess-secret
+        secretKey: matrix-rtc-registration.yaml
+      sfu:
+        redisOrValkey:
+          host: ess-dragonfly.matrix.svc.cluster.local
+          port: 6379
+          db: 3
+        useStunToDiscoverPublicIP: false
+        manualIP: 193.41.79.236
+        exposedServices:
+          rtcTcp:
+            portType: LoadBalancer
+            nodePort: ""
+            port: 7885
+            externalTrafficPolicy: Local
+            annotations: &rtc_lb
+              lbipam.cilium.io/ips: 192.168.40.29
+              lbipam.cilium.io/sharing-key: ess-matrix-rtc
+          rtcMuxedUdp:
+            portType: LoadBalancer
+            nodePort: ""
+            port: 7886
+            externalTrafficPolicy: Local
+            annotations: *rtc_lb
+          rtcUdp:
+            enabled: false
+          turn:
+            enabled: false
+          turnTLS:
+            enabled: false
+        additional:
+          shared-turn:
+            configSecret: ess-secret
+            configSecretKey: livekit-turn.yaml
+    elementWeb:
+      ingress:
+        host: element.glants.xyz
+    elementAdmin:
+      ingress:
+        host: matrix-admin.glants.xyz
+    wellKnownDelegation:
+      baseDomainRedirect:
+        enabled: false

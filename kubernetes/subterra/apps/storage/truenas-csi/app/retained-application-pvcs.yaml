@@ -43,19 +43,6 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: prosody-data-jitsi-prosody-v2
-  namespace: matrix
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: truenas-iscsi
-  resources:
-    requests:
-      storage: 3G
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: influxdb-data-v1
   namespace: monitoring
 spec:

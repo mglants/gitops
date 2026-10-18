@@ -16,7 +16,7 @@ spec:
   wait: false # no flux ks dependents
   dependsOn:
     - name: cluster-apps-external-secrets-stores
-    - name: cluster-apps-synapse
+    - name: cluster-apps-ess
   components:
     - ../../../../components/kopiur/backup
   postBuild:
@@ -45,4 +45,4 @@ spec:
   wait: false # no flux ks dependents
   dependsOn:
     - name: cluster-apps-external-secrets-stores
-    - name: cluster-apps-synapse
+    - name: cluster-apps-ess

@@ -4,24 +4,10 @@ kind: PostgresCluster
 metadata:
   name: &name synapse-pgsql
   namespace: matrix
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   postgresVersion: 15
-  # dataSource:
-  #   pgbackrest:
-  #     stanza: db
-  #     configuration:
-  #       - secret:
-  #           name: pgo-s3-creds
-  #     global:
-  #       repo1-path: /synapse/repo1
-  #       repo1-s3-uri-style: path
-  #       repo1-storage-port: '9000'
-  #     repo:
-  #       name: repo1
-  #       s3:
-  #         bucket: crunchy-postgres
-  #         endpoint: nas.ur30.ru
-  #         region: us-east-1
   patroni:
     dynamicConfiguration:
       bootstrap:
@@ -72,6 +58,11 @@ spec:
       databases:
         - gmessages
       options: SUPERUSER
+      password:
+        type: AlphaNumeric
+    - name: mas
+      databases:
+        - mas
       password:
         type: AlphaNumeric
   backups:
