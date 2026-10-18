@@ -1,4 +1,12 @@
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bigbluebutton-pgsql-init
+data:
+  init.sql: |
+    ALTER DATABASE greenlight OWNER TO greenlight;
+---
 apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
@@ -7,6 +15,9 @@ metadata:
     kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   postgresVersion: 16
+  databaseInitSQL:
+    name: bigbluebutton-pgsql-init
+    key: init.sql
   patroni:
     dynamicConfiguration:
       synchronous_mode: true
