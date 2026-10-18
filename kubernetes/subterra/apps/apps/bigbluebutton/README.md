@@ -98,9 +98,12 @@ BBB gets its own role and three databases (`bbb_graphql`, `blocknote_app`,
 `hasura_app`); Greenlight has a separate non-superuser role/database. The BBB role
 uses the repository's SUPERUSER convention to install required extensions.
 
-Greenlight initially uses local authentication. Authentik/OIDC needs its own
-provider registration and the native `OPENID_CONNECT_*` variables plus an
-ExternalSecret mapping for the client secret. No guessed provider is enabled.
+Greenlight uses Authentik OIDC with application/client ID `bigbluebutton` and
+issuer `https://authentik.glants.xyz/application/o/bigbluebutton/`. The provider's
+strict callback URL is `https://meet.glants.xyz/auth/openid_connect/callback`.
+The client secret comes from `OPENID_CONNECT_CLIENT_SECRET` in the `bigbluebutton`
+1Password item; the client ID is plain chart configuration. OIDC disables normal
+local password login. Assign Greenlight administrator roles separately.
 
 ## Initialization and upgrades
 

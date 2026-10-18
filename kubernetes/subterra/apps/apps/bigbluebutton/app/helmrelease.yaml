@@ -795,6 +795,15 @@ spec:
               RAILS_SERVE_STATIC_FILES: "true"
               URL_HOST: meet.glants.xyz
               PORT: "3000"
+              OPENID_CONNECT_CLIENT_ID: bigbluebutton
+              OPENID_CONNECT_ISSUER: https://authentik.glants.xyz/application/o/bigbluebutton/
+              OPENID_CONNECT_REDIRECT: https://meet.glants.xyz/
+              OPENID_CONNECT_UID_FIELD: sub
+              OPENID_CONNECT_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: OPENID_CONNECT_CLIENT_SECRET
               SECRET_KEY_BASE:
                 valueFrom:
                   secretKeyRef:
