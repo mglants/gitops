@@ -1,0 +1,1171 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: bigbluebutton
+spec:
+  suspend: false
+  interval: 30m
+  timeout: 25m
+  install:
+    disableWait: true
+    remediation:
+      retries: 1
+  upgrade:
+    disableWait: true
+    cleanupOnFail: true
+  chart:
+    spec:
+      chart: app-template
+      version: 5.0.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  values:
+    global:
+      createDefaultServiceAccount: false
+    defaultPodOptionsStrategy: merge
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+    configMaps:
+      config:
+        data:
+          BBB_CONFIG_MODE: env
+          BBB_PUBLIC_URL: https://bbb.glants.xyz
+          REDIS_HOST: bigbluebutton-dragonfly
+          REDIS_PORT: "6379"
+          POSTGRES_HOST: bigbluebutton-pgsql-primary.apps.svc.cluster.local
+          POSTGRES_PORT: "5432"
+          BBB_WEB_URL: http://bigbluebutton-web:8090
+          BBB_MIDDLEWARE_URL: http://bigbluebutton-middleware:8378
+          BBB_APPS_URL: http://bigbluebutton-apps:8901
+          BBB_ACTIONS_URL: http://bigbluebutton-actions:8093
+          BBB_NOTES_URL: http://bigbluebutton-notes:8787
+          HASURA_WS_URL: ws://bigbluebutton-hasura:8085/v1/graphql
+          LIVEKIT_HOST: http://bigbluebutton-media:7880
+          LIVEKIT_PUBLIC_URL: wss://bbb.glants.xyz/livekit
+          STUN_SERVER: stun:turn.glants.xyz:3480
+          TURN_SERVER: turn:turn.glants.xyz:3480?transport=udp
+          TURN_EXT_SERVER: turns:turn.glants.xyz:443?transport=tcp
+          BBB_WEB_HOST: bigbluebutton-web
+          BBB_MIDDLEWARE_HOST: bigbluebutton-middleware
+          BBB_HASURA_HOST: bigbluebutton-hasura
+          BBB_NOTES_HOST: bigbluebutton-notes
+          BBB_SIGNALING_HOST: bigbluebutton-signaling
+          BBB_PLUGINS_HOST: bigbluebutton-plugins
+          BBB_WEBHOOKS_HOST: bigbluebutton-webhooks
+          BBB_LIVEKIT_HOST: bigbluebutton-media
+      greenlight:
+        data:
+          bbb-health.rb: |
+            # Greenlight 3.9 uses meetingID=0, which BBB 4.0 rejects.
+            Rails.application.config.to_prepare do
+              module BigBlueButtonHealthCheck
+                private
+
+                def check_big_blue_button
+                  query = 'meetingID=greenlight-health-check'
+                  checksum = Digest::SHA1.hexdigest("isMeetingRunning#{query}#{Rails.configuration.bigbluebutton_secret}")
+                  uri = URI("#{Rails.configuration.bigbluebutton_endpoint}isMeetingRunning?#{query}&checksum=#{checksum}")
+                  doc = Nokogiri::XML(Net::HTTP.get(uri))
+                  raise 'Unable to connect to BigBlueButton' unless doc.css('returncode').text == 'SUCCESS'
+                end
+              end
+              HealthChecksController.prepend(BigBlueButtonHealthCheck) unless HealthChecksController < BigBlueButtonHealthCheck
+            end
+    controllers:
+      web:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: &reload_on_change
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/mglants/bigbluebutton-web
+              tag: &bbb_version "4.0.0"
+              pullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 500m
+                memory: 2Gi
+              limits:
+                memory: 4Gi
+            env:
+              SHARED_SECRET: &bbb_api_secret
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: SHARED_SECRET
+              TURN_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: TURN_SECRET
+              TURN_EXT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: TURN_SECRET
+              DEFAULT_PRESENTATION_URL: http://bigbluebutton-frontend:8080/default.pdf
+              PLUGIN_MANIFESTS: '[{"url":"http://bigbluebutton-plugins:8080/live-transcription/manifest.json"}]'
+              BBB_CONFIG_JSON: '{"fetchUrlSupportedProtocols":"https,http","fetchUrlAllowedLocalHosts":"bigbluebutton-plugins,bigbluebutton-frontend"}'
+              JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0
+            ports:
+              - name: http
+                containerPort: 8090
+            probes: &http_probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: http
+                  periodSeconds: 5
+                  timeoutSeconds: 3
+                  failureThreshold: 120
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: http
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 6
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: http
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 6
+        initContainers:
+          storage: &storage_init
+            image: &bootstrap_image
+              repository: ghcr.io/mglants/bigbluebutton-bootstrap
+              tag: *bbb_version
+              pullPolicy: IfNotPresent
+            command:
+              - python3
+              - -c
+            args:
+              - from pathlib import Path; root=Path('/var/bigbluebutton'); paths=['recording/status/'+x for x in ['recorded','ended','archived','sanity','processed','published','deleted']]+['captions/inbox','published','unpublished'];
+                [ (root/p).mkdir(parents=True,exist_ok=True) for p in paths ]
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
+        defaultContainerOptions: &container_defaults
+          envFrom:
+            - configMapRef:
+                identifier: config
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+      apps:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          app:
+            image:
+              repository: ghcr.io/mglants/bigbluebutton-apps
+              tag: *bbb_version
+              pullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 500m
+                memory: 1Gi
+              limits:
+                memory: 3Gi
+            env:
+              SHARED_SECRET: *bbb_api_secret
+              POSTGRES_USER: bigbluebutton
+              POSTGRES_PASSWORD: &postgres_password
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-pgsql-pguser-bigbluebutton
+                    key: password
+              JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0
+            ports:
+              - name: http
+                containerPort: 8901
+            probes: *http_probes
+        initContainers:
+          schema:
+            image: *bootstrap_image
+            env: &bootstrap_environment
+              PGHOST: bigbluebutton-pgsql-primary.apps.svc.cluster.local
+              PGPORT: "5432"
+              PGUSER: bigbluebutton
+              PGPASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-pgsql-pguser-bigbluebutton
+                    key: password
+              HASURA_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: HASURA_SECRET
+              HASURA_ENDPOINT: http://bigbluebutton-hasura:8085
+            args:
+              - bbb-bootstrap
+              - bbb_graphql
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+        defaultContainerOptions: *container_defaults
+      actions:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          app:
+            image:
+              repository: ghcr.io/mglants/bigbluebutton-graphql-actions
+              tag: *bbb_version
+              pullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            env:
+              SERVER_HOST: 0.0.0.0
+              SERVER_PORT: "8093"
+            ports:
+              - name: http
+                containerPort: 8093
+            probes: *http_probes
+        defaultContainerOptions: *container_defaults
+      middleware:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          app:
+            image:
+              repository: ghcr.io/mglants/bigbluebutton-graphql-middleware
+              tag: *bbb_version
+              pullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            ports:
+              - name: http
+                containerPort: 8378
+            probes: *http_probes
+        defaultContainerOptions: *container_defaults
+      notes:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          app:
+            image:
+              repository: ghcr.io/mglants/bigbluebutton-notes
+              tag: *bbb_version
+              pullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+            env:
+              POSTGRES_USER: bigbluebutton
+              POSTGRES_PASSWORD: *postgres_password
+            ports:
+              - name: http
+                containerPort: 8787
+            probes: *http_probes
+        initContainers:
+          schema:
+            image: *bootstrap_image
+            env: *bootstrap_environment
+            args:
+              - bbb-bootstrap
+              - blocknote_app
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+          storage: *storage_init
+        defaultContainerOptions: *container_defaults
+      annotations:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          app:
+            image:
+              repository: ghcr.io/mglants/bigbluebutton-annotations
+              tag: *bbb_version
+              pullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+        initContainers:
+          storage: *storage_init
+        defaultContainerOptions: *container_defaults
+      signaling:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          app:
+            image:
+              repository: ghcr.io/mglants/bigbluebutton-signaling
+              tag: *bbb_version
+              pullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+            env:
+              LIVEKIT_KEY: &livekit_key
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: LIVEKIT_KEY
+              LIVEKIT_SECRET: &livekit_secret
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: LIVEKIT_SECRET
+              LIVEKIT_SIP_ENABLED: "false"
+            ports:
+              - name: http
+                containerPort: 3008
+            probes: *http_probes
+        defaultContainerOptions: *container_defaults
+      webhooks:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          app:
+            image:
+              repository: ghcr.io/mglants/bigbluebutton-webhooks
+              tag: *bbb_version
+              pullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            env:
+              SHARED_SECRET: *bbb_api_secret
+              LOG_TO_FILE: "false"
+              SERVER_PORT: "3005"
+            ports:
+              - name: http
+                containerPort: 3005
+            probes: *http_probes
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+        defaultContainerOptions: *container_defaults
+      frontend:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          app:
+            image:
+              repository: ghcr.io/mglants/bigbluebutton-frontend
+              tag: *bbb_version
+              pullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            ports:
+              - name: http
+                containerPort: 8080
+            probes: *http_probes
+        pod:
+          securityContext:
+            runAsUser: 101
+            runAsGroup: 101
+        defaultContainerOptions: *container_defaults
+      plugins:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          app:
+            image:
+              repository: ghcr.io/mglants/bigbluebutton-plugins
+              tag: *bbb_version
+              pullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+            ports:
+              - name: http
+                containerPort: 8080
+            probes: *http_probes
+        pod:
+          securityContext:
+            runAsUser: 101
+            runAsGroup: 101
+        defaultContainerOptions: *container_defaults
+      bootstrap:
+        type: job
+        annotations:
+          helm.sh/hook: post-install,post-upgrade
+          helm.sh/hook-weight: "10"
+          helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+        job:
+          backoffLimit: 1
+          activeDeadlineSeconds: 1200
+        containers:
+          app:
+            image: *bootstrap_image
+            env: *bootstrap_environment
+            args:
+              - bbb-bootstrap
+              - all
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+        defaultContainerOptions: *container_defaults
+      hasura:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          app:
+            image:
+              repository: hasura/graphql-engine
+              tag: v2.50.3@sha256:521ace33b50ce9e65e7dc28e2c3311ae75ab8889c514510c647d486243ee0168
+            env:
+              POSTGRES_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-pgsql-pguser-bigbluebutton
+                    key: password
+              HASURA_GRAPHQL_DATABASE_URL:
+                value: postgresql://bigbluebutton:$(POSTGRES_PASSWORD)@bigbluebutton-pgsql-primary.apps.svc.cluster.local:5432/hasura_app
+                dependsOn:
+                  - POSTGRES_PASSWORD
+              BBB_DATABASE_URL:
+                value: postgresql://bigbluebutton:$(POSTGRES_PASSWORD)@bigbluebutton-pgsql-primary.apps.svc.cluster.local:5432/bbb_graphql
+                dependsOn:
+                  - POSTGRES_PASSWORD
+              HASURA_GRAPHQL_ADMIN_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: HASURA_SECRET
+              HASURA_GRAPHQL_SERVER_PORT: "8085"
+              HASURA_GRAPHQL_AUTH_HOOK: http://bigbluebutton-apps:8901/userInfo
+              HASURA_BBB_GRAPHQL_ACTIONS_ADAPTER_URL: http://bigbluebutton-actions:8093
+              HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
+              HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
+              HASURA_GRAPHQL_LIVE_QUERIES_MULTIPLEXED_REFETCH_INTERVAL: "333"
+              HASURA_GRAPHQL_STREAMING_QUERIES_MULTIPLEXED_REFETCH_INTERVAL: "150"
+              HASURA_GRAPHQL_WEBSOCKET_KEEPALIVE: "10"
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  periodSeconds: 5
+                  timeoutSeconds: 3
+                  failureThreshold: 120
+                  httpGet:
+                    port: 8085
+                    path: /healthz
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 6
+                  httpGet:
+                    port: 8085
+                    path: /healthz
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 6
+                  httpGet:
+                    port: 8085
+                    path: /healthz
+        defaultContainerOptions: *container_defaults
+      media:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          livekit:
+            image:
+              repository: livekit/livekit-server
+              tag: v1.13.10@sha256:89ca9ce0791e18d6e03bf6e2c49ceb27e1c754eae8bd50c989386c1a5963791a
+            env:
+              LIVEKIT_CONFIG:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: LIVEKIT_CONFIG
+            resources:
+              requests:
+                cpu: 250m
+                memory: 256Mi
+              limits:
+                memory: 2Gi
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  periodSeconds: 5
+                  timeoutSeconds: 3
+                  failureThreshold: 120
+                  httpGet:
+                    port: 7880
+                    path: /
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 6
+                  httpGet:
+                    port: 7880
+                    path: /
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 6
+                  httpGet:
+                    port: 7880
+                    path: /
+          recorder:
+            image:
+              repository: ghcr.io/mglants/bigbluebutton-recorder
+              tag: *bbb_version
+              pullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 250m
+                memory: 256Mi
+              limits:
+                memory: 2Gi
+            env:
+              LIVEKIT_KEY: *livekit_key
+              LIVEKIT_SECRET: *livekit_secret
+              LIVEKIT_HOST: ws://127.0.0.1:7880
+              BBB_CONFIG_JSON: '{"prometheus":{"enable":true,"listenAddress":"0.0.0.0:3200"}}'
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  periodSeconds: 5
+                  timeoutSeconds: 3
+                  failureThreshold: 120
+                  httpGet:
+                    port: 3200
+                    path: /metrics
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 6
+                  httpGet:
+                    port: 3200
+                    path: /metrics
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 6
+                  httpGet:
+                    port: 3200
+                    path: /metrics
+          stt:
+            enabled: false
+            image:
+              repository: ghcr.io/mglants/bigbluebutton-stt
+              tag: *bbb_version
+              pullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+            env:
+              LIVEKIT_KEY: *livekit_key
+              LIVEKIT_SECRET: *livekit_secret
+              LIVEKIT_HOST: ws://127.0.0.1:7880
+              GLADIA_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: GLADIA_API_KEY
+          sip:
+            enabled: false
+            image:
+              repository: ghcr.io/mglants/bigbluebutton-sip
+              tag: *bbb_version
+              pullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            env:
+              LIVEKIT_KEY: *livekit_key
+              LIVEKIT_SECRET: *livekit_secret
+              LIVEKIT_HOST: ws://127.0.0.1:7880
+              SIP_PUBLIC_IP: 193.41.79.236
+              SIP_USE_EXTERNAL_IP: "false"
+        defaultContainerOptions: *container_defaults
+      recordings:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          app:
+            image: &recordings_image
+              repository: ghcr.io/mglants/bigbluebutton-recordings
+              tag: *bbb_version
+              pullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 250m
+                memory: 512Mi
+              limits:
+                memory: 3Gi
+            env:
+              SHARED_SECRET: *bbb_api_secret
+              RECORDING_FORMATS: presentation,video
+              RECORDING_WORKERS: "1"
+        initContainers:
+          storage: *storage_init
+        defaultContainerOptions: *container_defaults
+      recording-starter:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          app:
+            image: *recordings_image
+            resources:
+              requests:
+                cpu: 250m
+                memory: 512Mi
+              limits:
+                memory: 3Gi
+            env:
+              SHARED_SECRET: *bbb_api_secret
+              RECORDING_FORMATS: presentation,video
+              RECORDING_WORKERS: "1"
+            args:
+              - bundle
+              - exec
+              - ruby
+              - scripts/rap-starter.rb
+        initContainers:
+          storage: *storage_init
+        defaultContainerOptions: *container_defaults
+      recording-captions:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          app:
+            image: *recordings_image
+            resources:
+              requests:
+                cpu: 250m
+                memory: 512Mi
+              limits:
+                memory: 3Gi
+            env:
+              SHARED_SECRET: *bbb_api_secret
+              RECORDING_FORMATS: presentation,video
+              RECORDING_WORKERS: "1"
+            args:
+              - bundle
+              - exec
+              - ruby
+              - scripts/rap-caption-inbox.rb
+        initContainers:
+          storage: *storage_init
+        defaultContainerOptions: *container_defaults
+      greenlight:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations: *reload_on_change
+        containers:
+          app:
+            image: &greenlight_image
+              repository: bigbluebutton/greenlight
+              tag: v3.9.0.1@sha256:282713bb8afc14634f23c305fee85826e1be2b3a54ea83f855dd5646c044be07
+            env: &greenlight_environment
+              RAILS_ENV: production
+              RAILS_LOG_TO_STDOUT: "true"
+              RAILS_SERVE_STATIC_FILES: "true"
+              URL_HOST: meet.glants.xyz
+              PORT: "3000"
+              SECRET_KEY_BASE:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: SECRET_KEY_BASE
+              BIGBLUEBUTTON_ENDPOINT: https://bbb.glants.xyz/bigbluebutton/api/
+              BIGBLUEBUTTON_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: SHARED_SECRET
+              DATABASE_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-pgsql-pguser-greenlight
+                    key: uri
+              REDIS_URL: redis://bigbluebutton-dragonfly:6379/1
+              SMTP_SERVER:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: SMTP_SERVER
+              SMTP_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: SMTP_USERNAME
+              SMTP_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: SMTP_PASSWORD
+              SMTP_PORT: "465"
+              SMTP_AUTH: plain
+              SMTP_DOMAIN: glants.xyz
+              SMTP_SENDER_EMAIL: noreply@glants.xyz
+              SMTP_SENDER_NAME: BigBlueButton
+              SMTP_STARTTLS_AUTO: "false"
+              SMTP_TLS: "true"
+              # Upstream's probe does not support implicit SMTP TLS on port 465.
+              SMTP_HEALTH_CHECK_DISABLED: "true"
+            command:
+              - bundle
+              - exec
+              - rails
+              - server
+              - -b
+              - 0.0.0.0
+              - -p
+              - "3000"
+            resources:
+              requests:
+                cpu: 250m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  periodSeconds: 5
+                  timeoutSeconds: 3
+                  failureThreshold: 120
+                  httpGet:
+                    port: 3000
+                    path: /health_check
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 6
+                  httpGet:
+                    port: 3000
+                    path: /health_check
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 3000
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 6
+        initContainers:
+          assets:
+            image: *greenlight_image
+            command:
+              - /bin/sh
+              - -ec
+            args:
+              - mkdir -p /work/app-assets /work/public-assets; cp -R /usr/src/app/app/assets/. /work/app-assets/
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 256Mi
+          migrate:
+            image: *greenlight_image
+            env: *greenlight_environment
+            command:
+              - /bin/sh
+              - -ec
+            args:
+              - bundle exec rails assets:precompile && bundle exec rails db:prepare && bundle exec rails db:migrate:with_data
+            resources:
+              requests:
+                cpu: 250m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+        defaultContainerOptions: *container_defaults
+    service:
+      web:
+        controller: web
+        ports:
+          http:
+            port: 8090
+      apps:
+        controller: apps
+        ports:
+          http:
+            port: 8901
+      actions:
+        controller: actions
+        ports:
+          http:
+            port: 8093
+      middleware:
+        controller: middleware
+        ports:
+          http:
+            port: 8378
+      notes:
+        controller: notes
+        ports:
+          http:
+            port: 8787
+      signaling:
+        controller: signaling
+        ports:
+          http:
+            port: 3008
+          webhook:
+            port: 3040
+      webhooks:
+        controller: webhooks
+        ports:
+          http:
+            port: 3005
+      frontend:
+        controller: frontend
+        ports:
+          http:
+            port: 8080
+      plugins:
+        controller: plugins
+        ports:
+          http:
+            port: 8080
+      hasura:
+        controller: hasura
+        ports:
+          http:
+            port: 8085
+      media:
+        controller: media
+        ports:
+          http:
+            port: 7880
+      media-rtc:
+        controller: media
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+        annotations:
+          lbipam.cilium.io/ips: 192.168.40.30
+        ports:
+          rtc-tcp:
+            port: 7887
+          rtc-udp:
+            port: 7888
+            protocol: UDP
+      greenlight:
+        controller: greenlight
+        ports:
+          http:
+            port: 3000
+    persistence:
+      media:
+        type: persistentVolumeClaim
+        storageClass: truenas-nfs
+        accessMode: ReadWriteMany
+        size: 100Gi
+        annotations:
+          helm.sh/resource-policy: keep
+        advancedMounts:
+          web:
+            app:
+              - path: /var/bigbluebutton
+            storage:
+              - path: /var/bigbluebutton
+          notes:
+            app:
+              - path: /var/bigbluebutton
+            storage:
+              - path: /var/bigbluebutton
+          annotations:
+            app:
+              - path: /var/bigbluebutton
+            storage:
+              - path: /var/bigbluebutton
+          recordings:
+            app:
+              - path: /var/bigbluebutton
+            storage:
+              - path: /var/bigbluebutton
+          recording-starter:
+            app:
+              - path: /var/bigbluebutton
+            storage:
+              - path: /var/bigbluebutton
+          recording-captions:
+            app:
+              - path: /var/bigbluebutton
+            storage:
+              - path: /var/bigbluebutton
+          frontend:
+            app:
+              - path: /presentations
+                readOnly: true
+      capture:
+        type: persistentVolumeClaim
+        storageClass: truenas-nfs
+        accessMode: ReadWriteMany
+        size: 100Gi
+        annotations:
+          helm.sh/resource-policy: keep
+        advancedMounts:
+          media:
+            recorder:
+              - path: /var/lib/bbb-webrtc-recorder
+          recordings:
+            app:
+              - path: /var/lib/bbb-webrtc-recorder
+          recording-starter:
+            app:
+              - path: /var/lib/bbb-webrtc-recorder
+          recording-captions:
+            app:
+              - path: /var/lib/bbb-webrtc-recorder
+      greenlight-storage:
+        type: persistentVolumeClaim
+        storageClass: truenas-iscsi
+        accessMode: ReadWriteOnce
+        size: 5Gi
+        annotations:
+          helm.sh/resource-policy: keep
+        advancedMounts:
+          greenlight:
+            app:
+              - path: /usr/src/app/storage
+            migrate:
+              - path: /usr/src/app/storage
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+      recording-logs:
+        type: emptyDir
+        advancedMounts:
+          recordings:
+            app:
+              - path: /var/log/bigbluebutton
+          recording-starter:
+            app:
+              - path: /var/log/bigbluebutton
+          recording-captions:
+            app:
+              - path: /var/log/bigbluebutton
+      greenlight-assets:
+        type: emptyDir
+        advancedMounts:
+          greenlight:
+            assets:
+              - path: /work
+            migrate:
+              - path: /usr/src/app/app/assets
+                subPath: app-assets
+              - path: /usr/src/app/public/assets
+                subPath: public-assets
+            app:
+              - path: /usr/src/app/app/assets
+                subPath: app-assets
+              - path: /usr/src/app/public/assets
+                subPath: public-assets
+      greenlight-tmp:
+        type: emptyDir
+        advancedMounts:
+          greenlight:
+            assets:
+              - path: /usr/src/app/tmp
+            migrate:
+              - path: /usr/src/app/tmp
+            app:
+              - path: /usr/src/app/tmp
+      greenlight-log:
+        type: emptyDir
+        advancedMounts:
+          greenlight:
+            assets:
+              - path: /usr/src/app/log
+            migrate:
+              - path: /usr/src/app/log
+            app:
+              - path: /usr/src/app/log
+      greenlight-health:
+        type: configMap
+        identifier: greenlight
+        advancedMounts:
+          greenlight:
+            migrate:
+              - path: /usr/src/app/config/initializers/bbb-health.rb
+                subPath: bbb-health.rb
+                readOnly: true
+            app:
+              - path: /usr/src/app/config/initializers/bbb-health.rb
+                subPath: bbb-health.rb
+                readOnly: true
+    route:
+      main:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress-ext.ur30.dev
+        parentRefs:
+          - name: envoy-external
+            namespace: networking
+            sectionName: https
+        hostnames:
+          - bbb.glants.xyz
+        rules:
+          - backendRefs:
+              - identifier: frontend
+                port: http
+            timeouts:
+              request: 0s
+      greenlight:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress-ext.ur30.dev
+        parentRefs:
+          - name: envoy-external
+            namespace: networking
+            sectionName: https
+        hostnames:
+          - meet.glants.xyz
+        rules:
+          - backendRefs:
+              - identifier: greenlight
+                port: http
+            timeouts:
+              request: 0s
+    rawResources:
+      backend-traffic-policy:
+        manifest:
+          apiVersion: gateway.envoyproxy.io/v1alpha1
+          kind: BackendTrafficPolicy
+          spec:
+            targetRefs:
+              - group: gateway.networking.k8s.io
+                kind: HTTPRoute
+                name: bigbluebutton-main
+            timeout:
+              http:
+                connectionIdleTimeout: 3600s
+                requestTimeout: 0s
+                streamIdleTimeout: 3600s

@@ -22,3 +22,4 @@ resources:
   - ./spliit/ks.yaml
   - ./rustdesk/ks.yaml
   - ./fluxer/ks.yaml
+  - ./bigbluebutton/ks.yaml

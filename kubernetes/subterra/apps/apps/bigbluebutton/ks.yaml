@@ -1,0 +1,51 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-bigbluebutton
+  namespace: flux-system
+spec:
+  suspend: false
+  interval: 30m
+  timeout: 30m
+  path: ./kubernetes/subterra/apps/apps/bigbluebutton/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+  targetNamespace: apps
+  dependsOn:
+    - name: cluster-apps-crunchy-postgres-operator
+    - name: cluster-apps-external-secrets-stores
+    - name: cluster-apps-truenas-csi
+    - name: envoy-gateway-gateway
+    - name: cluster-apps-coturn
+    - name: dragonfly-operator
+  wait: false
+  components:
+    - ../../../../../components/dragonfly
+    - ../../../../components/kopiur/backup
+  postBuild:
+    substitute:
+      APP: bigbluebutton
+      KOPIUR_CLAIM: bigbluebutton-media
+      KOPIUR_MOVER_UID: "10001"
+      KOPIUR_MOVER_GID: "10001"
+      KOPIUR_MOVER_FSGID: "10001"
+      KOPIUR_MOVER_RUN_AS_NON_ROOT: "true"
+  patches:
+    - target:
+        group: kopiur.home-operations.com
+        version: v1alpha1
+        kind: SnapshotPolicy
+      patch: |
+        - op: add
+          path: /spec/sources/-
+          value:
+            pvc:
+              name: bigbluebutton-capture
+        - op: add
+          path: /spec/sources/-
+          value:
+            pvc:
+              name: bigbluebutton-greenlight-storage
