@@ -121,7 +121,7 @@ spec:
                     key: TURN_SECRET
               DEFAULT_PRESENTATION_URL: http://bigbluebutton-frontend:8080/default.pdf
               PLUGIN_MANIFESTS: '[{"url":"http://bigbluebutton-plugins:8080/live-transcription/manifest.json"}]'
-              BBB_CONFIG_JSON: '{"fetchUrlSupportedProtocols":"https,http","fetchUrlAllowedLocalHosts":"bigbluebutton-plugins,bigbluebutton-frontend"}'
+              BBB_CONFIG_JSON: '{"fetchUrlSupportedProtocols":"https,http","fetchUrlAllowedLocalHosts":"bigbluebutton-plugins,bigbluebutton-frontend","learningDashboardCleanupDelayInMinutes":0}'
               JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0
             ports:
               - name: http
@@ -164,7 +164,7 @@ spec:
               - python3
               - -c
             args:
-              - from pathlib import Path; root=Path('/var/bigbluebutton'); paths=['recording/status/'+x for x in ['recorded','ended','archived','sanity','processed','published','deleted']]+['captions/inbox','published','unpublished'];
+              - from pathlib import Path; root=Path('/var/bigbluebutton'); paths=['recording/status/'+x for x in ['recorded','ended','archived','sanity','processed','published','deleted']]+['captions/inbox','published','unpublished','deleted','learning-dashboard'];
                 [ (root/p).mkdir(parents=True,exist_ok=True) for p in paths ]
             resources:
               requests:
@@ -419,7 +419,7 @@ spec:
           app:
             image:
               repository: ghcr.io/mglants/bigbluebutton-frontend
-              tag: *bbb_version
+              tag: 4.0.0@sha256:2c446cb245800e3cd8771a232d5ef9c54a353c2dc5a97ee122160599d6710b6b
               pullPolicy: IfNotPresent
             resources:
               requests:
