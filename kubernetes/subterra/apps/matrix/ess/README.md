@@ -69,7 +69,9 @@ credentials. Both connect to `http://ess-synapse:8008`.
 
 The PostgreSQL full backup `ess-pre-migration-20261018` succeeded before
 migration. Media snapshot `synapse-media-pre-ess-20261018` was Ready before the
-in-place media directory rename. Both are retained for recovery.
+in-place media directory rename. Both migration backups were removed at the
+user’s request after validation on 2026-10-18. Regular PostgreSQL backups and
+the ESS media backup schedule remain enabled.
 
 The official three-stage syn2mas procedure passed: dry run, real import,
 then delegated authentication finalization. Fifteen accounts, two upstream
