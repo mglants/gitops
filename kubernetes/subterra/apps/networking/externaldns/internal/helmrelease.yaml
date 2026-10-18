@@ -50,6 +50,7 @@ spec:
       enabled: true
 
     sources:
+      - gateway-httproute
       - ingress
       - service
       - crd
