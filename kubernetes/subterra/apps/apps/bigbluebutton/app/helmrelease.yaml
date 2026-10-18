@@ -58,14 +58,14 @@ spec:
           STUN_SERVER: stun:turn.glants.xyz:3480
           TURN_SERVER: turn:turn.glants.xyz:3480?transport=udp
           TURN_EXT_SERVER: turns:turn.glants.xyz:443?transport=tcp
-          BBB_WEB_HOST: bigbluebutton-web
-          BBB_MIDDLEWARE_HOST: bigbluebutton-middleware
-          BBB_HASURA_HOST: bigbluebutton-hasura
-          BBB_NOTES_HOST: bigbluebutton-notes
-          BBB_SIGNALING_HOST: bigbluebutton-signaling
-          BBB_PLUGINS_HOST: bigbluebutton-plugins
-          BBB_WEBHOOKS_HOST: bigbluebutton-webhooks
-          BBB_LIVEKIT_HOST: bigbluebutton-media
+          BBB_WEB_HOST: bigbluebutton-web.apps.svc.cluster.local
+          BBB_MIDDLEWARE_HOST: bigbluebutton-middleware.apps.svc.cluster.local
+          BBB_HASURA_HOST: bigbluebutton-hasura.apps.svc.cluster.local
+          BBB_NOTES_HOST: bigbluebutton-notes.apps.svc.cluster.local
+          BBB_SIGNALING_HOST: bigbluebutton-signaling.apps.svc.cluster.local
+          BBB_PLUGINS_HOST: bigbluebutton-plugins.apps.svc.cluster.local
+          BBB_WEBHOOKS_HOST: bigbluebutton-webhooks.apps.svc.cluster.local
+          BBB_LIVEKIT_HOST: bigbluebutton-media.apps.svc.cluster.local
       greenlight:
         data:
           bbb-health.rb: |
@@ -790,6 +790,7 @@ spec:
               tag: v3.9.0.1@sha256:282713bb8afc14634f23c305fee85826e1be2b3a54ea83f855dd5646c044be07
             env: &greenlight_environment
               RAILS_ENV: production
+              TMPDIR: /usr/src/app/tmp/private
               RAILS_LOG_TO_STDOUT: "true"
               RAILS_SERVE_STATIC_FILES: "true"
               URL_HOST: meet.glants.xyz
@@ -901,7 +902,7 @@ spec:
               - /bin/sh
               - -ec
             args:
-              - bundle exec rails assets:precompile && bundle exec rails db:prepare && bundle exec rails db:migrate:with_data
+              - mkdir -p "$TMPDIR" && chmod 700 "$TMPDIR" && bundle exec rails assets:precompile && bundle exec rails db:prepare && bundle exec rails db:migrate:with_data
             resources:
               requests:
                 cpu: 250m
