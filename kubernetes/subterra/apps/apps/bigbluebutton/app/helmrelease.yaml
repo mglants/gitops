@@ -207,7 +207,7 @@ spec:
                   secretKeyRef:
                     name: bigbluebutton-pgsql-pguser-bigbluebutton
                     key: password
-              BBB_CLIENT_CONFIG_JSON: '{"public":{"app":{"audioCaptions":{"enabled":true,"provider":"gladia","language":{"available":["en-US","es-ES","fr-FR","pt-BR","ru-RU"]}}}}}'
+              BBB_CLIENT_CONFIG_JSON: '{"public":{"app":{"defaultSettings":{"application":{"overrideLocale":"ru"}},"audioCaptions":{"enabled":true,"provider":"gladia","language":{"available":["ru-RU"],"locale":"ru-RU"}}}}}'
               JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0
             ports:
               - name: http
@@ -679,6 +679,7 @@ spec:
               LIVEKIT_KEY: *livekit_key
               LIVEKIT_SECRET: *livekit_secret
               LIVEKIT_HOST: ws://127.0.0.1:7880
+              GLADIA_LANGUAGES: ru
               GLADIA_API_KEY:
                 valueFrom:
                   secretKeyRef:
