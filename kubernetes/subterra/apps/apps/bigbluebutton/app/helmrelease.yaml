@@ -807,18 +807,21 @@ spec:
         containers:
           app:
             image:
-              repository: python
-              tag: 3.14-alpine@sha256:f6a589d43c42b9e7f7dc67a12d37132491f362859a5d750607710cc56da3bc72
-            command: [python3, -B]
-            args: [/config/cleanup.py, --apply]
-            env:
-              BBB_DELETED_RETENTION_DAYS: "1"
+              repository: busybox
+              tag: 1.37.0@sha256:bdf57e528e45e4433820e045b29b4597825a1c9e38353532d90a01445013f82e
+            command: [sh, -ec]
+            args:
+              - >-
+                find /deleted -mindepth 3 -maxdepth 3 -type f -name metadata.xml
+                -mmin +1440 -exec sh -ec
+                'for metadata do directory=$(dirname "$metadata"); echo "Removing $directory"; rm -rf -- "$directory"; done'
+                sh {} +
             resources:
               requests:
                 cpu: 10m
-                memory: 32Mi
+                memory: 8Mi
               limits:
-                memory: 256Mi
+                memory: 64Mi
         defaultContainerOptions: *container_defaults
       greenlight:
         type: deployment
@@ -1077,19 +1080,11 @@ spec:
               - path: /var/bigbluebutton
           cleanup:
             app:
-              - path: /var/bigbluebutton
+              - path: /deleted
+                subPath: deleted
           frontend:
             app:
               - path: /presentations
-                readOnly: true
-      cleanup-script:
-        type: configMap
-        name: bigbluebutton-cleanup
-        advancedMounts:
-          cleanup:
-            app:
-              - path: /config/cleanup.py
-                subPath: cleanup.py
                 readOnly: true
       capture:
         type: persistentVolumeClaim

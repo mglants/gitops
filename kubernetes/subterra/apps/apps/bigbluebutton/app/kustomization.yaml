@@ -6,9 +6,3 @@ resources:
   - externalsecret.yaml
   - postgrescluster.yaml
   - helmrelease.yaml
-configMapGenerator:
-  - name: bigbluebutton-cleanup
-    files:
-      - cleanup.py=scripts/cleanup.py
-generatorOptions:
-  disableNameSuffixHash: true
