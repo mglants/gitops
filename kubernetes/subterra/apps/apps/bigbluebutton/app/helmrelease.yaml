@@ -207,6 +207,7 @@ spec:
                   secretKeyRef:
                     name: bigbluebutton-pgsql-pguser-bigbluebutton
                     key: password
+              BBB_CLIENT_CONFIG_JSON: '{"public":{"app":{"audioCaptions":{"enabled":true,"provider":"gladia","language":{"available":["en-US","es-ES","fr-FR","pt-BR","ru-RU"]}}}}}'
               JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0
             ports:
               - name: http
@@ -663,7 +664,7 @@ spec:
                     port: 3200
                     path: /metrics
           stt:
-            enabled: false
+            enabled: true
             image:
               repository: ghcr.io/mglants/bigbluebutton-stt
               tag: *bbb_version
