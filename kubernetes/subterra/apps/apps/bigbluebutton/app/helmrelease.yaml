@@ -793,6 +793,31 @@ spec:
         initContainers:
           storage: *storage_init
         defaultContainerOptions: *container_defaults
+      cleanup:
+        type: cronjob
+        cronjob:
+          schedule: "20 4 * * *"
+          timeZone: Europe/Moscow
+          concurrencyPolicy: Forbid
+          startingDeadlineSeconds: 3600
+          activeDeadlineSeconds: 1800
+          backoffLimit: 1
+          successfulJobsHistory: 1
+          failedJobsHistory: 2
+        containers:
+          app:
+            image: *recordings_image
+            command: [bundle, exec, ruby]
+            args: [/config/cleanup.rb, --apply]
+            env:
+              BBB_DELETED_RETENTION_DAYS: "1"
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+        defaultContainerOptions: *container_defaults
       greenlight:
         type: deployment
         replicas: 1
@@ -1048,9 +1073,21 @@ spec:
               - path: /var/bigbluebutton
             storage:
               - path: /var/bigbluebutton
+          cleanup:
+            app:
+              - path: /var/bigbluebutton
           frontend:
             app:
               - path: /presentations
+                readOnly: true
+      cleanup-script:
+        type: configMap
+        name: bigbluebutton-cleanup
+        advancedMounts:
+          cleanup:
+            app:
+              - path: /config/cleanup.rb
+                subPath: cleanup.rb
                 readOnly: true
       capture:
         type: persistentVolumeClaim

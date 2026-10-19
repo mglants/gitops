@@ -6,3 +6,9 @@ resources:
   - externalsecret.yaml
   - postgrescluster.yaml
   - helmrelease.yaml
+configMapGenerator:
+  - name: bigbluebutton-cleanup
+    files:
+      - cleanup.rb=scripts/cleanup.rb
+generatorOptions:
+  disableNameSuffixHash: true
