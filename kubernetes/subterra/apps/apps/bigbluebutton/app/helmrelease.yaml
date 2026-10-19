@@ -43,6 +43,9 @@ spec:
         data:
           BBB_CONFIG_MODE: env
           BBB_PUBLIC_URL: https://bbb.glants.xyz
+          STT_PROVIDER: gladia
+          GLADIA_LANGUAGES: ru,en
+          GLADIA_CODE_SWITCHING: "true"
           REDIS_HOST: bigbluebutton-dragonfly
           REDIS_PORT: "6379"
           POSTGRES_HOST: bigbluebutton-pgsql-primary.apps.svc.cluster.local
@@ -420,7 +423,7 @@ spec:
           app:
             image:
               repository: ghcr.io/mglants/bigbluebutton-frontend
-              tag: 4.0.0@sha256:3732c9c833695adf6cb09dde8215a84a3f3a5779ebdefc800c3bd41b6a5d2b08
+              tag: 4.0.0@sha256:fa0ff8efd895f4c3aceb2162582fc7e1b53630d70a513c5d5271ab93a2b38f57
               pullPolicy: IfNotPresent
             resources:
               requests:
@@ -679,8 +682,7 @@ spec:
               LIVEKIT_KEY: *livekit_key
               LIVEKIT_SECRET: *livekit_secret
               LIVEKIT_HOST: ws://127.0.0.1:7880
-              GLADIA_LANGUAGES: ru,en
-              GLADIA_API_KEY:
+              GLADIA_API_KEY: &gladia_api_key
                 valueFrom:
                   secretKeyRef:
                     name: bigbluebutton-env
@@ -713,7 +715,7 @@ spec:
           app:
             image: &recordings_image
               repository: ghcr.io/mglants/bigbluebutton-recordings
-              tag: 4.0.0@sha256:c76d0221f99b0f18668104c7f8112fa1b3efe6513467d24d00f55f745b6370cd
+              tag: 4.0.0@sha256:52cda172fd6fbc14aa668413fcd9819a08a52b102c59e777ce6f2f1eb78c1426
               pullPolicy: IfNotPresent
             resources:
               requests:
@@ -723,8 +725,14 @@ spec:
                 memory: 3Gi
             env:
               SHARED_SECRET: *bbb_api_secret
-              RECORDING_FORMATS: presentation,video,notes,podcast
+              RECORDING_FORMATS: presentation,video,notes,podcast,summary
               RECORDING_WORKERS: "1"
+              GLADIA_API_KEY: *gladia_api_key
+              OPENAI_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: bigbluebutton-env
+                    key: OPENAI_API_KEY
         initContainers:
           storage: *storage_init
         defaultContainerOptions: *container_defaults
@@ -744,7 +752,7 @@ spec:
                 memory: 3Gi
             env:
               SHARED_SECRET: *bbb_api_secret
-              RECORDING_FORMATS: presentation,video,notes,podcast
+              RECORDING_FORMATS: presentation,video,notes,podcast,summary
               RECORDING_WORKERS: "1"
             args:
               - bundle
@@ -770,7 +778,7 @@ spec:
                 memory: 3Gi
             env:
               SHARED_SECRET: *bbb_api_secret
-              RECORDING_FORMATS: presentation,video,notes,podcast
+              RECORDING_FORMATS: presentation,video,notes,podcast,summary
               RECORDING_WORKERS: "1"
             args:
               - bundle
