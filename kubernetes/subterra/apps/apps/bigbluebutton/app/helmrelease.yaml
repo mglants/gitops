@@ -419,7 +419,7 @@ spec:
           app:
             image:
               repository: ghcr.io/mglants/bigbluebutton-frontend
-              tag: 4.0.0@sha256:2c446cb245800e3cd8771a232d5ef9c54a353c2dc5a97ee122160599d6710b6b
+              tag: 4.0.0@sha256:02a1b989d78518e52677d2a996b682975f3f5038482d7b58e3fa17f4f103a0b4
               pullPolicy: IfNotPresent
             resources:
               requests:
@@ -711,7 +711,7 @@ spec:
           app:
             image: &recordings_image
               repository: ghcr.io/mglants/bigbluebutton-recordings
-              tag: *bbb_version
+              tag: 4.0.0@sha256:c2761b8868296d8ac227796ee669b7a3741ef65a6cb48aaf929449950cd5ceb2
               pullPolicy: IfNotPresent
             resources:
               requests:
@@ -721,7 +721,7 @@ spec:
                 memory: 3Gi
             env:
               SHARED_SECRET: *bbb_api_secret
-              RECORDING_FORMATS: presentation,video
+              RECORDING_FORMATS: presentation,video,notes
               RECORDING_WORKERS: "1"
         initContainers:
           storage: *storage_init
@@ -742,7 +742,7 @@ spec:
                 memory: 3Gi
             env:
               SHARED_SECRET: *bbb_api_secret
-              RECORDING_FORMATS: presentation,video
+              RECORDING_FORMATS: presentation,video,notes
               RECORDING_WORKERS: "1"
             args:
               - bundle
@@ -768,7 +768,7 @@ spec:
                 memory: 3Gi
             env:
               SHARED_SECRET: *bbb_api_secret
-              RECORDING_FORMATS: presentation,video
+              RECORDING_FORMATS: presentation,video,notes
               RECORDING_WORKERS: "1"
             args:
               - bundle
