@@ -9,6 +9,6 @@ resources:
 configMapGenerator:
   - name: bigbluebutton-cleanup
     files:
-      - cleanup.rb=scripts/cleanup.rb
+      - cleanup.py=scripts/cleanup.py
 generatorOptions:
   disableNameSuffixHash: true

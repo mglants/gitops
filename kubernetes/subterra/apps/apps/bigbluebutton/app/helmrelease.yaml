@@ -806,17 +806,19 @@ spec:
           failedJobsHistory: 2
         containers:
           app:
-            image: *recordings_image
-            command: [bundle, exec, ruby]
-            args: [/config/cleanup.rb, --apply]
+            image:
+              repository: python
+              tag: 3.14-alpine@sha256:f6a589d43c42b9e7f7dc67a12d37132491f362859a5d750607710cc56da3bc72
+            command: [python3, -B]
+            args: [/config/cleanup.py, --apply]
             env:
               BBB_DELETED_RETENTION_DAYS: "1"
             resources:
               requests:
-                cpu: 25m
-                memory: 128Mi
+                cpu: 10m
+                memory: 32Mi
               limits:
-                memory: 512Mi
+                memory: 256Mi
         defaultContainerOptions: *container_defaults
       greenlight:
         type: deployment
@@ -1086,8 +1088,8 @@ spec:
         advancedMounts:
           cleanup:
             app:
-              - path: /config/cleanup.rb
-                subPath: cleanup.rb
+              - path: /config/cleanup.py
+                subPath: cleanup.py
                 readOnly: true
       capture:
         type: persistentVolumeClaim
