@@ -119,7 +119,7 @@ spec:
                   secretKeyRef:
                     name: bigbluebutton-env
                     key: TURN_SECRET
-              DEFAULT_PRESENTATION_URL: http://bigbluebutton-frontend:8080/default.pdf
+              DEFAULT_PRESENTATION_URL: ""
               PLUGIN_MANIFESTS: '[{"url":"http://bigbluebutton-plugins:8080/live-transcription/manifest.json"}]'
               BBB_CONFIG_JSON: '{"fetchUrlSupportedProtocols":"https,http","fetchUrlAllowedLocalHosts":"bigbluebutton-plugins,bigbluebutton-frontend","learningDashboardCleanupDelayInMinutes":0}'
               JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0
