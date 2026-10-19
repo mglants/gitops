@@ -77,6 +77,11 @@ spec:
               module BigBlueButtonHealthCheck
                 private
 
+                def check_database
+                  ActiveRecord::Base.connection.verify!
+                  super
+                end
+
                 def check_big_blue_button
                   query = 'meetingID=greenlight-health-check'
                   checksum = Digest::SHA1.hexdigest("isMeetingRunning#{query}#{Rails.configuration.bigbluebutton_secret}")
