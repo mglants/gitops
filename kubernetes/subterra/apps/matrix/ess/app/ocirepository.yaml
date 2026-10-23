@@ -7,7 +7,7 @@ spec:
   interval: 30m
   url: oci://ghcr.io/element-hq/ess-helm/matrix-stack
   ref:
-    tag: 26.10.2
+    tag: 26.10.3
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
