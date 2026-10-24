@@ -586,7 +586,7 @@ spec:
           push:
             image:
               repository: ghcr.io/fluxerapp/fluxer-push
-              tag: "2026.1012.111323"
+              tag: "2026.1024.190324"
             env: *push_env
             envFrom: *app_config
             ports:
