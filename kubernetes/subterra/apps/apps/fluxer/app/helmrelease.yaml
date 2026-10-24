@@ -862,7 +862,7 @@ spec:
           router:
             image: &gifs_image
               repository: ghcr.io/fluxerapp/fluxer-gifs
-              tag: "2026.1012.111352"
+              tag: "2026.1024.190323"
             env: *gifs_env
             envFrom: *app_config
             ports: &gifs_ports
