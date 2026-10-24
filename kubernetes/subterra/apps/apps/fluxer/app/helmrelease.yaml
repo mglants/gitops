@@ -647,7 +647,7 @@ spec:
           admin:
             image:
               repository: ghcr.io/fluxerapp/fluxer-admin
-              tag: "2026.1015.210844"
+              tag: "2026.1024.190317"
             env: *admin_env
             envFrom: *app_config
             ports: *api_ports
