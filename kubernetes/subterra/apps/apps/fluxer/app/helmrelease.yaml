@@ -947,7 +947,7 @@ spec:
           router:
             image: &snowflakes_image
               repository: ghcr.io/fluxerapp/fluxer-snowflakes
-              tag: "2026.1012.111327"
+              tag: "2026.1024.190327"
             env: *snowflakes_env
             envFrom: *app_config
             ports: *gifs_ports
