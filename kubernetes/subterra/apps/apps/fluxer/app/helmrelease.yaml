@@ -361,7 +361,7 @@ spec:
           api:
             image: &api_image
               repository: ghcr.io/fluxerapp/fluxer-api
-              tag: "2026.1015.210832"
+              tag: "2026.1024.190253"
             env: *api_env
             envFrom: *app_config
             ports: &api_ports
