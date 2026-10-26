@@ -787,7 +787,7 @@ spec:
           livekit:
             image:
               repository: livekit/livekit-server
-              tag: v1.13.10
+              tag: v1.13.11
             command:
               - /bin/sh
               - -c
