@@ -1024,7 +1024,7 @@ spec:
           meilisearch:
             image:
               repository: getmeili/meilisearch
-              tag: v1.53
+              tag: v1.56
             env: *meilisearch_env
             ports:
               - name: http
