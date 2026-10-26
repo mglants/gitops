@@ -720,7 +720,7 @@ spec:
           app:
             image: &recordings_image
               repository: ghcr.io/mglants/bigbluebutton-recordings
-              tag: 4.0.0@sha256:fbcbea87a3b094b25fe34791da7684d80352a33708fc4c50d54419f153d90999
+              tag: 4.0.0@sha256:a40895504f67bb171e8109a502d386eb7ccea114a602aace1d1025a9ccdd8bf1
               pullPolicy: IfNotPresent
             resources:
               requests:
