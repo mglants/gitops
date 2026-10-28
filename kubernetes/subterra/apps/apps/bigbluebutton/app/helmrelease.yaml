@@ -428,7 +428,7 @@ spec:
           app:
             image:
               repository: ghcr.io/mglants/bigbluebutton-frontend
-              tag: 4.0.0@sha256:4bd6f5c7cab13c1f86f662e3fa8047209df4a121ec1a32ffefb32cf139bec23f
+              tag: 4.0.0@sha256:8e6aadd36b5a37331c5d6366d00b23b3f928f1f2bc2f7300ab085dccf97c9ef3
               pullPolicy: IfNotPresent
             resources:
               requests:
