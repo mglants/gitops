@@ -554,7 +554,7 @@ spec:
           media-proxy:
             image:
               repository: ghcr.io/fluxerapp/fluxer-media-proxy
-              tag: "2026.1013.32826"
+              tag: "2026.1031.201334"
             env: *media_proxy_env
             envFrom: *app_config
             ports: *api_ports
