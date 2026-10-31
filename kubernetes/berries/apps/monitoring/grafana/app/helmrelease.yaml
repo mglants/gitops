@@ -114,7 +114,7 @@ spec:
         node-exporter-full:
           # renovate: dashboardName="Node Exporter Full"
           gnetId: 1860
-          revision: 45
+          revision: 46
           datasource: Prometheus
         ipmi-exporter:
           # renovate: dashboardName="IPMI Exporter"
