@@ -728,7 +728,7 @@ spec:
           static-proxy:
             image:
               repository: ghcr.io/fluxerapp/fluxer-static
-              tag: "2026.1010.212914"
+              tag: "2026.1031.201303"
             ports: *api_ports
             resources: *push_resources
             securityContext: *container_security
