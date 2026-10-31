@@ -920,7 +920,7 @@ spec:
           router:
             image: &messages_image
               repository: ghcr.io/fluxerapp/fluxer-messages
-              tag: "2026.1012.111357"
+              tag: "2026.1031.201319"
             env: *messages_env
             envFrom: *app_config
             ports: *gifs_ports
