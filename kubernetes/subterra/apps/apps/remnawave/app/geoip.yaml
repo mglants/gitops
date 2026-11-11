@@ -1,0 +1,72 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: Backend
+metadata:
+  name: geoip-jsdelivr
+spec:
+  endpoints:
+    - fqdn:
+        hostname: cdn.jsdelivr.net
+        port: 443
+  tls:
+    wellKnownCACertificates: System
+    sni: cdn.jsdelivr.net
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: geoip
+  annotations:
+    external-dns.alpha.kubernetes.io/controller: none
+spec:
+  parentRefs:
+    - name: envoy-external
+      namespace: networking
+      sectionName: https
+  hostnames:
+    - geoip.glants.xyz
+  rules:
+    - matches:
+        - path:
+            type: Exact
+            value: /
+        - path:
+            type: Exact
+            value: /geoip.dat
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            hostname: cdn.jsdelivr.net
+            path:
+              type: ReplaceFullPath
+              replaceFullPath: /gh/hydraponique/roscomvpn-geoip/release/geoip.dat
+      backendRefs:
+        - group: gateway.envoyproxy.io
+          kind: Backend
+          name: geoip-jsdelivr
+    - matches:
+        - path:
+            type: Exact
+            value: /geosite.dat
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            hostname: cdn.jsdelivr.net
+            path:
+              type: ReplaceFullPath
+              replaceFullPath: /gh/Loyalsoldier/v2ray-rules-dat@release/geosite.dat
+      backendRefs:
+        - group: gateway.envoyproxy.io
+          kind: Backend
+          name: geoip-jsdelivr
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: geoip
+spec:
+  endpoints:
+    - dnsName: geoip.glants.xyz
+      recordType: CNAME
+      targets:
+        - ingress-ext.ur30.dev

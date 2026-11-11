@@ -6,3 +6,4 @@ resources:
   - postgresCluster.yaml
   - externalsecret.yaml
   - pvc.yaml
+  - geoip.yaml
