@@ -98,7 +98,13 @@ spec:
           secretName: forgejo-signing-key
           defaultMode: 0400
     httpRoute:
-      enabled: false
+      enabled: true
+      hostnames:
+        - git.glants.xyz
+      parentRefs:
+        - name: envoy-external
+          namespace: networking
+          sectionName: https
     image:
       rootless: true
       registry: code.forgejo.org
@@ -111,20 +117,10 @@ spec:
       ssh:
         port: *sshPort
     tcpRoute:
-      enabled: false
-    ingress:
       enabled: true
-      className: external-nginx
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-prod
-        external-dns.alpha.kubernetes.io/target: ingress.ur30.ru
-      hosts:
-        - host: git.glants.xyz
-          paths:
-            - path: /
-              pathType: Prefix
-              port: http
-      tls:
-        - secretName: forgejo-tls
-          hosts:
-            - git.glants.xyz
+      parentRefs:
+        - name: envoy-external
+          namespace: networking
+          sectionName: ssh
+    ingress:
+      enabled: false
