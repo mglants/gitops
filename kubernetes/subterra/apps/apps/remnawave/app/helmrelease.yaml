@@ -185,7 +185,7 @@ spec:
           app:
             image:
               repository: ghcr.io/mglants/remnawave-s3-sync
-              tag: 0.1.1
+              tag: 0.2.0
             env:
               RW_API_URL: http://remnawave.apps.svc.cluster.local:3000
             envFrom:
