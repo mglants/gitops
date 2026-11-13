@@ -26,13 +26,18 @@ spec:
           app:
             image:
               repository: remnawave/backend
-              tag: 2.8.0
+              tag: 3.4.10
             env:
               DATABASE_URL:
                 valueFrom:
                   secretKeyRef:
                     name: remnawave-pgsql-pguser-remnawave
                     key: uri
+              APP_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-secret
+                    key: JWT_AUTH_SECRET
               FRONT_END_DOMAIN: "*"
               SUB_PUBLIC_DOMAIN: "access.glants.xyz/sub"
               REDIS_HOST: remnawave-redis.apps.svc.cluster.local
@@ -204,14 +209,17 @@ spec:
               limits:
                 memory: 128Mi
       bot:
+        strategy: Recreate
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             &bot
             image:
-              repository: ghcr.io/snoups/remnashop
-              tag: v0.8.2
+              repository: ghcr.io/remnashop/remnashop
+              tag: dev
+              pullPolicy: Always
+            args: ["api"]
             env:
               APP_DOMAIN: remnabot.ur30.ru
               APP_HOST: 0.0.0.0
@@ -228,6 +236,11 @@ spec:
               APP_DEFAULT_LOCALE: ru
               BOT_MINI_APP: "true"
               BOT_RESET_WEBHOOK: "false"
+              APP_JWT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-bot-secret
+                    key: APP_JWT_SECRET
               DATABASE_HOST:
                 valueFrom:
                   secretKeyRef:
@@ -265,11 +278,20 @@ spec:
               liveness:
                 enabled: false
               readiness:
-                enabled: false
-              startup:
-                enabled: false
+                enabled: true
+                custom: true
                 spec:
-                  failureThreshold: 30
+                  httpGet:
+                    path: /readyz
+                    port: 5000
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /readyz
+                    port: 5000
+                  failureThreshold: 120
                   periodSeconds: 5
             resources:
               requests:
@@ -277,28 +299,34 @@ spec:
                 memory: 128Mi
               limits:
                 memory: 1Gi
-          taskiq-worker:
+          telegram:
             <<: *bot
-            command:
-              - taskiq
-            args:
-              - worker
-              - src.infrastructure.taskiq.worker:worker
-              - --ack-type
-              - when_received
-              - --tasks-pattern
-              - src/infrastructure/taskiq/tasks/*.py
-              - -fsd
-          taskiq-scheduler:
+            probes:
+              liveness: {enabled: false}
+              readiness: {enabled: false}
+              startup: {enabled: false}
+            image:
+              repository: ghcr.io/remnashop/remnashop
+              tag: dev-telegram
+              pullPolicy: Always
+            command: ["/bin/sh", "-c"]
+            args: ['until wget -qO- http://127.0.0.1:5000/readyz >/dev/null; do sleep 5; done; exec /opt/remnashop/docker-entrypoint.sh telegram']
+          worker:
             <<: *bot
-            command:
-              - taskiq
-            args:
-              - scheduler
-              - src.infrastructure.taskiq.scheduler:scheduler
-              - --tasks-pattern
-              - src/infrastructure/taskiq/tasks/*.py
-              - -fsd
+            probes:
+              liveness: {enabled: false}
+              readiness: {enabled: false}
+              startup: {enabled: false}
+            command: ["/bin/sh", "-c"]
+            args: ['until wget -qO- http://127.0.0.1:5000/readyz >/dev/null; do sleep 5; done; exec /opt/remnashop/docker-entrypoint.sh worker']
+          scheduler:
+            <<: *bot
+            probes:
+              liveness: {enabled: false}
+              readiness: {enabled: false}
+              startup: {enabled: false}
+            command: ["/bin/sh", "-c"]
+            args: ['until wget -qO- http://127.0.0.1:5000/readyz >/dev/null; do sleep 5; done; exec /opt/remnashop/docker-entrypoint.sh scheduler']
       statuspage:
         annotations:
           reloader.stakater.com/auto: "true"
@@ -397,6 +425,8 @@ spec:
         ports:
           http:
             port: 5000
+          telegram:
+            port: 5001
       statuspage:
         controller: statuspage
         ports:
@@ -459,6 +489,11 @@ spec:
         hosts:
           - host: remnabot.ur30.ru
             paths:
+              - path: /api/v1/telegram
+                pathType: Prefix
+                service:
+                  identifier: bot
+                  port: telegram
               - path: /
                 service:
                   identifier: bot
@@ -515,14 +550,14 @@ spec:
         advancedMounts:
           bot:
             app:
-              - path: /opt/remnashop/assets
-                subPath: data
-            taskiq-scheduler:
-              - path: /opt/remnashop/assets
-                subPath: data
-            taskiq-worker:
-              - path: /opt/remnashop/assets
-                subPath: data
+              - path: /opt/remnashop/media
+                subPath: media
+            telegram:
+              - path: /opt/remnashop/media
+                subPath: media
+            worker:
+              - path: /opt/remnashop/media
+                subPath: media
       temp-data:
         enabled: true
         type: emptyDir
