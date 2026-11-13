@@ -303,7 +303,15 @@ spec:
             <<: *bot
             probes:
               liveness: {enabled: false}
-              readiness: {enabled: false}
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 5001
+                  periodSeconds: 5
+                  failureThreshold: 1
               startup: {enabled: false}
             image:
               repository: ghcr.io/remnashop/remnashop
