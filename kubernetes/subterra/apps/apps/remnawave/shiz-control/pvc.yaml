@@ -1,0 +1,14 @@
+---
+# Open sessions (SHIZ_SESSION_FILE), kept across restarts.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shiz-control-state
+  namespace: apps
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: truenas-iscsi
+  resources:
+    requests:
+      storage: 1Gi
