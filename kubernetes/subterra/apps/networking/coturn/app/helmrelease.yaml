@@ -40,7 +40,7 @@ spec:
           app:
             image:
               repository: coturn/coturn
-              tag: 4.18.0-r0
+              tag: 4.19.0-r0
             command:
               - /bin/sh
               - -ec
