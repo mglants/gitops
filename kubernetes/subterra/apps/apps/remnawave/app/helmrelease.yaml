@@ -180,6 +180,8 @@ spec:
         pod:
           automountServiceAccountToken: false
           restartPolicy: Never
+          imagePullSecrets:
+            - name: glants-registry
           securityContext:
             runAsNonRoot: true
             runAsUser: 65532
@@ -189,11 +191,11 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/mglants/remnawave-s3-sync
-              tag: 0.2.0
+              # shiz-networks/app, server/shiz-s3-sync (was ghcr.io/mglants/remnawave-s3-sync).
+              repository: git.glants.xyz/shiz-networks/shiz-s3-sync
+              tag: sha-d3deccd
             env:
               RW_API_URL: http://remnawave.apps.svc.cluster.local:3000
-              # Enrolment object names; must match shiz-control and the app (enrol/enrol.go).
               ENROL_USER_LABEL: shiz-enrol-user-v1
               ENROL_REQUEST_LABEL: shiz-enrol-req-name-v1
             envFrom:

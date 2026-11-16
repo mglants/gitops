@@ -42,11 +42,16 @@ spec:
           app:
             image:
               repository: git.glants.xyz/shiz-networks/shiz-control
-              tag: sha-76bd3ce
+              tag: sha-955cc46
             env:
               SHIZ_PANEL_URL: http://remnawave.apps.svc.cluster.local:3000
               SHIZ_PANEL_INTERNAL: "true"
               SHIZ_SESSION_FILE: /var/lib/shiz-control/sessions.json
+              # Telemetry collector: reads telemetry/req/ and writes to the cluster
+              # VictoriaLogs (30-day retention), tagged source=shiz-telemetry. No
+              # reports exist until the app's telemetry build and shiz-s3-sync
+              # TELEMETRY_ENABLED are rolled out.
+              SHIZ_TELEMETRY_URL: http://victoria-logs-server.monitoring.svc.cluster.local:9428/insert/jsonline?extra_fields=source=shiz-telemetry&_stream_fields=source,app.platform
             envFrom:
               - secretRef:
                   name: shiz-control-secret
