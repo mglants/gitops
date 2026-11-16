@@ -193,7 +193,7 @@ spec:
             image:
               # shiz-networks/app, server/shiz-s3-sync (was ghcr.io/mglants/remnawave-s3-sync).
               repository: git.glants.xyz/shiz-networks/shiz-s3-sync
-              tag: sha-d3deccd
+              tag: sha-955cc46
             env:
               RW_API_URL: http://remnawave.apps.svc.cluster.local:3000
               ENROL_USER_LABEL: shiz-enrol-user-v1
