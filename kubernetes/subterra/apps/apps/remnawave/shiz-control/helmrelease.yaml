@@ -42,7 +42,7 @@ spec:
           app:
             image:
               repository: git.glants.xyz/shiz-networks/shiz-control
-              tag: sha-b5909ae
+              tag: sha-d88793b
             env:
               SHIZ_PANEL_URL: http://remnawave.apps.svc.cluster.local:3000
               SHIZ_PANEL_INTERNAL: "true"
