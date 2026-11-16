@@ -24,7 +24,8 @@ spec:
         tcp:
           - name: syslog-tcp
             value: ":1514"
-            streamFields: hostname,app_name
+            # A JSON array: a plain comma list is split by the flag parser.
+            streamFields: '["hostname","app_name"]'
       serviceMonitor:
         enabled: true
     dashboards:
