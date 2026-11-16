@@ -198,6 +198,9 @@ spec:
               RW_API_URL: http://remnawave.apps.svc.cluster.local:3000
               ENROL_USER_LABEL: shiz-enrol-user-v1
               ENROL_REQUEST_LABEL: shiz-enrol-req-name-v1
+              # Adds an exact-object telemetry/req/ upload policy per listed device
+              # (64 KiB, same bucket and signing key as enrolment).
+              TELEMETRY_ENABLED: "true"
             envFrom:
               - secretRef:
                   name: remnawave-s3-sync-secret
