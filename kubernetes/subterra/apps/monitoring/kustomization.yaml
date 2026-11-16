@@ -15,6 +15,5 @@ resources:
   - ./exporters/snmp-exporter/ks.yaml
   - ./grafana/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
-  - ./loki/ks.yaml
   - ./nut/ks.yaml
-  - ./promtail/ks.yaml
+  - ./victoria-logs/ks.yaml

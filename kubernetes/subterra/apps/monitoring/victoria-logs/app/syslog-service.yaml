@@ -1,0 +1,22 @@
+---
+# External syslog (formerly promtail's), same address and name.
+apiVersion: v1
+kind: Service
+metadata:
+  name: victoria-logs-syslog
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: syslog.ur30.ru
+    external-dns.alpha.kubernetes.io/type: internal
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.40.11
+  externalTrafficPolicy: Local
+  ports:
+    - name: syslog-tcp
+      port: 1514
+      targetPort: syslog-tcp
+      protocol: TCP
+  selector:
+    app: server
+    app.kubernetes.io/instance: victoria-logs
+    app.kubernetes.io/name: victoria-logs-single

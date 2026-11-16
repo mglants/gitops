@@ -1,0 +1,36 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: victoria-logs
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: victoria-logs
+  interval: 30m
+  values:
+    fullnameOverride: victoria-logs
+    server:
+      persistentVolume:
+        enabled: true
+        size: 30Gi
+        storageClassName: truenas-iscsi
+      # Loki kept 30 days; the disk cap drops the oldest data first if needed.
+      retentionPeriod: 30d
+      retentionDiskSpaceUsage: 25GiB
+      # Replaces promtail's syslog listener (see syslog-service.yaml).
+      syslog:
+        tcp:
+          - name: syslog-tcp
+            value: ":1514"
+            streamFields: hostname,app_name
+      serviceMonitor:
+        enabled: true
+    dashboards:
+      enabled: true
+      # Picked up by the Grafana sidecar (no grafana-operator here).
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: VictoriaLogs

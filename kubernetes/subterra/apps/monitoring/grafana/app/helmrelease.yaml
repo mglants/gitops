@@ -34,6 +34,7 @@ spec:
         external-dns.alpha.kubernetes.io/type: internal
       hosts: [grafana.ur30.ru]
     plugins:
+      - victoriametrics-logs-datasource
       - natel-discrete-panel
       - pr0ps-trackmap-panel
       - grafana-piechart-panel
@@ -121,11 +122,6 @@ spec:
         unifi-network-sites:
           gnetId: 11311
           revision: 4
-          datasource: Prometheus
-        # Ref: https://grafana.com/grafana/dashboards/13407
-        loki:
-          gnetId: 13407
-          revision: 1
           datasource: Prometheus
         # Ref: https://grafana.com/grafana/dashboards/11314
         unifi-uap-insights:
@@ -221,16 +217,18 @@ spec:
             orgId: 1
           - name: Loki
             orgId: 1
+          - name: VictoriaLogs
+            orgId: 1
         datasources:
           - name: Prometheus
             type: prometheus
             access: proxy
             url: http://kube-prometheus-stack-prometheus:9090/
             isDefault: true
-          - name: Loki
-            type: loki
+          - name: VictoriaLogs
+            type: victoriametrics-logs-datasource
             access: proxy
-            url: http://loki-gateway:80
+            url: http://victoria-logs-server.monitoring.svc.cluster.local:9428
           - name: Alertmanager
             type: alertmanager
             access: proxy
