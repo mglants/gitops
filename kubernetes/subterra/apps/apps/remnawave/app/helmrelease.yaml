@@ -356,12 +356,12 @@ spec:
             command: ["/bin/sh", "-ec"]
             args:
               - |
-                # Envoy terminates TLS before forwarding requests to the cabinet.
-                sed -i 's/proxy_set_header X-Forwarded-Proto \$scheme;/proxy_set_header X-Forwarded-Proto https;/' /etc/nginx/templates/default.conf.template
-                grep -q 'proxy_set_header X-Forwarded-Proto https;' /etc/nginx/templates/default.conf.template
+                # Resolve the Kubernetes Service using the pod's DNS search path.
+                sed -i 's|proxy_pass \$backend;|proxy_pass '"$API_URL"';|' /etc/nginx/templates/default.conf.template
+                grep -Fq "proxy_pass $API_URL;" /etc/nginx/templates/default.conf.template
                 exec /docker-entrypoint.sh nginx -g 'daemon off;'
             env:
-              API_URL: https://remnabot.ur30.ru
+              API_URL: http://remnawave-bot:5000
               CABINET_PROXY_SECRET:
                 valueFrom:
                   secretKeyRef:
