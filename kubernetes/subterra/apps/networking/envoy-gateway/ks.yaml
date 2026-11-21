@@ -30,6 +30,7 @@ spec:
   dependsOn:
     - name: envoy-gateway
       namespace: flux-system
+    - name: flux-cluster-secrets
   interval: 1h
   path: "./kubernetes/subterra/apps/networking/envoy-gateway/gateway"
   prune: true

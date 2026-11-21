@@ -38,6 +38,8 @@ spec:
             name: ur30-ru-tls
           - kind: Secret
             name: glants-xyz-tls
+          - kind: Secret
+            name: shiz-tls
     # TURN is raw TCP after TLS termination, selected by its SNI hostname.
     - name: turn
       protocol: TLS

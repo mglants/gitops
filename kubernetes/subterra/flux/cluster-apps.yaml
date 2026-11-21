@@ -36,6 +36,10 @@ spec:
             substituteFrom:
               - kind: ConfigMap
                 name: cluster-settings
+              # External Secrets needs to reconcile before this Secret exists.
+              - kind: Secret
+                name: cluster-secrets
+                optional: true
       target:
         group: kustomize.toolkit.fluxcd.io
         kind: Kustomization

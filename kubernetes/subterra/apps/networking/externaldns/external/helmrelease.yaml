@@ -24,6 +24,7 @@ spec:
       - glants.xyz
       - ur30.ru
       - ur30.dev
+      - "${SHIZ_DOMAIN:=ur30.dev}"
     env:
       - name: CF_API_TOKEN
         valueFrom:

@@ -230,6 +230,7 @@ spec:
             args: ["api"]
             env:
               APP_DOMAIN: remnabot.ur30.ru
+              CABINET_DOMAIN: "my.${SHIZ_DOMAIN}"
               APP_HOST: 0.0.0.0
               # Port number for the bot web server.
               APP_PORT: 5000
@@ -343,6 +344,22 @@ spec:
               startup: {enabled: false}
             command: ["/bin/sh", "-c"]
             args: ['until wget -qO- http://127.0.0.1:5000/readyz >/dev/null; do sleep 5; done; exec /opt/remnashop/docker-entrypoint.sh scheduler']
+      cabinet:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/remnashop/remnashop-cabinet
+              tag: v1.0.0
+              pullPolicy: Always
+            env:
+              API_URL: http://remnawave-bot:5000
+              CABINET_PROXY_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: remnawave-bot-secret
+                    key: CABINET_PROXY_SECRET
       statuspage:
         annotations:
           reloader.stakater.com/auto: "true"
@@ -443,11 +460,31 @@ spec:
             port: 5000
           telegram:
             port: 5001
+      cabinet:
+        forceRename: remnawave-cabinet
+        controller: cabinet
+        ports:
+          http:
+            port: 80
       statuspage:
         controller: statuspage
         ports:
           http:
             port: 8080
+    route:
+      cabinet:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress-ext.ur30.dev
+        parentRefs:
+          - name: envoy-external
+            namespace: networking
+            sectionName: https
+        hostnames:
+          - "my.${SHIZ_DOMAIN}"
+        rules:
+          - backendRefs:
+              - identifier: cabinet
+                port: 80
     ingress:
       app:
         className: external-nginx

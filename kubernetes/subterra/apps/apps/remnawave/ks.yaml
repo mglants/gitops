@@ -20,6 +20,7 @@ spec:
   wait: false
   dependsOn:
     - name: cluster-apps-external-secrets-stores
+    - name: flux-cluster-secrets
     - name: cluster-apps-truenas-csi
   postBuild:
     substitute:
