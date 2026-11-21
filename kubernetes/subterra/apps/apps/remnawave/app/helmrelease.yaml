@@ -354,7 +354,7 @@ spec:
               tag: v1.0.0
               pullPolicy: Always
             env:
-              API_URL: http://remnawave-bot:5000
+              API_URL: https://remnabot.ur30.ru
               CABINET_PROXY_SECRET:
                 valueFrom:
                   secretKeyRef:
