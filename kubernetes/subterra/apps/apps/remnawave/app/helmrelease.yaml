@@ -353,6 +353,13 @@ spec:
               repository: ghcr.io/remnashop/remnashop-cabinet
               tag: v1.0.0
               pullPolicy: Always
+            command: ["/bin/sh", "-ec"]
+            args:
+              - |
+                # Envoy terminates TLS before forwarding requests to the cabinet.
+                sed -i 's/proxy_set_header X-Forwarded-Proto \$scheme;/proxy_set_header X-Forwarded-Proto https;/' /etc/nginx/templates/default.conf.template
+                grep -q 'proxy_set_header X-Forwarded-Proto https;' /etc/nginx/templates/default.conf.template
+                exec /docker-entrypoint.sh nginx -g 'daemon off;'
             env:
               API_URL: https://remnabot.ur30.ru
               CABINET_PROXY_SECRET:
