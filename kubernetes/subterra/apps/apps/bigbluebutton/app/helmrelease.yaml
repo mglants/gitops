@@ -832,7 +832,7 @@ spec:
           app:
             image: &greenlight_image
               repository: bigbluebutton/greenlight
-              tag: v3.9.0.1@sha256:282713bb8afc14634f23c305fee85826e1be2b3a54ea83f855dd5646c044be07
+              tag: v3.9.2.1@sha256:12dff3b7437d8ec9a05ff6c3b8a1c7a05cacdae06f56da1c3a33d6855da19f4a
             env: &greenlight_environment
               RAILS_ENV: production
               TMPDIR: /usr/src/app/tmp/private
