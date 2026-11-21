@@ -503,7 +503,7 @@ spec:
           app:
             image:
               repository: hasura/graphql-engine
-              tag: v2.50.3@sha256:521ace33b50ce9e65e7dc28e2c3311ae75ab8889c514510c647d486243ee0168
+              tag: v2.51.9@sha256:70fba12ae0967b75f33cdc5b67280a264777a46e8dfcd89859a1c4ff1fe80baf
             env:
               POSTGRES_PASSWORD:
                 valueFrom:
