@@ -225,7 +225,7 @@ spec:
             &bot
             image:
               repository: ghcr.io/remnashop/remnashop
-              tag: dev@sha256:eb2ab59ee103958d863a9de76f9445d5481d61b34dc68200e3455fac248636af
+              tag: dev@sha256:57ac093f9d26edb27ef62f268f41d164bb827949b7404f100f018b0636d7e319
               pullPolicy: Always
             args: ["api"]
             env:
