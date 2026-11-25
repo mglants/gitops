@@ -6,7 +6,7 @@ dashboard:
     self_hosted:
       client_id: hermes
       issuer: https://authentik.glants.xyz/application/o/hermes/
-      scopes: openid profile email
+      scopes: openid profile email offline_access
   public_url: https://hermes-dash.ur30.dev
 
 gateway:
