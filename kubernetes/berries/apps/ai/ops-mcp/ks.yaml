@@ -1,0 +1,35 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: berries-ops-mcp
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: berries-cluster-mcp
+    - name: cluster-apps-external-secrets-stores
+  interval: 1h
+  path: ./kubernetes/berries/apps/ai/ops-mcp/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+  targetNamespace: ai
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: berries-ops-mcp-routes
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: berries-ops-mcp
+    - name: envoy-gateway-gateway
+  interval: 1h
+  path: ./kubernetes/berries/apps/ai/ops-mcp/routes
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+  targetNamespace: ai
