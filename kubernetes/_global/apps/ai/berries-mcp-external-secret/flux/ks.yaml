@@ -1,0 +1,16 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: berries-mcp-external-secret
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: cluster-apps-external-secrets-stores
+  interval: 10m
+  path: ./kubernetes/_global/apps/ai/berries-mcp-external-secret/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+  targetNamespace: ai
