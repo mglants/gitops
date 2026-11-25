@@ -152,7 +152,6 @@ spec:
                   secretKeyRef:
                     name: berries-mcp-key
                     key: subterra-hermes
-                    optional: true
               HERMES_DASHBOARD: "true"
               HERMES_DASHBOARD_HOST: 0.0.0.0
               HERMES_DASHBOARD_OIDC_CLIENT_SECRET:
