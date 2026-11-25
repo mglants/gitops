@@ -32,11 +32,11 @@ spec:
           secretKeyRef:
             name: agentgateway
             key: MISTRAL_API_KEY
-      - name: NEURALWATT_API_KEY
+      - name: DEEPSEEK_API_KEY
         valueFrom:
           secretKeyRef:
             name: agentgateway
-            key: NEURALWATT_API_KEY
+            key: DEEPSEEK_API_KEY
       - name: CONTEXT7_API_KEY
         valueFrom:
           secretKeyRef:
@@ -88,7 +88,7 @@ spec:
                   - chatgpt/gpt-6.2-sol
                   - mistral/large-4
                   - mistral/small-4
-                  - neuralwatt/dsv4.1f
+                  - deepseek/flash
         models:
           - name: chatgpt/gpt-6-luna
             provider: openAI
@@ -128,12 +128,14 @@ spec:
               model: mistral-small-2603
             transformation:
               reasoning_effort: '!has(llmRequest.reasoning_effort) || llmRequest.reasoning_effort == "none" ? "none" : "high"'
-          - name: neuralwatt/dsv4.1f
+          - name: deepseek/flash
             provider: openAI
             params:
-              apiKey: ${NEURALWATT_API_KEY}
-              baseUrl: https://api.neuralwatt.com/v1
-              model: deepseek-v4.1-flash
+              apiKey: ${DEEPSEEK_API_KEY}
+              baseUrl: https://api.deepseek.com
+              model: deepseek-flash
+            transformation:
+              thinking: '{"type": "disabled"}'
       gateways:
         mcp:
           port: 8081
