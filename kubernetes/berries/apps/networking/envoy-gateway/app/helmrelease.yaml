@@ -15,6 +15,7 @@ spec:
       envoyGateway:
         extensionApis:
           enableBackend: true
+          enableLua: true
         provider:
           type: Kubernetes
           kubernetes:
