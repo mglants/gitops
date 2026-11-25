@@ -63,6 +63,17 @@ spec:
                     protocol: TCP
                 serverNames:
                   - ingress-int-berries.glants.xyz
+          - # Forgejo HTTPS uses the external Envoy listener.
+            toEndpoints:
+              - matchLabels:
+                  k8s:io.kubernetes.pod.namespace: networking
+                  gateway.envoyproxy.io/owning-gateway-name: envoy-external
+            toPorts:
+              - ports:
+                  - port: "10443"
+                    protocol: TCP
+                serverNames:
+                  - git.glants.xyz
           # Split DNS routes Authentik to the ingress-nginx LoadBalancer in Subterra.
           - toEndpoints:
               - matchLabels:
