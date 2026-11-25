@@ -15,7 +15,7 @@ spec:
     credentialRefs:
       - group: ""
         kind: Secret
-        name: berries-mcp-access
+        name: berries-mcp-key
     extractFrom:
       - headers:
           - x-api-key
