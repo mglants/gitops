@@ -35,7 +35,6 @@ spec:
             - serve
             - --transport=http
             - --port=8000
-            - --read-only
             env:
               RUNTIME_NAMESPACE:
                 valueFrom:
