@@ -29,7 +29,7 @@ spec:
           mcp:
             image:
               repository: grafana/mcp-grafana
-              tag: 2.4.0@sha256:b6c5b2807c2c93c0107eb3b928d91c6309b822be74c4133dbfaa163cb4af5f2b
+              tag: 2.4.0@sha256:63d4501d3166c2b9242d8a2b5b7df8892c59c6c477be3a2a61bcf8a252671f31
             args:
             - --transport
             - streamable-http
