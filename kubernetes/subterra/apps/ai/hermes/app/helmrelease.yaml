@@ -147,6 +147,7 @@ spec:
             env:
               S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
               # Hermes settings
+              # The default profile still uses the process environment.
               BERRIES_MCP_API_KEY:
                 valueFrom:
                   secretKeyRef:
@@ -164,6 +165,12 @@ spec:
               HERMES_HOME: /opt/data
               HERMES_WRITE_SAFE_ROOT: /opt/data
               HOME: /opt/data
+              PATH: /opt/data/shared/bin:/opt/data/.local/bin:/opt/data/.local/share/mise/shims:/opt/mise:/opt/hermes/.venv/bin:/opt/hermes/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+              # Keep mise installations available when terminal HOME moves into a profile.
+              MISE_CACHE_DIR: /opt/data/.cache/mise
+              MISE_CONFIG_DIR: /opt/data/.config/mise
+              MISE_DATA_DIR: /opt/data/.local/share/mise
+              MISE_STATE_DIR: /opt/data/.local/state/mise
               SEARXNG_URL: http://searxng.ai.svc.cluster.local:8080
             envFrom:
               - secretRef:
@@ -241,6 +248,14 @@ spec:
           hermes:
             app:
               - path: /mnt/secrets/agentgateway
+                readOnly: true
+      berries-mcp-token:
+        type: secret
+        name: berries-mcp-key
+        advancedMounts:
+          hermes:
+            app:
+              - path: /mnt/secrets/berries-mcp
                 readOnly: true
       mise:
         type: image
