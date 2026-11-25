@@ -51,4 +51,5 @@ spec:
     kind: ClusterIssuer
     name: home-ca
   dnsNames:
-    - "*.home"
+    - ingress-int-berries.home
+    - "*.berries.home"
