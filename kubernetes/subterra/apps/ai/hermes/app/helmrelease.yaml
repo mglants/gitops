@@ -268,6 +268,14 @@ spec:
             app:
               - path: /mnt/secrets/berries-mcp
                 readOnly: true
+      forgejo-token:
+        type: secret
+        name: hermes-forgejo
+        advancedMounts:
+          hermes:
+            app:
+              - path: /mnt/secrets/forges/forgejo
+                readOnly: true
       mise:
         type: image
         image: ghcr.io/jdx/mise:2026.11.14
