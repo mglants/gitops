@@ -55,6 +55,19 @@ spec:
               - ports:
                   - port: "443"
                     protocol: TCP
+          # Split DNS routes Authentik to the ingress-nginx LoadBalancer in Subterra.
+          - toEndpoints:
+              - matchLabels:
+                  k8s:io.kubernetes.pod.namespace: networking
+                  app.kubernetes.io/component: controller
+                  app.kubernetes.io/instance: external-nginx
+                  app.kubernetes.io/name: ingress-nginx
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
+                serverNames:
+                  - authentik.glants.xyz
         ingress:
           - fromEndpoints:
               - matchLabels:
