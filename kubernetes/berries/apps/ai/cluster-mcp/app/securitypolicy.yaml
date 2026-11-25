@@ -1,0 +1,21 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: berries-cluster-mcp
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: berries-flux-mcp
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: berries-kubectl-mcp
+  apiKeyAuth:
+    credentialRefs:
+      - group: ""
+        kind: Secret
+        name: berries-mcp-access
+    extractFrom:
+      - headers:
+          - x-api-key

@@ -26,6 +26,14 @@ secrets:
     override_existing: true
 
 mcp_servers:
+  berries-flux:
+    url: https://ingress-int-berries.glants.xyz/mcp/flux
+    headers:
+      X-API-Key: "${BERRIES_MCP_API_KEY}"
+  berries-kubectl:
+    url: https://ingress-int-berries.glants.xyz/mcp/kubectl
+    headers:
+      X-API-Key: "${BERRIES_MCP_API_KEY}"
   context7:
     url: http://agentgateway.ai.svc.cluster.local:8081/mcp/context7
     headers:

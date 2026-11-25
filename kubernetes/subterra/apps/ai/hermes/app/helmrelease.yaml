@@ -55,6 +55,14 @@ spec:
               - ports:
                   - port: "443"
                     protocol: TCP
+          - toCIDR:
+              - 172.16.32.7/32
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
+                serverNames:
+                  - ingress-int-berries.glants.xyz
           # Split DNS routes Authentik to the ingress-nginx LoadBalancer in Subterra.
           - toEndpoints:
               - matchLabels:
@@ -139,6 +147,11 @@ spec:
             env:
               S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
               # Hermes settings
+              BERRIES_MCP_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: berries-mcp-access
+                    key: subterra-hermes
               HERMES_DASHBOARD: "true"
               HERMES_DASHBOARD_HOST: 0.0.0.0
               HERMES_DASHBOARD_OIDC_CLIENT_SECRET:

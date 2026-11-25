@@ -1,0 +1,58 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: berries-flux-mcp
+  annotations:
+    external-dns.alpha.kubernetes.io/controller: none
+spec:
+  hostnames:
+    - ingress-int-berries.glants.xyz
+  parentRefs:
+    - name: envoy-internal
+      namespace: networking
+      sectionName: https
+  rules:
+    - matches:
+        - path:
+            type: Exact
+            value: /mcp/flux
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            hostname: flux-mcp.ai.svc.cluster.local
+            path:
+              type: ReplaceFullPath
+              replaceFullPath: /mcp
+      backendRefs:
+        - name: flux-mcp
+          port: 8000
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: berries-kubectl-mcp
+  annotations:
+    external-dns.alpha.kubernetes.io/controller: none
+spec:
+  hostnames:
+    - ingress-int-berries.glants.xyz
+  parentRefs:
+    - name: envoy-internal
+      namespace: networking
+      sectionName: https
+  rules:
+    - matches:
+        - path:
+            type: Exact
+            value: /mcp/kubectl
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            hostname: kubectl-mcp.ai.svc.cluster.local
+            path:
+              type: ReplaceFullPath
+              replaceFullPath: /mcp
+      backendRefs:
+        - name: kubectl-mcp
+          port: 8000

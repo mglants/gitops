@@ -1,0 +1,133 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: flux-mcp
+spec:
+  chartRef:
+    apiVersion: source.toolkit.fluxcd.io/v1beta2
+    kind: OCIRepository
+    name: berries-mcp-chart
+  interval: 30m
+  values:
+    controllers:
+      flux-mcp:
+        annotations:
+          reloader.stakater.com/auto: 'true'
+        pod:
+          labels:
+            app.kubernetes.io/name: flux-mcp
+            app.kubernetes.io/instance: flux-mcp
+          automountServiceAccountToken: true
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+        replicas: 1
+        serviceAccount:
+          name: flux-mcp
+        containers:
+          mcp:
+            image:
+              repository: ghcr.io/controlplaneio-fluxcd/flux-operator-mcp
+              tag: v0.63.1@sha256:556f9fbef8c10c6ded833463dc830708e82043cfe819296ade4fef32f87f8dd2
+            args:
+            - serve
+            - --transport=http
+            - --port=8000
+            - --read-only
+            env:
+              RUNTIME_NAMESPACE:
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.namespace
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+    service:
+      app:
+        controller: flux-mcp
+        ports:
+          http:
+            port: 8000
+            targetPort: 8000
+            protocol: TCP
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kubectl-mcp
+spec:
+  chartRef:
+    apiVersion: source.toolkit.fluxcd.io/v1beta2
+    kind: OCIRepository
+    name: berries-mcp-chart
+  interval: 30m
+  values:
+    controllers:
+      kubectl-mcp:
+        annotations:
+          reloader.stakater.com/auto: 'true'
+        pod:
+          labels:
+            app.kubernetes.io/name: kubectl-mcp
+            app.kubernetes.io/instance: kubectl-mcp
+          automountServiceAccountToken: true
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+        replicas: 1
+        serviceAccount:
+          name: kubectl-mcp-readonly
+        containers:
+          mcp:
+            image:
+              repository: docker.io/rohitghumare64/kubectl-mcp-server
+              tag: 2.0.0@sha256:f1f57aa5d4952f3c49e4d9bb8071a143d0812bdc8253922d51eeca8a2615ea29
+            args:
+            - --transport
+            - streamable-http
+            - --host
+            - 0.0.0.0
+            - --port
+            - '8000'
+            - --read-only
+            env:
+              MCP_ALLOWED_HOSTS:
+                value: kubectl-mcp.ai.svc.cluster.local
+              MCP_ALLOW_UNAUTHENTICATED:
+                value: 'true'
+              MCP_K8S_PROVIDER:
+                value: in-cluster
+              PYTHONUNBUFFERED:
+                value: '1'
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+    service:
+      app:
+        controller: kubectl-mcp
+        ports:
+          http:
+            port: 8000
+            targetPort: 8000
+            protocol: TCP
