@@ -30,6 +30,14 @@ mcp_servers:
     url: https://ingress-int-berries.glants.xyz/mcp/flux
     headers:
       X-API-Key: "${BERRIES_MCP_API_KEY}"
+  berries-grafana:
+    url: https://ingress-int-berries.glants.xyz/mcp/grafana
+    headers:
+      X-API-Key: "${BERRIES_MCP_API_KEY}"
+  berries-home-assistant:
+    url: https://ingress-int-berries.glants.xyz/mcp/home-assistant
+    headers:
+      X-API-Key: "${BERRIES_MCP_API_KEY}"
   berries-kubectl:
     url: https://ingress-int-berries.glants.xyz/mcp/kubectl
     headers:
