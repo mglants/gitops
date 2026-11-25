@@ -12,6 +12,7 @@ configMapGenerator:
     files:
       - ./resources/config.yaml
       - ./resources/profile.yaml
+      - ./resources/merge-mcp-servers.py
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

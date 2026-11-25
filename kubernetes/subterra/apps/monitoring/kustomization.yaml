@@ -14,6 +14,7 @@ resources:
   - ./exporters/mqtt-exporter/ks.yaml
   - ./exporters/snmp-exporter/ks.yaml
   - ./grafana/ks.yaml
+  - ./grafana-mcp/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
   - ./nut/ks.yaml
   - ./victoria-logs/ks.yaml

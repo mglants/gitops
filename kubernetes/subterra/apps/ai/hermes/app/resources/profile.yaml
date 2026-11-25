@@ -30,3 +30,23 @@ mcp_servers:
     url: http://agentgateway.ai.svc.cluster.local:8081/mcp/context7
     headers:
       Authorization: "Bearer ${AGENTGATEWAY_API_KEY}"
+  flux:
+    url: http://agentgateway.ai.svc.cluster.local:8081/mcp/flux
+    headers:
+      Authorization: "Bearer ${AGENTGATEWAY_API_KEY}"
+  grafana:
+    url: http://agentgateway.ai.svc.cluster.local:8081/mcp/grafana
+    headers:
+      Authorization: "Bearer ${AGENTGATEWAY_API_KEY}"
+  home-assistant:
+    url: http://agentgateway.ai.svc.cluster.local:8081/mcp/home-assistant
+    headers:
+      Authorization: "Bearer ${AGENTGATEWAY_API_KEY}"
+  kubectl:
+    url: http://agentgateway.ai.svc.cluster.local:8081/mcp/kubectl
+    headers:
+      Authorization: "Bearer ${AGENTGATEWAY_API_KEY}"
+  kubesearch:
+    url: http://agentgateway.ai.svc.cluster.local:8081/mcp/kubesearch
+    headers:
+      Authorization: "Bearer ${AGENTGATEWAY_API_KEY}"

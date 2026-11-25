@@ -1,0 +1,41 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: home-assistant-mcp
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: home-assistant-mcp
+  # ha-mcp has no authentication of its own here: only Agent Gateway may call it.
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: ai
+            app.kubernetes.io/name: agentgateway
+            app.kubernetes.io/instance: agentgateway
+      toPorts:
+        - ports:
+            - port: "8086"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: smarthome
+            app.kubernetes.io/name: home-assistant
+            app.kubernetes.io/instance: home-assistant
+      toPorts:
+        - ports:
+            - port: "8123"
+              protocol: TCP

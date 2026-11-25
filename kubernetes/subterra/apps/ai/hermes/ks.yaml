@@ -13,6 +13,11 @@ spec:
     - name: kopiur-repository
     - name: agentgateway
     - name: searxng
+    - name: flux-mcp
+    - name: kubectl-mcp
+    - name: kubesearch-mcp
+    - name: home-assistant-mcp
+    - name: grafana-mcp
   postBuild:
     substitute:
       APP: hermes

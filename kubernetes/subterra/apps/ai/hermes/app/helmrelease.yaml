@@ -97,7 +97,7 @@ spec:
           terminationGracePeriodSeconds: 60
         strategy: Recreate
         initContainers:
-          # Seed new profiles or migrate existing ones before the non-root s6 process starts.
+          # Seed or migrate the default profile and add any missing MCP entries before s6 starts.
           config-migrate:
             image: &image
               repository: docker.io/nousresearch/hermes-agent
@@ -113,7 +113,8 @@ spec:
                   cp /etc/hermes/profile.yaml /opt/data/config.yaml.new
                   mv /opt/data/config.yaml.new /opt/data/config.yaml
                 else
-                  exec /opt/hermes/.venv/bin/python /opt/hermes/scripts/docker_config_migrate.py
+                  /opt/hermes/.venv/bin/python /opt/hermes/scripts/docker_config_migrate.py
+                  /opt/hermes/.venv/bin/python /etc/hermes/merge-mcp-servers.py /opt/data/config.yaml /etc/hermes/profile.yaml
                 fi
             env:
               HOME: /opt/data

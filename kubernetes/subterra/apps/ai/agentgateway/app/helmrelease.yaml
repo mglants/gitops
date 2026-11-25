@@ -166,3 +166,128 @@ spec:
             mcpAuthorization:
               rules:
                 - allow: apiKey.client == "hermes"
+        - name: mcp-flux
+          gateways:
+            - mcp
+          matches:
+            - path:
+                pathPrefix: /mcp/flux
+          backends:
+            - mcp:
+                targets:
+                  - name: flux
+                    mcp:
+                      host: http://flux-mcp.ai.svc.cluster.local:8000/mcp
+          policies:
+            urlRewrite:
+              path:
+                prefix: /mcp
+            apiKey:
+              mode: strict
+              keys:
+                - key: ${HERMES_API_KEY}
+                  metadata:
+                    client: hermes
+            mcpAuthorization:
+              rules:
+                - allow: apiKey.client == "hermes"
+        - name: mcp-grafana
+          gateways:
+            - mcp
+          matches:
+            - path:
+                pathPrefix: /mcp/grafana
+          backends:
+            - mcp:
+                targets:
+                  - name: grafana
+                    mcp:
+                      host: http://grafana-mcp.monitoring.svc.cluster.local:8000/mcp
+          policies:
+            urlRewrite:
+              path:
+                prefix: /mcp
+            apiKey:
+              mode: strict
+              keys:
+                - key: ${HERMES_API_KEY}
+                  metadata:
+                    client: hermes
+            mcpAuthorization:
+              rules:
+                - allow: apiKey.client == "hermes"
+        - name: mcp-home-assistant
+          gateways:
+            - mcp
+          matches:
+            - path:
+                pathPrefix: /mcp/home-assistant
+          backends:
+            - mcp:
+                targets:
+                  - name: home-assistant
+                    mcp:
+                      host: http://home-assistant-mcp.ai.svc.cluster.local:8086/mcp
+          policies:
+            urlRewrite:
+              path:
+                prefix: /mcp
+            apiKey:
+              mode: strict
+              keys:
+                - key: ${HERMES_API_KEY}
+                  metadata:
+                    client: hermes
+            mcpAuthorization:
+              rules:
+                - allow: apiKey.client == "hermes"
+        - name: mcp-kubectl
+          gateways:
+            - mcp
+          matches:
+            - path:
+                pathPrefix: /mcp/kubectl
+          backends:
+            - mcp:
+                targets:
+                  - name: kubectl
+                    mcp:
+                      host: http://kubectl-mcp.ai.svc.cluster.local:8000/mcp
+          policies:
+            urlRewrite:
+              path:
+                prefix: /mcp
+            apiKey:
+              mode: strict
+              keys:
+                - key: ${HERMES_API_KEY}
+                  metadata:
+                    client: hermes
+            mcpAuthorization:
+              rules:
+                - allow: apiKey.client == "hermes"
+        - name: mcp-kubesearch
+          gateways:
+            - mcp
+          matches:
+            - path:
+                pathPrefix: /mcp/kubesearch
+          backends:
+            - mcp:
+                targets:
+                  - name: kubesearch
+                    mcp:
+                      host: http://kubesearch-mcp.ai.svc.cluster.local:3000/mcp
+          policies:
+            urlRewrite:
+              path:
+                prefix: /mcp
+            apiKey:
+              mode: strict
+              keys:
+                - key: ${HERMES_API_KEY}
+                  metadata:
+                    client: hermes
+            mcpAuthorization:
+              rules:
+                - allow: apiKey.client == "hermes"
