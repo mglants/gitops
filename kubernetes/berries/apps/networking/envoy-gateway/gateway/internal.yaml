@@ -8,7 +8,7 @@ spec:
   gatewayClassName: envoy
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: ingress-int-berries.glants.xyz
+      external-dns.alpha.kubernetes.io/hostname: ingress-int-berries.glants.xyz,ingress-int-berries.home
       external-dns.alpha.kubernetes.io/type: internal
       lbipam.cilium.io/ips: 172.16.32.7
   listeners:
@@ -19,6 +19,7 @@ spec:
         namespaces:
           from: Same
     - name: https
+      hostname: "*.glants.xyz"
       protocol: HTTPS
       port: 443
       allowedRoutes:
@@ -28,3 +29,26 @@ spec:
         certificateRefs:
           - kind: Secret
             name: glants-xyz-tls
+    - name: https-home
+      hostname: "*.home"
+      protocol: HTTPS
+      port: 443
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: envoy-internal-home-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: envoy-internal-home
+spec:
+  secretName: envoy-internal-home-tls
+  issuerRef:
+    kind: ClusterIssuer
+    name: home-ca
+  dnsNames:
+    - "*.home"
