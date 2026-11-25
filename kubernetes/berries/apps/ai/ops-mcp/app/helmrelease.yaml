@@ -121,7 +121,7 @@ spec:
               MCP_SECRET_PATH:
                 value: /mcp
               READ_ONLY_MODE:
-                value: 'true'
+                value: 'false'
             resources:
               requests:
                 cpu: 50m
