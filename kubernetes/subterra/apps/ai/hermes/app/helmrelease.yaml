@@ -1,0 +1,268 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: hermes
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: hermes
+  interval: 30m
+  values:
+    networkpolicies:
+      hermes:
+        type: cilium
+        egress:
+          - # Agent Gateway (model provider)
+            toEndpoints:
+              - matchLabels:
+                  k8s:io.kubernetes.pod.namespace: ai
+                  app.kubernetes.io/name: agentgateway
+                  app.kubernetes.io/instance: agentgateway
+            toPorts:
+              - ports:
+                  - port: "8080"
+                    protocol: TCP
+                  - port: "8081"
+                    protocol: TCP
+          - # In-cluster web search
+            toEndpoints:
+              - matchLabels:
+                  k8s:io.kubernetes.pod.namespace: ai
+                  app.kubernetes.io/name: searxng
+            toPorts:
+              - ports:
+                  - port: "8080"
+                    protocol: TCP
+          # Cilium resolves the OIDC issuer through its DNS proxy.
+          - toEndpoints:
+              - matchLabels:
+                  k8s:io.kubernetes.pod.namespace: kube-system
+                  k8s-app: kube-dns
+            toPorts:
+              - ports:
+                  - port: "53"
+                    protocol: UDP
+                  - port: "53"
+                    protocol: TCP
+                rules:
+                  dns:
+                    - matchPattern: "*"
+          - toFQDNs:
+              - matchName: authentik.glants.xyz
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
+        ingress:
+          - fromEndpoints:
+              - matchLabels:
+                  k8s:io.kubernetes.pod.namespace: networking
+                  gateway.envoyproxy.io/owning-gateway-name: envoy-internal
+            toPorts:
+              - ports:
+                  - port: "9120"
+                    protocol: TCP
+                  - port: "9119"
+                    protocol: TCP
+    controllers:
+      hermes:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            egress.policy.home.arpa/internet: "true"
+          securityContext:
+            fsGroup: 10000
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 10000
+            runAsNonRoot: true
+            runAsUser: 10000
+            seccompProfile:
+              type: RuntimeDefault
+          terminationGracePeriodSeconds: 60
+        strategy: Recreate
+        initContainers:
+          # Seed new profiles or migrate existing ones before the non-root s6 process starts.
+          config-migrate:
+            image: &image
+              repository: docker.io/nousresearch/hermes-agent
+              tag: v0.23.4@sha256:ef0650d523ee1b5ab32c779acabc446d9936869a9932591553688a62bcf0c42f
+            command:
+              - /bin/sh
+              - -c
+              - |-
+                set -eu
+                mkdir -p /opt/data/workspace
+                if [ ! -f /opt/data/config.yaml ]; then
+                  umask 077
+                  cp /etc/hermes/profile.yaml /opt/data/config.yaml.new
+                  mv /opt/data/config.yaml.new /opt/data/config.yaml
+                else
+                  exec /opt/hermes/.venv/bin/python /opt/hermes/scripts/docker_config_migrate.py
+                fi
+            env:
+              HOME: /opt/data
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+        containers:
+          app:
+            image: *image
+            # Explicitly start the gateway under s6; sleep alone only restores saved run intent.
+            args:
+              - gateway
+              - run
+            env:
+              S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
+              # Hermes settings
+              HERMES_DASHBOARD: "true"
+              HERMES_DASHBOARD_HOST: 0.0.0.0
+              HERMES_DASHBOARD_OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: hermes-oidc
+                    key: CLIENT_SECRET
+              HERMES_DASHBOARD_PORT: "9119"
+              HERMES_DISABLE_LAZY_INSTALLS: "true"
+              HERMES_HOME: /opt/data
+              HERMES_WRITE_SAFE_ROOT: /opt/data
+              HOME: /opt/data
+              SEARXNG_URL: http://searxng.ai.svc.cluster.local:8080
+            envFrom:
+              - secretRef:
+                  name: hermes
+            probes:
+              # A fresh cron ticker heartbeat (written every 60s by the gateway) is required.
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: &healthcheck
+                      - /bin/sh
+                      - -c
+                      - >-
+                        hb=$(cut -d. -f1 /opt/data/cron/ticker_heartbeat) &&
+                        [ $(( $(date +%s) - hb )) -lt 300 ]
+                  failureThreshold: 3
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 3
+                  exec:
+                    command: *healthcheck
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: *healthcheck
+                  failureThreshold: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+            resources:
+              requests:
+                memory: 1536Mi
+                cpu: 110m
+              limits:
+                memory: 6Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+    persistence:
+      data:
+        existingClaim: hermes
+        advancedMounts:
+          hermes:
+            app:
+              - path: /opt/data
+            config-migrate:
+              - path: /opt/data
+      config:
+        type: configMap
+        name: hermes-config
+        advancedMounts:
+          hermes:
+            app:
+              - path: /etc/hermes
+                readOnly: true
+            config-migrate:
+              - path: /etc/hermes
+                readOnly: true
+      agentgateway-token:
+        type: secret
+        name: agentgateway-hermes
+        advancedMounts:
+          hermes:
+            app:
+              - path: /mnt/secrets/agentgateway
+                readOnly: true
+      mise:
+        type: image
+        image: ghcr.io/jdx/mise:2026.11.14
+        advancedMounts:
+          hermes:
+            app:
+              - path: /opt/mise
+                subPath: usr/local/bin
+                readOnly: true
+      run:
+        type: emptyDir
+        globalMounts:
+          - path: /run
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+    route:
+      webapp:
+        hostnames:
+          - hermes.ur30.dev
+        parentRefs:
+          - name: envoy-internal
+            namespace: networking
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: webapp
+            timeouts:
+              request: 0s
+      dashboard:
+        hostnames:
+          - hermes-dash.ur30.dev
+        parentRefs:
+          - name: envoy-internal
+            namespace: networking
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: dashboard
+    service:
+      app:
+        ports:
+          webapp:
+            appProtocol: kubernetes.io/wss
+            port: 9120
+          dashboard:
+            appProtocol: kubernetes.io/wss
+            port: 9119

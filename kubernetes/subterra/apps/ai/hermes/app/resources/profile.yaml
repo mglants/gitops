@@ -1,0 +1,32 @@
+---
+model:
+  default: mistral/small-4
+  base_url: http://agentgateway.ai.svc.cluster.local:8080/v1
+  provider: agentgateway
+
+providers:
+  agentgateway:
+    api: http://agentgateway.ai.svc.cluster.local:8080/v1
+    discover_models: true
+    key_env: AGENTGATEWAY_API_KEY
+    name: Agent Gateway
+
+web:
+  search_backend: searxng
+
+secrets:
+  command:
+    enabled: true
+    command: |
+      set -eu
+      printf 'AGENTGATEWAY_API_KEY='
+      /bin/cat /mnt/secrets/agentgateway/key
+      printf '\nSEARXNG_URL=http://searxng.ai.svc.cluster.local:8080\n'
+    helper_timeout_seconds: 3
+    override_existing: true
+
+mcp_servers:
+  context7:
+    url: http://agentgateway.ai.svc.cluster.local:8081/mcp/context7
+    headers:
+      Authorization: "Bearer ${AGENTGATEWAY_API_KEY}"

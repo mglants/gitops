@@ -1,0 +1,168 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: agentgateway
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: agentgateway
+  interval: 30m
+  values:
+    nameOverride: agentgateway
+    image:
+      tag: v1.7.0
+    mode: readonly
+    replicaCount: 1
+    session:
+      secretName: agentgateway
+    extraEnv:
+      - name: HERMES_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: agentgateway
+            key: HERMES_API_KEY
+      - name: CLIPROXYAPI_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: agentgateway
+            key: CLIPROXYAPI_API_KEY
+      - name: MISTRAL_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: agentgateway
+            key: MISTRAL_API_KEY
+      - name: NEURALWATT_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: agentgateway
+            key: NEURALWATT_API_KEY
+      - name: CONTEXT7_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: agentgateway
+            key: CONTEXT7_API_KEY
+    gateway:
+      service:
+        type: ClusterIP
+        ports:
+          - name: llm
+            port: 8080
+            targetPort: 8080
+            protocol: TCP
+          - name: mcp
+            port: 8081
+            targetPort: 8081
+            protocol: TCP
+          - name: metrics
+            port: 15020
+            targetPort: 15020
+            protocol: TCP
+          - name: readiness
+            port: 15021
+            targetPort: 15021
+            protocol: TCP
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+    config:
+      config:
+        adminAddr: 'off'
+        statsAddr: 0.0.0.0:15020
+        readinessAddr: 0.0.0.0:15021
+      llm:
+        port: 8080
+        policies:
+          apiKey:
+            mode: strict
+            keys:
+              - key: ${HERMES_API_KEY}
+                metadata:
+                  client: hermes
+                allowedModels:
+                  - chatgpt/gpt-6-luna
+                  - chatgpt/gpt-6.2-astra
+                  - chatgpt/gpt-6.2-sol
+                  - mistral/large-4
+                  - mistral/small-4
+                  - neuralwatt/dsv4.1f
+        models:
+          - name: chatgpt/gpt-6-luna
+            provider: openAI
+            params:
+              apiKey: ${CLIPROXYAPI_API_KEY}
+              baseUrl: http://cliproxyapi.ai.svc.cluster.local:8317/v1
+              model: gpt-6-luna
+          - name: chatgpt/gpt-6.1-sol
+            provider: openAI
+            params:
+              apiKey: ${CLIPROXYAPI_API_KEY}
+              baseUrl: http://cliproxyapi.ai.svc.cluster.local:8317/v1
+              model: gpt-6.1-sol
+          - name: chatgpt/gpt-6.2-astra
+            provider: openAI
+            params:
+              apiKey: ${CLIPROXYAPI_API_KEY}
+              baseUrl: http://cliproxyapi.ai.svc.cluster.local:8317/v1
+              model: gpt-6.2-astra
+          - name: chatgpt/gpt-6.2-sol
+            provider: openAI
+            params:
+              apiKey: ${CLIPROXYAPI_API_KEY}
+              baseUrl: http://cliproxyapi.ai.svc.cluster.local:8317/v1
+              model: gpt-6.2-sol
+          - name: mistral/large-4
+            provider: openAI
+            params:
+              apiKey: ${MISTRAL_API_KEY}
+              baseUrl: https://api.mistral.ai/v1
+              model: mistral-large-4-0
+          - name: mistral/small-4
+            provider: openAI
+            params:
+              apiKey: ${MISTRAL_API_KEY}
+              baseUrl: https://api.mistral.ai/v1
+              model: mistral-small-2603
+            transformation:
+              reasoning_effort: '!has(llmRequest.reasoning_effort) || llmRequest.reasoning_effort == "none" ? "none" : "high"'
+          - name: neuralwatt/dsv4.1f
+            provider: openAI
+            params:
+              apiKey: ${NEURALWATT_API_KEY}
+              baseUrl: https://api.neuralwatt.com/v1
+              model: deepseek-v4.1-flash
+      gateways:
+        mcp:
+          port: 8081
+      routes:
+        - name: mcp-context7
+          gateways:
+            - mcp
+          matches:
+            - path:
+                pathPrefix: /mcp/context7
+          backends:
+            - mcp:
+                targets:
+                  - name: context7
+                    mcp:
+                      host: https://mcp.context7.com/mcp
+                    policies:
+                      backendAuth:
+                        key: ${CONTEXT7_API_KEY}
+          policies:
+            urlRewrite:
+              path:
+                prefix: /mcp
+            apiKey:
+              mode: strict
+              keys:
+                - key: ${HERMES_API_KEY}
+                  metadata:
+                    client: hermes
+            mcpAuthorization:
+              rules:
+                - allow: apiKey.client == "hermes"
