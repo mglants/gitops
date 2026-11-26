@@ -5,7 +5,7 @@ metadata:
   name: flux-mcp
 spec:
   chartRef:
-    apiVersion: source.toolkit.fluxcd.io/v1beta2
+    apiVersion: source.toolkit.fluxcd.io/v1
     kind: OCIRepository
     name: berries-mcp-chart
   interval: 30m
@@ -67,7 +67,7 @@ metadata:
   name: kubectl-mcp
 spec:
   chartRef:
-    apiVersion: source.toolkit.fluxcd.io/v1beta2
+    apiVersion: source.toolkit.fluxcd.io/v1
     kind: OCIRepository
     name: berries-mcp-chart
   interval: 30m

@@ -6,7 +6,7 @@ metadata:
   name: envoy-gateway
 spec:
   chartRef:
-    apiVersion: source.toolkit.fluxcd.io/v1beta2
+    apiVersion: source.toolkit.fluxcd.io/v1
     kind: OCIRepository
     name: envoy-gateway
   interval: 30m
