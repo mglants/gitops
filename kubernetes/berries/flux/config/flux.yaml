@@ -9,8 +9,8 @@ spec:
   interval: 10m
   url: oci://ghcr.io/fluxcd/flux-manifests
   ref:
-    # Keep the installed release until Kubernetes is upgraded.
-    tag: v2.5.1
+    # Bridge release serving both OCIRepository API versions for the migration.
+    tag: v2.6.4
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -21,7 +21,8 @@ metadata:
 spec:
   interval: 10m
   path: ./
-  prune: true
+  prune: false
+  deletionPolicy: Orphan
   wait: true
   sourceRef:
     kind: OCIRepository

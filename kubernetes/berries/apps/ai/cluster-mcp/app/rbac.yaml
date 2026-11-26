@@ -55,7 +55,6 @@ metadata:
   name: flux-mcp-write
 rules:
   - apiGroups:
-      - fluxcd.controlplane.io
       - helm.toolkit.fluxcd.io
       - image.toolkit.fluxcd.io
       - kustomize.toolkit.fluxcd.io
