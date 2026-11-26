@@ -31,7 +31,7 @@ spec:
   values:
     image:
       repository: ghcr.io/home-assistant/home-assistant
-      tag: 2026.11.3
+      tag: 2026.11.3@sha256:24e541ddae5818bf8eb27898b9ba00d0c344a655aa5097e9e9bd4b19356be847
     env:
       TZ: Europe/Moscow
       SECRET_RECORDER_DB_URL:
