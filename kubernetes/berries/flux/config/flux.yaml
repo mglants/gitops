@@ -23,6 +23,7 @@ spec:
   path: ./
   prune: false
   deletionPolicy: Orphan
+  suspend: true
   wait: true
   sourceRef:
     kind: OCIRepository
