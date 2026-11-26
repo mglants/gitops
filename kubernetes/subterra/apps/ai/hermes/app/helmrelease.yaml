@@ -55,6 +55,19 @@ spec:
               - ports:
                   - port: "443"
                     protocol: TCP
+          - # Hermes's upstream model catalog, its redirect, and its fallback.
+            toFQDNs:
+              - matchName: hermes-agent.nousresearch.com
+              - matchName: nousresearch.github.io
+              - matchName: raw.githubusercontent.com
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
+                serverNames:
+                  - hermes-agent.nousresearch.com
+                  - nousresearch.github.io
+                  - raw.githubusercontent.com
           - toCIDR:
               - 172.16.32.7/32
             toPorts:
