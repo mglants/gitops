@@ -286,6 +286,14 @@ spec:
             app:
               - path: /mnt/secrets/forges/github
                 readOnly: true
+      telegram:
+        type: secret
+        name: hermes-telegram
+        advancedMounts:
+          hermes:
+            app:
+              - path: /mnt/secrets/telegram
+                readOnly: true
       mise:
         type: image
         image: ghcr.io/jdx/mise:2026.11.14
