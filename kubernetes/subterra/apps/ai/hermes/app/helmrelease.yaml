@@ -278,6 +278,14 @@ spec:
             app:
               - path: /mnt/secrets/forges/forgejo
                 readOnly: true
+      github-token:
+        type: secret
+        name: hermes-github
+        advancedMounts:
+          hermes:
+            app:
+              - path: /mnt/secrets/forges/github
+                readOnly: true
       mise:
         type: image
         image: ghcr.io/jdx/mise:2026.11.14
