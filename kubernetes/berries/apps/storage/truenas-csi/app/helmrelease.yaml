@@ -47,7 +47,7 @@ spec:
     storageClasses:
       - name: truenas-nfs
         isDefault: true
-        reclaimPolicy: Delete
+        reclaimPolicy: Retain
         allowVolumeExpansion: true
         volumeBindingMode: Immediate
         mountOptions:
@@ -61,7 +61,7 @@ spec:
           nfs.rootSquash: "false"
       - name: truenas-iscsi
         isDefault: false
-        reclaimPolicy: Delete
+        reclaimPolicy: Retain
         allowVolumeExpansion: true
         volumeBindingMode: Immediate
         parameters:
