@@ -324,7 +324,7 @@ spec:
               startup: {enabled: false}
             image:
               repository: ghcr.io/remnashop/remnashop
-              tag: dev-telegram@sha256:2375a62ae3f1955fa1979109ae795f74989cbce2b7064acae9ae64e6d9116ff4
+              tag: dev-telegram@sha256:337c04bd0dd54ac73ff57fe9669ed259b185dea68e1b5a381cfbebf20e1a1c4b
               pullPolicy: Always
             command: ["/bin/sh", "-c"]
             args: ['until wget -qO- http://127.0.0.1:5000/readyz >/dev/null; do sleep 5; done; exec /opt/remnashop/docker-entrypoint.sh telegram']
