@@ -243,7 +243,7 @@ spec:
         k8s-views-namespaces:
           # renovate: dashboardName="Kubernetes / Views / Namespaces"
           gnetId: 15758
-          revision: 46
+          revision: 47
           datasource: Prometheus
         k8s-views-pods:
           # renovate: dashboardName="Kubernetes / Views / Pods"
