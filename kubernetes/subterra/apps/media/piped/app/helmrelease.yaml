@@ -104,7 +104,7 @@ spec:
           app:
             image:
               repository: 1337kavin/piped-proxy
-              tag: latest@sha256:1eb50a994b06069af9105ef419e50769994e6bcc37d486017b3fbb9a44565f2b
+              tag: latest@sha256:a9496366e7f2f4e99d6608fa8e442f2e72628bc7bbeae09273d41caaf562a915
             command:
               - /app/piped-proxy
             envFrom:
